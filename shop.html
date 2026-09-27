@@ -314,6 +314,7 @@
   window.selectProduct = function(docId) {
     selectedProduct = products.find(p => p.docId === docId) || null;
     if (!selectedProduct) return;
+    window.__zahSelectedCartProduct = null;
     // 選擇商品後，商品名稱與遊戲名稱都由後台商品資料自動帶入
     document.getElementById('productName').value = selectedProduct.name || '';
     document.getElementById('gameName').value = selectedProduct.game || '';
@@ -321,8 +322,21 @@
     document.getElementById('gameName').readOnly = true;
     document.getElementById('productName').classList.add('bg-indigo-50', 'text-indigo-700');
     document.getElementById('gameName').classList.add('bg-indigo-50', 'text-indigo-700');
+
+    // 判斷此商品目前是否為優惠價（邏輯與送出訂單時的判斷一致）
+    const saleEnd = selectedProduct.saleEnd || selectedProduct.discountEnd || selectedProduct.promotionEnd;
+    const salePriceNum = Number(selectedProduct.salePrice);
+    const saleActive = Number.isFinite(salePriceNum) && salePriceNum > 0 && (
+      !saleEnd ||
+      (Number.isFinite(new Date(saleEnd).getTime()) && new Date(saleEnd).getTime() > Date.now())
+    );
+    const originalPrice = Number(selectedProduct.price || 0);
+    const shownPrice = saleActive ? salePriceNum : originalPrice;
+
     const priceEl = document.getElementById('selectedProductPrice');
-    priceEl.textContent = `商品售價：NT$${Number(selectedProduct.price || 0).toLocaleString()}`;
+    priceEl.textContent = saleActive
+      ? `商品售價：NT$${shownPrice.toLocaleString()}（優惠價，原價 NT$${originalPrice.toLocaleString()}）`
+      : `商品售價：NT$${shownPrice.toLocaleString()}`;
     priceEl.classList.remove('hidden');
     document.getElementById('customer').focus();
     document.getElementById('orderForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -343,8 +357,18 @@
       const gameUid = document.getElementById("gameUid").value.trim();
       const productName = document.getElementById("productName").value.trim();
       const memo = document.getElementById("memo").value.trim();
-      const productPrice = selectedProduct ? Number(selectedProduct.price || 0) : 0;
-      const productCost = selectedProduct ? Number(selectedProduct.cost || 0) : 0;
+      const cartSelectedProduct = window.__zahSelectedCartProduct || null;
+      const orderProduct = selectedProduct || cartSelectedProduct;
+      const saleEnd = orderProduct?.saleEnd || orderProduct?.discountEnd || orderProduct?.promotionEnd;
+      const salePrice = Number(orderProduct?.salePrice);
+      const saleActive = Number.isFinite(salePrice) && salePrice > 0 && (
+        !saleEnd ||
+        (Number.isFinite(new Date(saleEnd).getTime()) && new Date(saleEnd).getTime() > Date.now())
+      );
+      const productPrice = orderProduct
+        ? Number(saleActive ? salePrice : (orderProduct.price || 0))
+        : 0;
+      const productCost = orderProduct ? Number(orderProduct.cost || 0) : 0;
 
       if (!customer || !gameName || !gameUid || !productName) {
         alert("請完整填寫必要資料。");
@@ -391,6 +415,26 @@
       modal.classList.add("flex");
 
       document.getElementById("orderForm").reset();
+
+      const purchasedDocId = window.__zahSelectedCartProduct?.docId || selectedProduct?.docId;
+      if (purchasedDocId) {
+        const cartRow = cart.find(x => x.docId === purchasedDocId);
+        if (cartRow) {
+          cartRow.qty = Math.max(0, Number(cartRow.qty || 0) - 1);
+          if (cartRow.qty <= 0) cart = cart.filter(x => x.docId !== purchasedDocId);
+          saveCart();
+        }
+      }
+      window.__zahSelectedCartProduct = null;
+      selectedProduct = null;
+
+      ["productName","gameName"].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.readOnly = false;
+        el.classList.remove("bg-indigo-50", "text-indigo-700");
+      });
+      document.getElementById("selectedProductPrice").classList.add("hidden");
 
     } catch (error) {
       alert("訂單建立失敗：" + error.message);
@@ -439,7 +483,24 @@
     const shopDb = getFirestore(shopApp);
     let shopProducts = [];
     let shopViewMode = "hot";
-    let cart = JSON.parse(localStorage.getItem("zahShopCart") || "[]");
+
+    // 🛒 購物車資料容錯：避免舊資料損壞造成整個商城進階腳本停止。
+    function loadCartSafe(){
+      try {
+        const raw = localStorage.getItem("zahShopCart");
+        const parsed = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(parsed)) return [];
+        return parsed
+          .filter(x => x && typeof x.docId === "string" && x.docId.trim())
+          .map(x => ({ docId: x.docId, qty: Math.max(1, Math.floor(Number(x.qty) || 1)) }));
+      } catch (e) {
+        console.warn("購物車資料格式異常，已自動重設：", e);
+        try { localStorage.removeItem("zahShopCart"); } catch (_) {}
+        return [];
+      }
+    }
+
+    let cart = loadCartSafe();
 
     const esc = v => String(v ?? "").replace(/[&<>'"]/g, ch => ({
       "&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"
@@ -447,8 +508,16 @@
 
     const getStatus = p => String(p.status || p.saleStatus || "上架").trim();
     const isSaleActive = p => {
+      const salePrice = Number(p.salePrice);
+      if (!Number.isFinite(salePrice) || salePrice <= 0) return false;
+
       const end = p.saleEnd || p.discountEnd || p.promotionEnd;
-      return !!(p.salePrice && Number(p.salePrice) > 0 && end && new Date(end).getTime() > Date.now());
+      // 後台若沒有設定優惠結束時間，優惠價持續有效；
+      // 有設定結束時間時，只有尚未到期才算優惠中。
+      if (!end) return true;
+
+      const endTime = new Date(end).getTime();
+      return Number.isFinite(endTime) && endTime > Date.now();
     };
     const displayPrice = p => isSaleActive(p) ? Number(p.salePrice) : Number(p.price || 0);
     const stockValue = p => p.stock === undefined || p.stock === null || p.stock === "" ? null : Number(p.stock);
@@ -459,6 +528,10 @@
     };
 
     function saveCart(){
+      const validIds = new Set(shopProducts.map(p => p.docId));
+      cart = cart
+        .filter(x => validIds.has(x.docId))
+        .map(x => ({ docId: x.docId, qty: Math.max(1, Math.floor(Number(x.qty) || 1)) }));
       localStorage.setItem("zahShopCart", JSON.stringify(cart));
       renderCart();
     }
@@ -466,13 +539,19 @@
     function addCart(docId){
       const p = shopProducts.find(x => x.docId === docId);
       if (!p || !isAvailable(p)) return alert("此商品目前無法購買。");
-      const row = cart.find(x => x.docId === docId);
+
       const stock = stockValue(p);
+      const row = cart.find(x => x.docId === docId);
       if (row) {
-        if (stock !== null && row.qty >= stock) return alert("已達目前庫存數量。");
-        row.qty++;
+        const nextQty = Math.max(1, Math.floor(Number(row.qty) || 1)) + 1;
+        if (stock !== null && nextQty > stock) {
+          row.qty = Math.max(1, stock);
+          saveCart();
+          return alert("已達目前庫存數量。");
+        }
+        row.qty = nextQty;
       } else {
-        cart.push({docId, qty:1});
+        cart.push({ docId, qty: 1 });
       }
       saveCart();
       alert("已加入購物車！");
@@ -487,43 +566,66 @@
       const row = cart.find(x => x.docId === docId);
       const p = shopProducts.find(x => x.docId === docId);
       if (!row || !p) return;
+
+      let nextQty = Math.max(1, Math.floor(Number(row.qty) || 1)) + Number(delta || 0);
       const stock = stockValue(p);
-      row.qty += delta;
-      if (stock !== null) row.qty = Math.min(row.qty, stock);
-      if (row.qty <= 0) removeCart(docId);
-      else saveCart();
+
+      if (stock !== null) {
+        if (stock <= 0) return removeCart(docId);
+        nextQty = Math.min(nextQty, stock);
+      }
+
+      if (nextQty <= 0) removeCart(docId);
+      else {
+        row.qty = nextQty;
+        saveCart();
+      }
     }
 
     function renderCart(){
+      const productMap = new Map(shopProducts.map(p => [p.docId, p]));
+      cart = cart
+        .filter(row => productMap.has(row.docId))
+        .map(row => ({ docId: row.docId, qty: Math.max(1, Math.floor(Number(row.qty) || 1)) }));
+
       const count = cart.reduce((n,x)=>n + Number(x.qty || 0),0);
       document.getElementById("cartCountBadge").textContent = count;
+
       const box = document.getElementById("cartItems");
       let total = 0;
+
       if (!cart.length) {
         box.innerHTML = '<div class="py-10 text-center text-sm text-slate-400">購物車目前是空的</div>';
       } else {
         box.innerHTML = cart.map(row => {
-          const p = shopProducts.find(x => x.docId === row.docId);
+          const p = productMap.get(row.docId);
           if (!p) return "";
+
           const price = displayPrice(p);
           total += price * row.qty;
-          return `<div class="rounded-2xl border border-slate-200 p-3 flex items-center gap-3">
+          const stock = stockValue(p);
+          const unavailable = !isAvailable(p);
+          const maxed = stock !== null && row.qty >= stock;
+
+          return `<div class="rounded-2xl border border-slate-200 p-3 flex items-center gap-3 ${unavailable ? "opacity-60" : ""}">
             <div class="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden shrink-0">
-              ${p.image ? `<img src="${esc(p.image)}" class="w-full h-full object-cover">` : '<div class="w-full h-full flex items-center justify-center">📦</div>'}
+              ${p.image ? `<img src="${esc(p.image)}" class="w-full h-full object-cover" onerror="this.style.display='none'>` : '<div class="w-full h-full flex items-center justify-center">📦</div>'}
             </div>
             <div class="min-w-0 flex-1">
               <div class="font-bold text-sm truncate">${esc(p.name)}</div>
-              <div class="text-xs text-indigo-600 font-bold">NT$${price.toLocaleString()}</div>
+              <div class="text-xs text-indigo-600 font-bold">NT$${price.toLocaleString()} × ${row.qty}</div>
+              ${stock !== null ? `<div class="text-[10px] text-slate-400 mt-0.5">庫存 ${stock}</div>` : ""}
             </div>
             <div class="flex items-center gap-2">
-              <button type="button" onclick="window.zahCartQty('${esc(row.docId)}',-1)" class="w-7 h-7 rounded-lg bg-slate-100">−</button>
-              <span class="text-sm font-bold">${row.qty}</span>
-              <button type="button" onclick="window.zahCartQty('${esc(row.docId)}',1)" class="w-7 h-7 rounded-lg bg-slate-100">＋</button>
+              <button type="button" onclick="window.zahCartQty('${esc(row.docId)}',-1)" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200">−</button>
+              <span class="min-w-5 text-center text-sm font-bold">${row.qty}</span>
+              <button type="button" ${maxed || unavailable ? "disabled" : ""} onclick="window.zahCartQty('${esc(row.docId)}',1)" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-40">＋</button>
             </div>
-            <button type="button" onclick="window.zahCartRemove('${esc(row.docId)}')" class="text-rose-500 text-xs font-bold">刪除</button>
+            <button type="button" onclick="window.zahCartRemove('${esc(row.docId)}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold">刪除</button>
           </div>`;
         }).join("");
       }
+
       document.getElementById("cartTotal").textContent = "NT$" + total.toLocaleString();
     }
 
@@ -621,6 +723,7 @@
       if (!p || !isAvailable(p)) return alert("此商品目前無法購買。");
       const original = window.selectProduct;
       if (typeof original === "function") original(docId);
+      window.__zahSelectedCartProduct = p;
       setTimeout(()=>document.getElementById("orderForm").scrollIntoView({behavior:"smooth",block:"center"}),100);
     };
 
@@ -628,12 +731,20 @@
     document.getElementById("shopCategoryFilter").addEventListener("change", renderEnhancedProducts);
     document.getElementById("shopSortHot").addEventListener("click",()=>{shopViewMode="hot";renderEnhancedProducts();});
     document.getElementById("shopSortPrice").addEventListener("click",()=>{shopViewMode="priceAsc";renderEnhancedProducts();});
-    document.getElementById("cartOpenBtn").addEventListener("click",()=>{renderCart();document.getElementById("cartModal").classList.remove("hidden");document.getElementById("cartModal").classList.add("flex");});
+    document.getElementById("cartOpenBtn").addEventListener("click",()=>{
+      renderCart();
+      const modal = document.getElementById("cartModal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    });
     document.getElementById("cartCloseBtn").addEventListener("click",()=>{document.getElementById("cartModal").classList.add("hidden");document.getElementById("cartModal").classList.remove("flex");});
     document.getElementById("cartClearBtn").addEventListener("click",()=>{cart=[];saveCart();});
     document.getElementById("cartCheckoutBtn").addEventListener("click",()=>{
-      const row=cart[0];
-      if(!row) return alert("購物車目前沒有商品。");
+      const row = cart.find(x => {
+        const p = shopProducts.find(item => item.docId === x.docId);
+        return p && isAvailable(p);
+      });
+      if (!row) return alert(cart.length ? "購物車中的商品目前都無法購買。" : "購物車目前沒有商品。");
       window.zahBuyNow(row.docId);
       document.getElementById("cartModal").classList.add("hidden");
       document.getElementById("cartModal").classList.remove("flex");
