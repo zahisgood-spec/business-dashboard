@@ -91,6 +91,116 @@
         .admin-tab-panel { display:block; }
         .admin-tab-panel.hidden { display:none !important; }
 
+
+        /* ===================================================== */
+        /* ==============  後台質感動畫升級套件  ================ */
+        /* ===================================================== */
+        html { scroll-behavior: smooth; }
+
+        /* 背景柔光斑（位於內容底層） */
+        html::before, html::after { content:''; position:fixed; z-index:-1; border-radius:9999px; filter:blur(60px); pointer-events:none; }
+        html::before { top:-14%; left:-8%; width:520px; height:520px; background:radial-gradient(circle, rgba(99,102,241,.16), transparent 70%); animation:zahBlob 18s ease-in-out infinite; }
+        html::after { bottom:-16%; right:-8%; width:560px; height:560px; background:radial-gradient(circle, rgba(236,72,153,.10), transparent 70%); animation:zahBlob 22s ease-in-out infinite reverse; }
+        @keyframes zahBlob { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(40px,-30px) scale(1.1)} }
+
+        /* 捲動進度條 */
+        #zahScroll { position:fixed; top:0; left:0; right:0; height:3px; z-index:45; transform-origin:0 50%; transform:scaleX(0); background:linear-gradient(90deg,#6366f1,#a855f7,#ec4899); box-shadow:0 0 10px rgba(99,102,241,.5); pointer-events:none; }
+
+        /* 頂部導覽列：流光底線與 Logo 呼吸 */
+        header { position:relative; }
+        header::after { content:''; position:absolute; left:0; right:0; bottom:-1px; height:2px; background:linear-gradient(90deg,transparent,#6366f1,#ec4899,#6366f1,transparent); background-size:200% 100%; animation:zahHeaderFlow 6s linear infinite; opacity:.7; pointer-events:none; }
+        @keyframes zahHeaderFlow { to { background-position:-200% 0; } }
+        header .bg-indigo-600.text-white.p-2 { animation:zahLogoBreath 3.6s ease-in-out infinite; }
+        @keyframes zahLogoBreath { 0%,100%{box-shadow:0 6px 14px -4px rgba(79,70,229,.45); transform:translateY(0)} 50%{box-shadow:0 10px 22px -4px rgba(79,70,229,.6); transform:translateY(-2px)} }
+        .admin-tab-btn.active { animation:zahTabPop .4s cubic-bezier(.34,1.56,.64,1); }
+        @keyframes zahTabPop { from{transform:scale(.92)} to{transform:scale(1)} }
+
+        /* 分頁區塊進場（切換分頁時會重播） */
+        .app-ready .admin-tab-panel > *:not(.grid) { animation:zahPanelRise .7s cubic-bezier(.16,1,.3,1) backwards; }
+        .app-ready .admin-tab-panel > *:nth-child(1) { animation-delay:0s; }
+        .app-ready .admin-tab-panel > *:nth-child(2) { animation-delay:.24s; }
+        .app-ready .admin-tab-panel > *:nth-child(3) { animation-delay:.36s; }
+        .app-ready #admin-orders-panel > * { animation-delay:.42s; }
+        @keyframes zahPanelRise { from{opacity:0; transform:translateY(22px); filter:blur(5px)} }
+
+        /* 營運概況卡片：依序彈入、hover 浮起、追光、光澤掃過 */
+        #admin-tab-panel-dashboard > .grid > div { position:relative; overflow:hidden; transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease, border-color .3s ease; }
+        .app-ready #admin-tab-panel-dashboard > .grid > div { animation:zahCardIn .6s cubic-bezier(.34,1.3,.64,1) backwards; animation-delay:calc(.1s + var(--ci,0) * 70ms); }
+        @keyframes zahCardIn { from{opacity:0; transform:translateY(24px) scale(.95)} }
+        #admin-tab-panel-dashboard > .grid > div:hover { transform:translateY(-5px); box-shadow:0 22px 40px -18px rgba(15,23,42,.25); border-color:#c7d2fe; }
+        #admin-tab-panel-dashboard > .grid > div::before { content:''; position:absolute; inset:0; pointer-events:none; background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.55) 50%,transparent 70%); transform:translateX(-120%); transition:transform .9s ease; }
+        #admin-tab-panel-dashboard > .grid > div:hover::before { transform:translateX(120%); }
+        #admin-tab-panel-dashboard > .grid > div::after { content:''; position:absolute; inset:0; pointer-events:none; opacity:0; transition:opacity .3s ease; background:radial-gradient(220px circle at var(--gx,50%) var(--gy,50%), rgba(99,102,241,.13), transparent 60%); }
+        #admin-tab-panel-dashboard > .grid > div:hover::after { opacity:1; }
+
+        /* AI 健檢卡片：流光掃過 + 文字更新淡入 */
+        #admin-tab-panel-dashboard > div:first-child::after { content:''; position:absolute; inset:0; pointer-events:none; background:linear-gradient(110deg,transparent 35%,rgba(129,140,248,.10) 50%,transparent 65%); background-size:250% 100%; animation:zahAiSheen 6s linear infinite; }
+        @keyframes zahAiSheen { from{background-position:150% 0} to{background-position:-150% 0} }
+        .ai-fade { animation:zahAiFade .6s ease; }
+        @keyframes zahAiFade { from{opacity:.15; transform:translateY(6px); filter:blur(3px)} }
+
+        /* 走勢圖長條：漸層與 hover 強化 */
+        #chart-bars-container .chart-bar-animate { background-image:linear-gradient(180deg,#818cf8,#4f46e5); transform-origin:bottom; }
+        #chart-bars-container > div:hover .chart-bar-animate { filter:brightness(1.12) saturate(1.2); transform:scaleY(1.04); }
+
+        /* 訂單表格：列進場、新訂單高亮、hover 指示條 */
+        .row-in { animation:zahRowIn .45s cubic-bezier(.16,1,.3,1) backwards; animation-delay:calc(var(--i,0) * 35ms); }
+        @keyframes zahRowIn { from{opacity:0; transform:translateX(-14px)} }
+        .row-new { animation:zahRowNew 2.4s ease-out; }
+        @keyframes zahRowNew { 0%{background:rgba(99,102,241,.22); box-shadow:inset 4px 0 0 #6366f1} 100%{background:transparent; box-shadow:inset 0 0 0 transparent} }
+        #tableBody tr:hover { box-shadow:inset 3px 0 0 #6366f1; }
+        #batch-action-bar:not(.hidden) { animation:zahSlideDown .35s cubic-bezier(.16,1,.3,1); }
+        @keyframes zahSlideDown { from{opacity:0; transform:translateY(-10px)} }
+
+        /* 商品管理卡片 */
+        .zah-pop { animation:zahPopIn .55s cubic-bezier(.34,1.4,.64,1) backwards; animation-delay:calc(var(--i,0) * 60ms); }
+        @keyframes zahPopIn { from{opacity:0; transform:translateY(18px) scale(.95)} }
+        #productAdminList > div { transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease; }
+        #productAdminList > div:hover { transform:translateY(-4px); box-shadow:0 18px 36px -16px rgba(15,23,42,.25); }
+        #productAdminList img { transition:transform .5s cubic-bezier(.2,.8,.2,1); }
+        #productAdminList > div:hover img { transform:scale(1.1); }
+
+        /* 右上角實況彈幕：倒數條 */
+        .ticker-animate { position:relative; overflow:hidden; }
+        .ticker-animate::after { content:''; position:absolute; left:0; bottom:0; height:2px; width:100%; background:linear-gradient(90deg,#34d399,#6366f1); transform-origin:0 50%; animation:zahTickerBar 4.5s linear forwards; }
+        @keyframes zahTickerBar { from{transform:scaleX(1)} to{transform:scaleX(0)} }
+
+        /* 彈窗：遮罩淡入、內容彈跳、彈簧緩動、太空戰艦掃描線 */
+        #dreadnoughtModal.flex, #orderModal.flex, #memoModal.flex, #invoiceModal.flex, #editAmountModal.flex, #productModal.flex { animation:zahOverlayFade .25s ease backwards; }
+        #editAmountModal.flex > div, #productModal.flex > div { animation:zahModalPop .42s cubic-bezier(.34,1.35,.64,1) backwards; }
+        @keyframes zahOverlayFade { from{opacity:0} }
+        @keyframes zahModalPop { from{opacity:0; transform:scale(.92) translateY(14px)} }
+        #orderModalBox, #memoModalBox, #invoiceModalBox, #dreadnoughtModalBox { transition-timing-function:cubic-bezier(.34,1.35,.64,1); }
+        #dreadnoughtModalBox::after { content:''; position:absolute; left:0; right:0; top:0; height:2px; pointer-events:none; background:linear-gradient(90deg,transparent,rgba(244,63,94,.9),transparent); box-shadow:0 0 14px 2px rgba(244,63,94,.6); animation:zahScan 3s linear infinite; }
+        @keyframes zahScan { 0%{top:0; opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{top:100%; opacity:0} }
+
+        /* 表單聚焦光暈 */
+        input:focus, textarea:focus, select:focus { outline:4px solid rgba(99,102,241,.14) !important; outline-offset:0 !important; }
+
+        /* 按鈕漣漪 */
+        .zah-ripple { position:absolute; border-radius:50%; pointer-events:none; background:rgba(255,255,255,.45); transform:scale(0); animation:zahRipple .65s ease-out; }
+        @keyframes zahRipple { to{transform:scale(2.6); opacity:0} }
+
+        /* 🔐 登入閘門 */
+        #login-gate { overflow:hidden; background:radial-gradient(circle at 20% 15%, #1e1b4b 0%, #020617 62%); }
+        #login-gate::before, #login-gate::after { content:''; position:absolute; width:520px; height:520px; border-radius:50%; filter:blur(90px); opacity:.5; animation:zahGateBlob 14s ease-in-out infinite; pointer-events:none; }
+        #login-gate::before { top:-160px; left:-120px; background:#4f46e5; }
+        #login-gate::after { bottom:-180px; right:-120px; background:#ec4899; animation-delay:-7s; }
+        @keyframes zahGateBlob { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(60px,40px) scale(1.15)} }
+        #login-gate > div { position:relative; z-index:1; box-shadow:0 30px 80px -20px rgba(79,70,229,.65); animation:zahGateCardIn .9s cubic-bezier(.16,1,.3,1) backwards; }
+        @keyframes zahGateCardIn { from{opacity:0; transform:translateY(34px) scale(.94); filter:blur(8px)} }
+        #login-gate > div > div:first-child { animation:zahGateLock 3.4s ease-in-out infinite; }
+        @keyframes zahGateLock { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-5px) rotate(-4deg)} }
+        #gate-submit { position:relative; overflow:hidden; }
+        #gate-submit::after { content:''; position:absolute; top:-140%; left:-50%; width:30%; height:380%; transform:rotate(22deg); background:rgba(255,255,255,.35); animation:zahShineLoop 3.4s ease-in-out infinite; pointer-events:none; }
+        @keyframes zahShineLoop { 0%{left:-50%} 55%,100%{left:130%} }
+        #login-gate.gate-leaving { pointer-events:none; animation:zahGateOut .65s ease forwards; }
+        #login-gate.gate-leaving > div { animation:zahGateCardOut .55s cubic-bezier(.5,0,.75,0) forwards; }
+        @keyframes zahGateOut { to{opacity:0; visibility:hidden} }
+        @keyframes zahGateCardOut { to{opacity:0; transform:translateY(-24px) scale(1.06); filter:blur(6px)} }
+
+        @media print { html::before, html::after, #zahScroll { display:none !important; } * { animation:none !important; } }
+        @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } }
     </style>
 </head>
 <body id="main-body-container" class="bg-slate-50 text-slate-800 flex h-screen overflow-hidden transition-all duration-300">
@@ -128,7 +238,9 @@
         async function tryLogin() {
             const hash = await sha256(input.value.trim());
             if (hash === PASS_HASH) {
-                gate.remove();
+                document.body.classList.add('app-ready');
+                gate.classList.add('gate-leaving');
+                setTimeout(() => gate.remove(), 650);
             } else {
                 err.textContent = '密碼錯誤,請再試一次';
                 input.value = '';
@@ -1854,6 +1966,121 @@
             subscribeProducts();
             loadHomepageSettings();
         };
+    </script>
+
+    <!-- ✨ 後台質感動畫控制器：只做視覺，不改動任何業務邏輯 -->
+    <script>
+    (function () {
+        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const $ = s => document.querySelector(s);
+        if (!document.getElementById('login-gate')) document.body.classList.add('app-ready');
+
+        // 頂部捲動進度條（綁定內層主內容捲動區）
+        const bar = document.createElement('div');
+        bar.id = 'zahScroll';
+        document.body.appendChild(bar);
+        const scroller = document.querySelector('main main');
+        if (scroller) {
+            const upd = () => {
+                const h = scroller.scrollHeight - scroller.clientHeight;
+                bar.style.transform = 'scaleX(' + (h > 0 ? Math.min(1, scroller.scrollTop / h) : 0) + ')';
+            };
+            scroller.addEventListener('scroll', upd, { passive: true });
+            upd();
+        }
+
+        // 概況卡片：依序延遲 + 追光位置
+        const statGrid = $('#admin-tab-panel-dashboard > .grid');
+        if (statGrid) {
+            Array.from(statGrid.children).forEach((el, i) => el.style.setProperty('--ci', i));
+            statGrid.addEventListener('pointermove', e => {
+                const card = e.target.closest('.grid > div');
+                if (!card || !statGrid.contains(card)) return;
+                const r = card.getBoundingClientRect();
+                card.style.setProperty('--gx', (e.clientX - r.left) + 'px');
+                card.style.setProperty('--gy', (e.clientY - r.top) + 'px');
+            });
+        }
+
+        // 主要按鈕漣漪
+        const RIPPLE_SEL = 'button[class*="bg-indigo-600"],button[class*="bg-emerald-600"],button[class*="bg-rose-600"],a[class*="bg-indigo-600"],#gate-submit';
+        document.addEventListener('click', e => {
+            const b = e.target.closest(RIPPLE_SEL);
+            if (!b || b.disabled || reduce) return;
+            if (getComputedStyle(b).position === 'static') b.style.position = 'relative';
+            b.style.overflow = 'hidden';
+            const r = b.getBoundingClientRect();
+            const size = Math.max(r.width, r.height);
+            const s = document.createElement('span');
+            s.className = 'zah-ripple';
+            s.style.width = s.style.height = size + 'px';
+            s.style.left = (e.clientX - r.left - size / 2) + 'px';
+            s.style.top = (e.clientY - r.top - size / 2) + 'px';
+            b.appendChild(s);
+            setTimeout(() => s.remove(), 700);
+        });
+
+        // 訂單表格：篩選/首次載入 → 整表依序進場；即時新訂單 → 只高亮新列（不影響搜尋輸入與即時更新）
+        let animateRows = true, seenReady = false;
+        const seen = new Set();
+        document.addEventListener('click', e => {
+            if (e.target.closest('[id^="filter-"]')) animateRows = true;
+        }, true);
+        const tbody = $('#tableBody');
+        if (tbody) {
+            new MutationObserver(() => {
+                if (reduce) return;
+                const rows = Array.from(tbody.querySelectorAll(':scope > tr'));
+                const ids = rows.map(r => (r.children[1] ? r.children[1].textContent : '').trim());
+                const hasReal = ids.some(Boolean);
+                if (animateRows || (hasReal && !seenReady)) {
+                    rows.forEach((r, i) => { r.style.setProperty('--i', Math.min(i, 14)); r.classList.add('row-in'); });
+                    animateRows = false;
+                } else if (seenReady) {
+                    rows.forEach((r, i) => { if (ids[i] && !seen.has(ids[i])) r.classList.add('row-new'); });
+                }
+                ids.forEach(id => id && seen.add(id));
+                if (hasReal) seenReady = true;
+            }).observe(tbody, { childList: true });
+        }
+
+        // 商品管理卡片：數量變動時依序彈入
+        const productBox = $('#productAdminList');
+        if (productBox) {
+            let lastN = -1;
+            new MutationObserver(() => {
+                if (reduce) return;
+                const cards = Array.from(productBox.children).filter(c => !c.classList.contains('col-span-full'));
+                if (cards.length !== lastN) {
+                    cards.forEach((c, i) => { c.style.setProperty('--i', Math.min(i, 12)); c.classList.add('zah-pop'); });
+                    lastN = cards.length;
+                }
+            }).observe(productBox, { childList: true });
+        }
+
+        // AI 健檢文字更新時淡入
+        const ai = $('#ai-insight-text');
+        if (ai) {
+            new MutationObserver(() => {
+                ai.classList.remove('ai-fade'); void ai.offsetWidth; ai.classList.add('ai-fade');
+            }).observe(ai, { childList: true });
+        }
+
+        // 密碼錯誤時登入卡片左右搖晃
+        const gateErr = $('#gate-error');
+        if (gateErr) {
+            new MutationObserver(() => {
+                if (!gateErr.textContent.trim() || reduce) return;
+                const card = gateErr.closest('#login-gate > div');
+                if (card && card.animate) {
+                    card.animate([
+                        { transform: 'translateX(0)' }, { transform: 'translateX(-12px)' }, { transform: 'translateX(10px)' },
+                        { transform: 'translateX(-8px)' }, { transform: 'translateX(5px)' }, { transform: 'translateX(0)' }
+                    ], { duration: 450, easing: 'ease-out' });
+                }
+            }).observe(gateErr, { childList: true });
+        }
+    })();
     </script>
 </body>
 </html>
