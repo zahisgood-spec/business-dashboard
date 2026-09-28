@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商務版營運與訂單管理總覽 (太空戰艦警報與電玩賽車旗艦版)</title>
+    <title>商務版營運與訂單管理總覽 </title>
     <link rel="icon" type="image/png" href="my-logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -94,6 +94,54 @@
     </style>
 </head>
 <body id="main-body-container" class="bg-slate-50 text-slate-800 flex h-screen overflow-hidden transition-all duration-300">
+    <!-- 🔐 密碼登入閘門 -->
+    <div id="login-gate" class="fixed inset-0 z-[9999] bg-slate-950 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl p-8 space-y-5 text-center">
+            <div class="bg-indigo-600 text-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto shadow-md shadow-indigo-200 text-2xl">🔐</div>
+            <div>
+                <h2 class="text-lg font-bold text-slate-900">展商城 ZAH-SHOP 後台</h2>
+                <p class="text-xs text-slate-400 mt-1">請輸入管理密碼</p>
+            </div>
+            <input id="gate-password" type="password" inputmode="numeric" autocomplete="off" placeholder="密碼"
+                   class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-center text-lg tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <p id="gate-error" class="text-xs text-rose-500 font-semibold h-4"></p>
+            <button id="gate-submit" type="button"
+                    class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-md shadow-indigo-200 transition active:scale-95">
+                進入後台
+            </button>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        // 密碼的 SHA-256 雜湊
+        const PASS_HASH = '60d2bacd27a01d3bb16542eb13523be368a7ada3617fca027fc865cfcd2c973f';
+        const gate = document.getElementById('login-gate');
+        const input = document.getElementById('gate-password');
+        const err = document.getElementById('gate-error');
+
+        async function sha256(text) {
+            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        async function tryLogin() {
+            const hash = await sha256(input.value.trim());
+            if (hash === PASS_HASH) {
+                gate.remove();
+            } else {
+                err.textContent = '密碼錯誤,請再試一次';
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        document.getElementById('gate-submit').addEventListener('click', tryLogin);
+        input.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+        input.focus();
+    })();
+    </script>
+
 
     <!-- 🎮 右上角 Twitch 風格即時實況彈幕容器 -->
     <div id="ticker-container" class="fixed top-20 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
