@@ -142,6 +142,109 @@
         @keyframes shakeError { 0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-4px)} }
         @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } }
 
+
+
+        /* ===== 🎰 抽獎區解鎖：ZAHSHOP 視覺饗宴 ===== */
+        #unlockCelebration { opacity:0; pointer-events:none; transition:opacity .35s ease; }
+        #unlockCelebration.is-active { opacity:1; pointer-events:auto; }
+        .unlock-backdrop { position:absolute; inset:0; background:
+            radial-gradient(circle at 50% 45%, rgba(251,191,36,.22), transparent 24%),
+            radial-gradient(circle at 50% 50%, rgba(99,102,241,.22), transparent 48%),
+            rgba(2,6,23,.86); }
+        .unlock-vortex { position:absolute; width:min(68vw,560px); aspect-ratio:1; border-radius:50%;
+            background:conic-gradient(from 0deg, transparent 0 12%, rgba(250,204,21,.85) 15%, transparent 21% 31%, rgba(168,85,247,.8) 36%, transparent 43% 55%, rgba(236,72,153,.8) 60%, transparent 68% 80%, rgba(59,130,246,.8) 85%, transparent 92%);
+            filter:blur(1px); opacity:.72; animation:unlockVortex 2.4s cubic-bezier(.16,1,.3,1) both; }
+        .unlock-vortex::after { content:''; position:absolute; inset:12%; border-radius:50%; border:1px solid rgba(255,255,255,.3); box-shadow:0 0 60px rgba(251,191,36,.25), inset 0 0 50px rgba(99,102,241,.22); }
+        @keyframes unlockVortex { from{transform:scale(.15) rotate(-180deg);opacity:0} 55%{transform:scale(1.08) rotate(20deg);opacity:.95} to{transform:scale(1) rotate(360deg);opacity:.72} }
+        .unlock-core { position:relative; z-index:3; width:min(88vw,420px); text-align:center; transform:scale(.65) translateY(35px); opacity:0; animation:unlockCore .9s cubic-bezier(.16,1,.3,1) .12s both; }
+        @keyframes unlockCore { 0%{opacity:0;transform:scale(.65) translateY(35px) rotate(-3deg)} 65%{opacity:1;transform:scale(1.08) translateY(-5px) rotate(1deg)} 100%{opacity:1;transform:scale(1) translateY(0) rotate(0)} }
+        .unlock-lock { width:86px;height:86px;margin:0 auto 14px;border-radius:28px;display:grid;place-items:center;
+            background:linear-gradient(145deg,rgba(251,191,36,.22),rgba(99,102,241,.2)); border:2px solid rgba(253,230,138,.75);
+            box-shadow:0 0 0 8px rgba(251,191,36,.06),0 0 60px rgba(251,191,36,.38),inset 0 0 28px rgba(255,255,255,.08);
+            animation:unlockIcon 1.1s cubic-bezier(.34,1.56,.64,1) .2s both; }
+        @keyframes unlockIcon { 0%{transform:scale(.3) rotate(-25deg)} 55%{transform:scale(1.18) rotate(8deg)} 100%{transform:scale(1) rotate(0)} }
+        .unlock-lock span { font-size:42px; filter:drop-shadow(0 0 12px rgba(251,191,36,.7)); }
+        .unlock-kicker { color:#fde68a;font-size:11px;font-weight:900;letter-spacing:.25em;text-transform:uppercase;animation:unlockText .6s ease .42s both; }
+        .unlock-title { margin-top:5px;font-size:clamp(27px,6vw,48px);font-weight:1000;line-height:1.05;color:white;text-shadow:0 0 18px rgba(251,191,36,.5),0 0 45px rgba(168,85,247,.28);animation:unlockText .7s cubic-bezier(.16,1,.3,1) .5s both; }
+        .unlock-sub { margin-top:10px;color:#cbd5e1;font-size:12px;animation:unlockText .7s ease .7s both; }
+        @keyframes unlockText { from{opacity:0;transform:translateY(15px);filter:blur(5px)} to{opacity:1;transform:none;filter:none} }
+        .unlock-burst { position:absolute; inset:0; overflow:hidden; pointer-events:none; z-index:2; }
+        .unlock-spark { position:absolute; left:50%;top:50%;width:7px;height:7px;border-radius:50%;background:#fff;box-shadow:0 0 12px #fff,0 0 26px rgba(251,191,36,.9); animation:unlockSpark 1.15s cubic-bezier(.16,1,.3,1) both; animation-delay:var(--d); transform:translate(-50%,-50%) rotate(var(--a)); }
+        .unlock-spark::after { content:'';position:absolute;width:2px;height:var(--len);background:linear-gradient(to top,transparent,#fde68a,#fff);bottom:2px;left:2px;transform-origin:bottom;transform:rotate(var(--r));border-radius:99px; }
+        @keyframes unlockSpark { from{opacity:0;transform:translate(-50%,-50%) rotate(var(--a)) scale(.2)} 15%{opacity:1} to{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) rotate(var(--a)) scale(1.2)} }
+        .unlock-sweep { position:absolute;z-index:4;top:-20%;left:-35%;width:28%;height:140%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.75),transparent);transform:rotate(20deg);animation:unlockSweep 1.25s ease .35s both;filter:blur(2px); }
+        @keyframes unlockSweep { from{left:-35%} to{left:125%} }
+        .slot-unlock-ready { animation:slotUnlockReady 1s cubic-bezier(.16,1,.3,1) both, slotReadyGlow 2s ease-in-out 1s infinite; }
+        @keyframes slotUnlockReady { 0%{opacity:0;transform:translateY(35px) scale(.86);filter:blur(8px)} 65%{opacity:1;transform:translateY(-7px) scale(1.025);filter:blur(0)} 100%{opacity:1;transform:none} }
+        @keyframes slotReadyGlow { 0%,100%{box-shadow:0 0 0 rgba(250,204,21,0),0 0 0 rgba(168,85,247,0)} 50%{box-shadow:0 0 38px rgba(250,204,21,.3),0 0 80px rgba(168,85,247,.12)} }
+        .unlock-shockwave { position:absolute;left:50%;top:50%;width:60px;height:60px;border:2px solid rgba(253,230,138,.9);border-radius:50%;transform:translate(-50%,-50%);animation:shockwave 1.2s cubic-bezier(.16,1,.3,1) .15s both; }
+        @keyframes shockwave { from{opacity:.9;width:40px;height:40px} to{opacity:0;width:110vw;height:110vw} }
+
+
+        /* ===== 👑 MEGA VIP 抽獎舞台 ===== */
+        .mega-stage { position:fixed; inset:0; z-index:100; display:none; align-items:center; justify-content:center; overflow:hidden; background:radial-gradient(circle at 50% 42%,rgba(99,102,241,.2),transparent 34%),radial-gradient(circle at 50% 55%,rgba(245,158,11,.13),transparent 45%),rgba(2,6,23,.96); backdrop-filter:blur(18px); }
+        .mega-stage.is-open { display:flex; animation:megaStageIn .55s cubic-bezier(.16,1,.3,1) both; }
+        .mega-stage.is-closing { animation:megaStageOut .7s ease both; }
+        @keyframes megaStageIn { from{opacity:0;transform:scale(1.08)} to{opacity:1;transform:scale(1)} }
+        @keyframes megaStageOut { from{opacity:1} to{opacity:0;transform:scale(1.035)} }
+        .mega-stage::before { content:'';position:absolute;inset:-30%;background:conic-gradient(from 0deg,transparent,rgba(129,140,248,.12),transparent 18%,rgba(251,191,36,.1),transparent 34%,rgba(236,72,153,.1),transparent 55%);animation:megaSkySpin 16s linear infinite; }
+        @keyframes megaSkySpin { to{transform:rotate(360deg)} }
+        .mega-grid { position:absolute;inset:0;opacity:.16;background-image:linear-gradient(rgba(255,255,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.07) 1px,transparent 1px);background-size:55px 55px;transform:perspective(500px) rotateX(62deg) scale(1.7) translateY(25%);transform-origin:center bottom;mask-image:linear-gradient(to top,black,transparent 82%); }
+        .mega-beam { position:absolute;top:-25%;width:18vw;height:150%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);filter:blur(10px);transform:rotate(20deg);animation:megaBeam 4s ease-in-out infinite alternate; }
+        .mega-beam.b2{transform:rotate(-24deg);animation-delay:-1.4s;opacity:.65}.mega-beam.b3{transform:rotate(7deg);animation-delay:-2.5s;opacity:.4}
+        @keyframes megaBeam { from{left:-15%} to{left:105%} }
+        .mega-shell { position:relative;z-index:4;width:min(96vw,1180px);padding:clamp(20px,4vw,48px);border:1px solid rgba(255,255,255,.18);border-radius:36px;background:linear-gradient(145deg,rgba(15,23,42,.82),rgba(15,23,42,.54));box-shadow:0 35px 120px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.12),0 0 100px rgba(99,102,241,.16);backdrop-filter:blur(28px);}
+        .mega-shell::before { content:'';position:absolute;inset:-2px;border-radius:inherit;padding:2px;background:conic-gradient(from var(--mega-angle,0deg),rgba(250,204,21,.8),transparent 15%,rgba(168,85,247,.75) 32%,transparent 48%,rgba(236,72,153,.65) 68%,transparent 84%,rgba(250,204,21,.8));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:megaBorder 6s linear infinite;pointer-events:none}
+        @keyframes megaBorder { to{--mega-angle:360deg} }
+        @property --mega-angle { syntax:'<angle>';inherits:false;initial-value:0deg; }
+        .mega-head { text-align:center;margin-bottom:22px;position:relative;z-index:2; }
+        .mega-kicker { font-size:11px;font-weight:1000;letter-spacing:.32em;color:#fde68a;text-transform:uppercase;text-shadow:0 0 20px rgba(251,191,36,.4); }
+        .mega-title { margin-top:5px;font-size:clamp(26px,4.5vw,54px);font-weight:1000;color:#fff;line-height:1;text-shadow:0 0 20px rgba(255,255,255,.15),0 0 55px rgba(168,85,247,.35); }
+        .mega-sub { margin-top:9px;font-size:12px;color:#94a3b8; }
+        .mega-lights { display:flex;justify-content:center;gap:7px;margin:16px 0 5px; }
+        .mega-light { width:7px;height:7px;border-radius:50%;background:#fde68a;box-shadow:0 0 12px #fde68a;animation:megaLight .65s ease-in-out infinite alternate; }
+        .mega-light:nth-child(2n){animation-delay:.18s;background:#c4b5fd;box-shadow:0 0 12px #c4b5fd}.mega-light:nth-child(3n){animation-delay:.34s;background:#f9a8d4;box-shadow:0 0 12px #f9a8d4}
+        @keyframes megaLight { to{transform:scale(.45);opacity:.35} }
+
+        /* 巨型盤子拉霸 */
+        .mega-slot-machine { position:relative;border-radius:30px;padding:16px;background:linear-gradient(180deg,#111827,#030712);border:2px solid rgba(250,204,21,.55);box-shadow:inset 0 2px 0 rgba(255,255,255,.1),inset 0 -20px 45px rgba(0,0,0,.5),0 25px 80px rgba(0,0,0,.5);overflow:hidden; }
+        .mega-slot-machine::before { content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.1) 45%,transparent 58%);transform:translateX(-120%);animation:megaGlassSweep 2.8s ease-in-out infinite;pointer-events:none; }
+        @keyframes megaGlassSweep { 55%,100%{transform:translateX(120%)} }
+        .mega-slot-window { position:relative;height:clamp(150px,24vw,245px);border-radius:22px;overflow:hidden;border:1px solid rgba(255,255,255,.14);background:radial-gradient(ellipse at center,rgba(51,65,85,.38),rgba(2,6,23,.96));box-shadow:inset 0 0 45px rgba(0,0,0,.8); }
+        .mega-slot-window::before,.mega-slot-window::after { content:'';position:absolute;top:0;bottom:0;width:15%;z-index:5;pointer-events:none; }.mega-slot-window::before{left:0;background:linear-gradient(90deg,#020617,transparent)}.mega-slot-window::after{right:0;background:linear-gradient(-90deg,#020617,transparent)}
+        .mega-slot-centerline { position:absolute;left:50%;top:0;bottom:0;width:2px;z-index:8;background:linear-gradient(transparent,#fde68a 20%,#fff 50%,#fde68a 80%,transparent);box-shadow:0 0 18px rgba(250,204,21,.9);transform:translateX(-50%); }
+        .mega-slot-track { position:absolute;left:0;top:50%;display:flex;gap:16px;align-items:center;padding:0 50vw;transform:translate3d(0,-50%,0);will-change:transform; }
+        .mega-slot-card { flex:0 0 clamp(118px,13vw,170px);height:clamp(130px,18vw,205px);border-radius:22px;border:2px solid rgba(255,255,255,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(145deg,rgba(30,41,59,.95),rgba(2,6,23,.95));box-shadow:0 14px 30px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.1);transition:filter .4s,opacity .4s,transform .4s; }
+        .mega-slot-card .mega-icon{font-size:clamp(42px,6vw,68px);filter:drop-shadow(0 0 15px rgba(255,255,255,.18));}.mega-slot-card .mega-name{font-size:clamp(12px,1.5vw,17px);font-weight:1000;color:#fff;margin-top:8px;text-align:center}.mega-slot-card .mega-rarity{font-size:10px;font-weight:900;color:#fde68a;margin-top:4px}
+        .mega-slot-pointer { position:absolute;left:50%;top:-1px;z-index:12;transform:translateX(-50%);width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:28px solid #fde047;filter:drop-shadow(0 0 9px rgba(250,204,21,.9)); }
+        .mega-slot-pointer::after{content:'';position:absolute;left:-5px;top:-25px;width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 14px #fff}
+        .mega-slot-machine.mega-winning{animation:megaMachineWin .8s cubic-bezier(.16,1,.3,1) both;}
+        @keyframes megaMachineWin{0%{transform:scale(1)}35%{transform:scale(1.035) rotate(-.4deg)}60%{transform:scale(.99) rotate(.4deg)}100%{transform:scale(1)}}
+        .mega-win { text-align:center;margin-top:18px;min-height:40px;font-size:clamp(15px,2vw,22px);font-weight:1000;color:#fde68a;text-shadow:0 0 18px rgba(250,204,21,.6); }
+
+        /* 巨型幸運輪盤 */
+        .mega-wheel-stage { position:relative;width:min(78vw,680px);aspect-ratio:1;margin:0 auto;display:grid;place-items:center; }
+        .mega-wheel-stage::before{content:'';position:absolute;width:92%;height:92%;border-radius:50%;background:conic-gradient(from 0deg,rgba(250,204,21,.9),rgba(168,85,247,.9),rgba(236,72,153,.8),rgba(59,130,246,.8),rgba(250,204,21,.9));filter:blur(18px);opacity:.48;animation:megaWheelAura 3s ease-in-out infinite alternate;}
+        @keyframes megaWheelAura{to{transform:scale(1.06);opacity:.7}}
+        .mega-wheel-ring { position:absolute;inset:3%;border-radius:50%;padding:12px;background:conic-gradient(#fde68a,#a855f7,#f472b6,#60a5fa,#fde68a);box-shadow:0 0 0 8px rgba(255,255,255,.05),0 0 70px rgba(168,85,247,.4),inset 0 0 30px rgba(0,0,0,.65); }
+        .mega-wheel-ring::before{content:'';position:absolute;inset:8px;border-radius:50%;border:2px solid rgba(255,255,255,.65);box-shadow:inset 0 0 30px rgba(255,255,255,.12)}
+        #megaWheelCanvas { position:absolute;inset:12px;width:calc(100% - 24px);height:calc(100% - 24px);border-radius:50%;filter:drop-shadow(0 20px 30px rgba(0,0,0,.55)); }
+        .mega-wheel-hub { position:absolute;z-index:8;width:clamp(75px,12vw,120px);height:clamp(75px,12vw,120px);border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#475569,#020617 65%);border:5px solid #fde68a;box-shadow:0 0 0 7px rgba(250,204,21,.12),0 0 35px rgba(250,204,21,.65),inset 0 5px 15px rgba(255,255,255,.16);font-size:clamp(25px,4vw,44px);animation:hubPulse 1.1s ease-in-out infinite alternate; }
+        @keyframes hubPulse{to{transform:scale(1.07);box-shadow:0 0 0 10px rgba(250,204,21,.08),0 0 55px rgba(250,204,21,.85),inset 0 5px 15px rgba(255,255,255,.2)}}
+        .mega-wheel-pointer { position:absolute;z-index:15;top:-1%;left:50%;transform:translateX(-50%);width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;border-top:48px solid #f43f5e;filter:drop-shadow(0 0 12px rgba(244,63,94,.9)); }
+        .mega-wheel-pointer::after{content:'';position:absolute;left:-8px;top:-43px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 0 20px #fff}
+        .mega-wheel-shell { position:relative;z-index:3;width:100%;height:100%;display:grid;place-items:center; }
+        .mega-wheel-crown{position:absolute;top:-4%;z-index:20;font-size:clamp(24px,4vw,42px);filter:drop-shadow(0 0 12px rgba(250,204,21,.8));animation:crownFloat 1.8s ease-in-out infinite}.mega-wheel-crown.left{left:8%}.mega-wheel-crown.right{right:8%;animation-delay:-.9s}
+        @keyframes crownFloat{50%{transform:translateY(-8px) rotate(4deg)}}
+        .mega-wheel-result{text-align:center;margin-top:18px;min-height:46px;font-size:clamp(16px,2.2vw,25px);font-weight:1000;color:#e9d5ff;text-shadow:0 0 20px rgba(168,85,247,.7)}
+        .mega-wheel-spinning #megaWheelCanvas{animation:megaWheelShake .14s linear infinite}
+        @keyframes megaWheelShake{50%{filter:drop-shadow(0 20px 35px rgba(168,85,247,.7)) brightness(1.12)}}
+        .mega-stage .mega-close{position:absolute;right:22px;top:18px;z-index:30;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.16);background:rgba(15,23,42,.65);color:#cbd5e1;cursor:pointer;display:grid;place-items:center}
+        .mega-stage .mega-close:hover{background:rgba(239,68,68,.25);color:#fff}
+        .mega-stage .mega-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}.mega-particle{position:absolute;width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 12px currentColor;animation:megaParticle 2.4s linear infinite;animation-delay:var(--pd);left:var(--px);top:105%}.mega-particle:nth-child(3n){width:3px;height:3px}.mega-particle:nth-child(4n){width:8px;height:2px;border-radius:2px;transform:rotate(45deg)}
+        @keyframes megaParticle{to{transform:translate3d(var(--dx),-125vh,0) rotate(540deg);opacity:0}}
+        @media(max-width:640px){.mega-shell{padding:18px;border-radius:24px}.mega-wheel-stage{width:92vw}.mega-slot-track{gap:10px}.mega-slot-card{flex-basis:105px;height:130px}.mega-slot-machine{padding:10px}.mega-sub{font-size:11px}.mega-close{right:10px!important;top:10px!important}}
+
         /* ===== 高品質視覺升級套件 ===== */
 
         /* 卡片邊框流光（左右主卡片） */
@@ -362,6 +465,55 @@
             <button onclick="closeBlackHoleOverlay()" class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white py-3.5 rounded-xl font-black text-sm shadow-xl transition">
                 接受命運審判
             </button>
+        </div>
+    </div>
+
+
+
+    <!-- 🎰 抽獎區解鎖視覺饗宴 -->
+    <div id="unlockCelebration" class="fixed inset-0 z-[80] hidden items-center justify-center p-4">
+        <div class="unlock-backdrop"></div>
+        <div class="unlock-vortex"></div>
+        <div class="unlock-shockwave"></div>
+        <div class="unlock-burst" id="unlockBurst"></div>
+        <div class="unlock-sweep"></div>
+        <div class="unlock-core">
+            <div class="unlock-lock"><span>🎰</span></div>
+            <div class="unlock-kicker">★ BONUS FEATURE UNLOCKED ★</div>
+            <div class="unlock-title">抽獎區已解鎖！</div>
+            <div class="unlock-sub">五星評價成功・正在開啟你的 VIP 盤子抽獎</div>
+        </div>
+    </div>
+
+
+    <!-- 👑 巨型 VIP 抽獎舞台：第一關 -->
+    <div id="megaSlotStage" class="mega-stage" aria-hidden="true">
+        <div class="mega-grid"></div><div class="mega-beam"></div><div class="mega-beam b2"></div><div class="mega-beam b3"></div>
+        <div class="mega-particles" id="megaSlotParticles"></div>
+        <button class="mega-close" onclick="closeMegaStage('slot')">✕</button>
+        <div class="mega-shell">
+            <div class="mega-head"><div class="mega-kicker">✦ ZAHSHOP VIP BONUS MACHINE ✦</div><div class="mega-title">巨型盤子命運拉霸</div><div class="mega-sub">燈光啟動・命運鎖定・正在從獎池抽出你的專屬結果</div><div class="mega-lights"><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span></div></div>
+            <div class="mega-slot-machine" id="megaSlotMachine">
+                <div class="mega-slot-window"><div class="mega-slot-pointer"></div><div class="mega-slot-centerline"></div><div id="megaSlotTrack" class="mega-slot-track"></div></div>
+            </div>
+            <div id="megaSlotWin" class="mega-win">🎰 等待命運啟動……</div>
+        </div>
+    </div>
+
+    <!-- 👑 巨型 VIP 幸運輪盤舞台：第二關 -->
+    <div id="megaRouletteStage" class="mega-stage" aria-hidden="true">
+        <div class="mega-grid"></div><div class="mega-beam"></div><div class="mega-beam b2"></div><div class="mega-beam b3"></div>
+        <div class="mega-particles" id="megaRouletteParticles"></div>
+        <button class="mega-close" onclick="closeMegaStage('roulette')">✕</button>
+        <div class="mega-shell">
+            <div class="mega-head"><div class="mega-kicker">✦ ULTIMATE FATE WHEEL ✦</div><div class="mega-title">尊爵級・瘋狂命運大輪盤</div><div class="mega-sub">所有獎項已封存・指針落下前，沒有人知道最後的命運</div></div>
+            <div class="mega-wheel-stage" id="megaWheelStage">
+                <div class="mega-wheel-crown left">👑</div><div class="mega-wheel-crown right">👑</div>
+                <div class="mega-wheel-pointer"></div>
+                <div class="mega-wheel-ring"></div>
+                <div class="mega-wheel-shell"><canvas id="megaWheelCanvas" width="760" height="760"></canvas><div class="mega-wheel-hub">🎯</div></div>
+            </div>
+            <div id="megaRouletteResult" class="mega-wheel-result">🎡 命運輪盤待機中……</div>
         </div>
     </div>
 
@@ -1019,8 +1171,8 @@
             drawWheelCanvas();
         }
 
-        function drawWheelCanvas() {
-            const canvas = document.getElementById('wheelCanvas');
+        function drawWheelCanvas(canvasId = 'wheelCanvas') {
+            const canvas = document.getElementById(canvasId);
             if (!canvas) return;
             const ctx = canvas.getContext('2d');
             const width = canvas.width;
@@ -1056,7 +1208,7 @@
                 ctx.shadowColor = 'rgba(0,0,0,.65)';
                 ctx.shadowBlur = 3;
                 ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 11px "Inter", sans-serif';
+                ctx.font = `bold ${Math.max(11, Math.round(radius / 17))}px "Inter", sans-serif`;
                 ctx.fillText(prize.icon + ' ' + prize.text, radius - 14, 4);
                 ctx.restore();
             });
@@ -1377,6 +1529,139 @@
             });
         };
 
+
+
+        // 🎰 抽獎區解鎖：只控制獨立動畫，不碰 Firebase / class observer
+        function playUnlockCelebration() {
+            const overlay = document.getElementById('unlockCelebration');
+            const burst = document.getElementById('unlockBurst');
+            const slot = document.getElementById('slotMachineSection');
+            if (!overlay || !slot) return;
+
+            burst.innerHTML = '';
+            const colors = ['#fde68a','#fbbf24','#c4b5fd','#f9a8d4','#93c5fd','#ffffff'];
+            for (let i = 0; i < 42; i++) {
+                const el = document.createElement('span');
+                el.className = 'unlock-spark';
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 150 + Math.random() * Math.min(innerWidth, innerHeight) * .42;
+                el.style.setProperty('--x', `${Math.cos(angle) * distance}px`);
+                el.style.setProperty('--y', `${Math.sin(angle) * distance}px`);
+                el.style.setProperty('--a', `${Math.round(angle * 180 / Math.PI)}deg`);
+                el.style.setProperty('--r', `${Math.round(Math.random()*80-40)}deg`);
+                el.style.setProperty('--len', `${10 + Math.random()*35}px`);
+                el.style.setProperty('--d', `${Math.random()*.38}s`);
+                el.style.background = colors[i % colors.length];
+                burst.appendChild(el);
+            }
+
+            overlay.classList.remove('hidden');
+            overlay.classList.add('flex','is-active');
+            playSound('success');
+            try { confetti({ particleCount: 120, spread: 95, startVelocity: 42, scalar: .9, origin: { y: .55 }, colors }); } catch(e) {}
+
+            setTimeout(() => {
+                overlay.classList.remove('is-active');
+                overlay.classList.add('hidden');
+                overlay.classList.remove('flex');
+                slot.classList.remove('slot-unlock-ready');
+                void slot.offsetWidth;
+                slot.classList.add('slot-unlock-ready');
+                setTimeout(() => slot.classList.remove('slot-unlock-ready'), 3200);
+                try { slot.scrollIntoView({ behavior:'smooth', block:'center' }); } catch(e) {}
+            }, 1850);
+        }
+
+
+        // ===== 👑 MEGA VIP 抽獎舞台控制器 =====
+        function megaParticles(id, count = 46) {
+            const box = document.getElementById(id); if (!box) return;
+            box.innerHTML = '';
+            const colors = ['#fde68a','#c4b5fd','#f9a8d4','#93c5fd','#ffffff'];
+            for (let i=0;i<count;i++) {
+                const p=document.createElement('span'); p.className='mega-particle';
+                p.style.setProperty('--px', `${Math.random()*100}%`);
+                p.style.setProperty('--dx', `${(Math.random()-.5)*55}vw`);
+                p.style.setProperty('--pd', `${Math.random()*1.8}s`);
+                p.style.color=colors[i%colors.length];
+                box.appendChild(p);
+            }
+        }
+
+        function openMegaStage(type) {
+            const el=document.getElementById(type==='slot'?'megaSlotStage':'megaRouletteStage');
+            if(!el) return;
+            el.classList.remove('is-closing');
+            el.classList.add('is-open');
+            el.setAttribute('aria-hidden','false');
+            document.body.style.overflow='hidden';
+            megaParticles(type==='slot'?'megaSlotParticles':'megaRouletteParticles', type==='slot'?54:72);
+        }
+
+        function closeMegaStage(type) {
+            const el=document.getElementById(type==='slot'?'megaSlotStage':'megaRouletteStage');
+            if(!el) return;
+            el.classList.add('is-closing');
+            setTimeout(()=>{el.classList.remove('is-open','is-closing');el.setAttribute('aria-hidden','true');document.body.style.overflow='';},650);
+        }
+
+        function launchMegaSlot(customList, targetIndex, targetItem) {
+            const track=document.getElementById('megaSlotTrack');
+            const machine=document.getElementById('megaSlotMachine');
+            const win=document.getElementById('megaSlotWin');
+            if(!track) return;
+            track.innerHTML=customList.map((item,idx)=>`<div class="mega-slot-card" data-index="${idx}"><div class="mega-icon">${item.icon}</div><div class="mega-name">${item.name}</div><div class="mega-rarity">${item.rarity}</div></div>`).join('');
+            track.style.transition='none';
+            track.style.transform='translate3d(0,-50%,0)';
+            win.innerHTML='🎰 <span style="color:#94a3b8">命運正在載入獎池……</span>';
+            openMegaStage('slot');
+            requestAnimationFrame(()=>{
+                const card=track.children[targetIndex];
+                if(!card) return;
+                const center=window.innerWidth/2;
+                const target=card.offsetLeft + card.offsetWidth/2;
+                const distance=center-target;
+                track.style.transition='transform 5.2s cubic-bezier(.08,.82,.12,1)';
+                track.style.transform=`translate3d(${distance}px,-50%,0)`;
+                setTimeout(()=>{
+                    card.classList.add('slot-card-winner');
+                    machine.classList.add('mega-winning');
+                    win.innerHTML=`🏆 抽獎結果：<strong>${targetItem.icon} ${targetItem.name}</strong><div style="font-size:11px;color:#cbd5e1;margin-top:5px">${targetItem.rarity}・命運已鎖定</div>`;
+                    playSound('win');
+                    try{confetti({particleCount:180,spread:110,startVelocity:48,scalar:1.1,origin:{y:.52},colors:['#fde047','#f59e0b','#fff7ed','#c084fc','#f472b6']});}catch(e){}
+                },5350);
+                setTimeout(()=>closeMegaStage('slot'),7200);
+            });
+        }
+
+        function launchMegaRoulette(winningIndex) {
+            const stage=document.getElementById('megaRouletteStage');
+            const canvas=document.getElementById('megaWheelCanvas');
+            const result=document.getElementById('megaRouletteResult');
+            if(!stage||!canvas) return;
+            drawWheelCanvas('megaWheelCanvas');
+            canvas.style.transition='none';
+            canvas.style.transform='rotate(0deg)';
+            result.innerHTML='🎡 <span style="color:#94a3b8">正在鎖定神秘獎項……</span>';
+            openMegaStage('roulette');
+            const sliceDegree=360/roulettePrizes.length;
+            const megaTarget=1800+(roulettePrizes.length-winningIndex)*sliceDegree-sliceDegree/2;
+            requestAnimationFrame(()=>{
+                requestAnimationFrame(()=>{
+                    stage.classList.add('mega-wheel-spinning');
+                    canvas.style.transition='transform 5.2s cubic-bezier(.12,.8,.12,1)';
+                    canvas.style.transform=`rotate(${megaTarget}deg)`;
+                });
+            });
+            setTimeout(()=>{
+                stage.classList.remove('mega-wheel-spinning');
+                const prize=roulettePrizes[winningIndex];
+                result.innerHTML=`🎉 命運落點：<strong style="color:#fde68a">${prize.icon} ${prize.text}</strong><div style="font-size:11px;color:#cbd5e1;margin-top:5px">ULTIMATE BONUS UNLOCKED</div>`;
+                try{confetti({particleCount:220,spread:125,startVelocity:52,scalar:1.15,origin:{y:.5},colors:['#fde047','#c084fc','#f472b6','#60a5fa','#fff']});}catch(e){}
+            },5350);
+            setTimeout(()=>closeMegaStage('roulette'),7600);
+        }
+
         window.submitRating = async function() {
             playSound('click');
             if (!currentSelectedDocId) return;
@@ -1400,8 +1685,7 @@
 
                 lucide.createIcons();
                 loadTestimonials();
-
-                try { confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 }, colors: ['#818cf8', '#c4b5fd', '#f472b6', '#fde68a'] }); } catch (e) {}
+                playUnlockCelebration();
 
             } catch (err) {
                 alert('送出評價失敗：' + err.message);
@@ -1448,6 +1732,7 @@
                 `;
             });
             track.innerHTML = html;
+            launchMegaSlot(customList, 18, targetItem);
 
             const cards = track.children;
             let scrollStep = 0;
@@ -1508,6 +1793,7 @@
             const sliceDegree = 360 / roulettePrizes.length;
             const targetDegree = 1800 + (roulettePrizes.length - winningIndex) * sliceDegree - sliceDegree / 2;
             currentWheelAngle += targetDegree;
+            launchMegaRoulette(winningIndex);
 
             wheel.style.transform = `rotate(${currentWheelAngle}deg)`;
 
