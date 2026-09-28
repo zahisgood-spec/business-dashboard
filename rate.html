@@ -109,6 +109,197 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+
+        /* ===== ZAHSHOP 風格互動動畫升級 ===== */
+        html { scroll-behavior: smooth; }
+        body { overflow-x: hidden; }
+        body::before { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: .22; background: radial-gradient(circle at var(--mx,50%) var(--my,20%), rgba(129,140,248,.22), transparent 28%); transition: opacity .4s ease; }
+        .content-wrapper { position: relative; z-index: 10; }
+        .content-wrapper > *, .content-wrapper { animation: pageRise .75s cubic-bezier(.16,1,.3,1) both; }
+        .content-wrapper > *:nth-child(2) { animation-delay: .12s; }
+        .content-wrapper > *:nth-child(3) { animation-delay: .22s; }
+        @keyframes pageRise { from { opacity:0; transform: translateY(28px) scale(.985); filter: blur(5px); } to { opacity:1; transform:none; filter:none; } }
+        .float-card { transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s ease, border-color .35s ease; }
+        .float-card:hover { transform: translateY(-7px); box-shadow: 0 22px 55px rgba(0,0,0,.35); }
+        .shine-btn { position:relative; overflow:hidden; }
+        .shine-btn::after { content:''; position:absolute; top:-120%; left:-45%; width:35%; height:340%; transform:rotate(25deg); background:rgba(255,255,255,.22); transition:left .65s ease; pointer-events:none; }
+        .shine-btn:hover::after { left:125%; }
+        .click-pop { transition: transform .18s ease, filter .18s ease; }
+        .interactive-pop:hover { transform:translateY(-2px) scale(1.02); filter:brightness(1.08); }
+        .interactive-pop:active { transform:scale(.96); }
+        .reveal-on-scroll { opacity:0; transform:translateY(35px); transition:opacity .7s ease, transform .7s cubic-bezier(.16,1,.3,1); }
+        .reveal-on-scroll.revealed { opacity:1; transform:none; }
+        .glow-pulse { animation: glowPulse 2.2s ease-in-out infinite; }
+        @keyframes glowPulse { 0%,100% { box-shadow:0 0 0 rgba(99,102,241,0); } 50% { box-shadow:0 0 28px rgba(99,102,241,.28); } }
+        .search-loading { pointer-events:none; }
+        .search-loading .search-label { animation: searchDots 1s steps(4,end) infinite; }
+        @keyframes searchDots { 0%{opacity:.35}50%{opacity:1}100%{opacity:.35} }
+        .result-pop { animation: resultPop .55s cubic-bezier(.16,1,.3,1) both; }
+        @keyframes resultPop { from { opacity:0; transform:translateY(18px) scale(.97); } to { opacity:1; transform:none; } }
+        .success-ring { animation: successRing .65s cubic-bezier(.16,1,.3,1); }
+        @keyframes successRing { 0%{transform:scale(.6);opacity:0} 70%{transform:scale(1.08)} 100%{transform:scale(1);opacity:1} }
+        .shake-error { animation: shakeError .42s ease; }
+        @keyframes shakeError { 0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-4px)} }
+        @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } }
+
+        /* ===== 高品質視覺升級套件 ===== */
+
+        /* 卡片邊框流光（左右主卡片） */
+        .aura-border { position: relative; isolation: isolate; }
+        .aura-border::before {
+            content: ''; position: absolute; inset: -1.5px; border-radius: inherit; z-index: -1;
+            background: conic-gradient(from var(--angle,0deg), transparent 0%, rgba(129,140,248,.55) 12%, transparent 24%, transparent 60%, rgba(236,72,153,.45) 72%, transparent 84%);
+            animation: auraSpin 7s linear infinite;
+            opacity: .85;
+        }
+        @keyframes auraSpin { to { --angle: 360deg; } }
+        @property --angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+
+        /* 標題入場光暈 */
+        .title-glow { text-shadow: 0 0 18px rgba(129,140,248,.35), 0 0 40px rgba(129,140,248,.12); }
+        .icon-badge-spin { animation: iconBadgeIdle 3.4s ease-in-out infinite; }
+        @keyframes iconBadgeIdle { 0%,100% { transform: rotate(-4deg) scale(1); } 50% { transform: rotate(4deg) scale(1.06); } }
+
+        /* 查詢按鈕載入態 */
+        .btn-loading { position: relative; color: transparent !important; pointer-events: none; }
+        .btn-loading::after {
+            content:''; position:absolute; inset:0; margin:auto; width:16px; height:16px;
+            border-radius:50%; border:2.5px solid rgba(255,255,255,.35); border-top-color:#fff;
+            animation: btnSpin .7s linear infinite;
+        }
+        @keyframes btnSpin { to { transform: rotate(360deg); } }
+
+        /* 結果卡片進場 */
+        .result-enter { animation: resultEnter .6s cubic-bezier(.16,1,.36,1) both; }
+        @keyframes resultEnter { from { opacity:0; transform: translateY(22px) scale(.96); filter: blur(6px); } to { opacity:1; transform:none; filter:none; } }
+
+        /* 進度條動態光點與流動填充 */
+        #progressBarFill { background: linear-gradient(90deg,#6366f1,#a855f7,#ec4899,#6366f1); background-size: 300% 100%; animation: progressFlow 2.4s linear infinite; box-shadow: 0 0 10px rgba(168,85,247,.6); }
+        @keyframes progressFlow { to { background-position: -300% 0; } }
+        .step-active-pulse { animation: stepActivePulse 1.6s ease-in-out infinite; }
+        @keyframes stepActivePulse { 0%,100% { box-shadow: 0 0 0 0 rgba(129,140,248,.55); } 50% { box-shadow: 0 0 0 8px rgba(129,140,248,0); } }
+        .step-final-burst { animation: stepFinalBurst .7s cubic-bezier(.34,1.56,.64,1); }
+        @keyframes stepFinalBurst { 0% { transform: scale(.6); } 55% { transform: scale(1.25); } 100% { transform: scale(1); } }
+
+        /* 星星評分：跳動與光暈 */
+        .star-pop { animation: starPop .38s cubic-bezier(.34,1.56,.64,1); }
+        @keyframes starPop { 0% { transform: scale(.4) rotate(-25deg); } 60% { transform: scale(1.35) rotate(8deg); } 100% { transform: scale(1) rotate(0); } }
+        .star-glow-active { filter: drop-shadow(0 0 6px rgba(251,191,36,.85)); }
+
+        /* ===== 拉霸機升級 ===== */
+        #spinnerTrack .slot-card { transition: transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease; position: relative; }
+        #spinnerTrack .slot-card::after { content:''; position:absolute; inset:0; border-radius:.75rem; background:linear-gradient(180deg, rgba(255,255,255,.14), transparent 45%); pointer-events:none; }
+        .slot-card-winner { animation: slotWinnerPulse 1s ease-in-out infinite; }
+        @keyframes slotWinnerPulse { 0%,100% { box-shadow: 0 0 20px rgba(250,204,21,.85), inset 0 0 12px rgba(250,204,21,.25); } 50% { box-shadow: 0 0 34px rgba(250,204,21,1), inset 0 0 18px rgba(250,204,21,.4); } }
+        .slot-frame-active { box-shadow: inset 0 0 0 2px rgba(250,204,21,.35), 0 0 24px rgba(250,204,21,.12); animation: slotFrameGlow 2s ease-in-out infinite; }
+        @keyframes slotFrameGlow { 0%,100% { box-shadow: inset 0 0 0 2px rgba(250,204,21,.25), 0 0 18px rgba(250,204,21,.08); } 50% { box-shadow: inset 0 0 0 2px rgba(250,204,21,.55), 0 0 30px rgba(250,204,21,.22); } }
+        .result-text-win { animation: resultTextWin .5s cubic-bezier(.34,1.56,.64,1); }
+        @keyframes resultTextWin { from { opacity:0; transform: translateY(8px) scale(.85); } to { opacity:1; transform:none; } }
+
+        /* ===== 幸運輪盤升級 ===== */
+        #rouletteWheel { box-shadow: 0 0 0 6px rgba(15,23,42,.9), 0 0 30px rgba(168,85,247,.45), inset 0 0 30px rgba(0,0,0,.55); }
+        .roulette-ring-glow { animation: rouletteRingGlow 2.2s ease-in-out infinite; }
+        @keyframes rouletteRingGlow { 0%,100% { box-shadow: 0 0 20px rgba(168,85,247,.35); } 50% { box-shadow: 0 0 42px rgba(236,72,153,.55); } }
+        .roulette-spinning { filter: drop-shadow(0 0 18px rgba(168,85,247,.6)); }
+        .pointer-bounce { animation: pointerBounce .5s ease-in-out infinite; }
+        @keyframes pointerBounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+        .hub-pulse { animation: hubPulse 1.4s ease-in-out infinite; }
+        @keyframes hubPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+
+        /* ===== 刮刮樂升級 ===== */
+        .scratch-card-shell { box-shadow: 0 0 0 1px rgba(251,191,36,.5), 0 18px 50px -12px rgba(0,0,0,.7), 0 0 40px rgba(251,191,36,.15); transition: box-shadow .4s ease, transform .4s ease; }
+        .scratch-card-revealed { animation: scratchReveal .6s cubic-bezier(.16,1,.3,1); box-shadow: 0 0 0 2px rgba(250,204,21,.85), 0 18px 60px -10px rgba(0,0,0,.8), 0 0 60px rgba(250,204,21,.4) !important; }
+        @keyframes scratchReveal { 0% { transform: scale(.97); } 40% { transform: scale(1.035); } 100% { transform: scale(1); } }
+        .prize-icon-float { animation: prizeIconFloat 2.6s ease-in-out infinite; display:inline-block; }
+        @keyframes prizeIconFloat { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-6px) rotate(-4deg); } }
+        .scratch-status-ready { animation: scratchStatusPulse 1.8s ease-in-out infinite; }
+        @keyframes scratchStatusPulse { 0%,100% { opacity:.75; } 50% { opacity:1; } }
+
+        /* 黑洞召喚：吸入畫面感 */
+        .blackhole-suck-in { animation: blackholeSuckIn .5s cubic-bezier(.55,0,.85,1) both; }
+        @keyframes blackholeSuckIn { from { opacity:0; transform: scale(1.4) rotate(12deg); filter: blur(10px); } to { opacity:1; transform:none; filter:none; } }
+
+        /* 陷害噴發突襲入場 */
+        .prank-slam-in { animation: prankSlamIn .45s cubic-bezier(.36,1.4,.5,1) both; }
+        @keyframes prankSlamIn { 0% { opacity:0; transform: scale(2) rotate(-8deg); } 60% { opacity:1; transform: scale(.92) rotate(3deg); } 100% { transform: scale(1) rotate(0); } }
+
+        /* 頂部工具列選取態光暈 */
+        .theme-btn-active { box-shadow: 0 0 0 2px rgba(255,255,255,.55), 0 0 16px currentColor; }
+
+        /* ===================================================== */
+        /* ============  質感精修 Premium Polish v2  ============ */
+        /* ===================================================== */
+
+        /* 全域深度層次：以多層陰影取代單一扁平陰影，模擬真實光源 */
+        .float-card {
+            box-shadow:
+                0 1px 0 rgba(255,255,255,.05) inset,
+                0 -1px 0 rgba(0,0,0,.25) inset,
+                0 12px 30px -10px rgba(0,0,0,.55),
+                0 2px 8px rgba(0,0,0,.35);
+        }
+        .float-card:hover {
+            box-shadow:
+                0 1px 0 rgba(255,255,255,.08) inset,
+                0 -1px 0 rgba(0,0,0,.3) inset,
+                0 30px 70px -18px rgba(0,0,0,.65),
+                0 0 50px -12px rgba(99,102,241,.35);
+        }
+
+        /* 卡片指標式滑鼠傾斜（配合 JS 設定的 --tiltX/--tiltY） */
+        .tilt-card { transform: perspective(1100px) rotateX(var(--tiltY,0deg)) rotateY(var(--tiltX,0deg)) translateZ(0); transition: transform .12s ease-out; will-change: transform; }
+        .tilt-card:not(:hover) { transform: perspective(1100px) rotateX(0deg) rotateY(0deg); transition: transform .5s cubic-bezier(.16,1,.3,1); }
+
+        /* 標題字距與層次微調，更具精品感 */
+        h1.title-glow { letter-spacing: .01em; }
+        .eyebrow-chip { letter-spacing: .06em; }
+
+        /* 按鈕：立體漸層 + 內緣高光 + 落地陰影，取代扁平色塊 */
+        .premium-btn {
+            position: relative;
+            box-shadow:
+                inset 0 1px 0 rgba(255,255,255,.28),
+                inset 0 -2px 6px rgba(0,0,0,.18),
+                0 10px 22px -8px var(--btn-shadow, rgba(79,70,229,.55));
+            transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s ease, filter .25s ease;
+        }
+        .premium-btn:hover { transform: translateY(-2px); filter: brightness(1.05) saturate(1.08); }
+        .premium-btn:active { transform: translateY(0) scale(.98); }
+
+        /* 輸入框：聚焦時柔和光暈取代死板 ring */
+        input[type="text"] { transition: box-shadow .25s ease, border-color .25s ease, background .25s ease; }
+        input[type="text"]:focus { box-shadow: 0 0 0 3px rgba(99,102,241,.22), 0 0 22px rgba(99,102,241,.18); background: rgba(2,6,23,.9) !important; }
+
+        /* 玻璃分隔線取代死板 border-t，帶漸層淡出 */
+        .glass-divider { border-top: none !important; position: relative; }
+        .glass-divider::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background: linear-gradient(90deg, transparent, rgba(148,163,184,.4), transparent); }
+
+        /* 彈窗遮罩：加入暈影與中心柔光，取代純黑遮罩 */
+        #prankOverlay, #blackHoleOverlay { background: radial-gradient(circle at 50% 40%, rgba(30,20,10,.55), rgba(0,0,0,.94) 70%); }
+        #blackHoleOverlay { background: radial-gradient(circle at 50% 40%, rgba(88,28,135,.35), rgba(0,0,0,.96) 72%); }
+
+        /* 輪盤底部落地陰影，增加懸浮立體感 */
+        .wheel-floor-shadow { position:absolute; bottom:-14px; left:50%; transform:translateX(-50%); width:70%; height:14px; background:radial-gradient(ellipse at center, rgba(0,0,0,.55), transparent 72%); filter:blur(2px); z-index:0; }
+
+        /* 刮刮樂卡片：外緣柔光圈，取代死板純色 border */
+        .scratch-card-shell { position: relative; }
+        .scratch-card-shell::after { content:''; position:absolute; inset:-3px; border-radius: inherit; background: conic-gradient(from 0deg, #fde68a, #f59e0b, #fde68a, #f59e0b); z-index:-1; opacity:.55; filter: blur(2px); animation: auraSpin 8s linear infinite; }
+
+        /* 好評牆卡片：微立體漸層底 + hover 抬升 */
+        #testimonialWall > div, #liveTransactionList > div, #topSpenderList > div {
+            transition: transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s ease, border-color .25s ease;
+        }
+        #testimonialWall > div:hover { transform: translateY(-3px); border-color: rgba(129,140,248,.45); box-shadow: 0 10px 24px -8px rgba(0,0,0,.5); }
+        #liveTransactionList > div:hover, #topSpenderList > div:hover { transform: translateX(2px); border-color: rgba(99,102,241,.35); }
+
+        /* 數字/金額使用等寬對齊質感字距 */
+        #resPrice, .live-amount { font-variant-numeric: tabular-nums; letter-spacing: .01em; }
+
+        /* 更精緻的滾動時陰影裁切（拉霸舞台） */
+        #spinnerTrack { mask-image: linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%); -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%); }
+
+        /* 圖示徽章統一柔光底 */
+        .icon-chip { box-shadow: inset 0 0 0 1px rgba(255,255,255,.06), 0 4px 14px -6px rgba(0,0,0,.5); }
     </style>
 </head>
 <body id="bodyRoot" class="theme-cyberpunk text-slate-100 min-h-screen flex flex-col items-center justify-between p-4 py-8">
@@ -118,7 +309,7 @@
 
     <!-- 💩 滿版惡意大便陷害突襲遮罩 (預設隱藏) -->
     <div id="prankOverlay" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-2xl hidden flex items-center justify-center p-4">
-        <div class="relative w-full max-w-lg bg-gradient-to-b from-amber-950 via-slate-950 to-slate-950 border-4 border-amber-500 rounded-3xl p-6 md:p-8 text-center shadow-[0_0_60px_rgba(245,158,11,0.5)] space-y-6 poop-alert-shake">
+        <div class="prank-slam-in relative w-full max-w-lg bg-gradient-to-b from-amber-950 via-slate-950 to-slate-950 border-4 border-amber-500 rounded-3xl p-6 md:p-8 text-center shadow-[0_0_60px_rgba(245,158,11,0.5)] space-y-6 poop-alert-shake">
             
             <button onclick="closePrankOverlay()" class="absolute top-4 right-4 bg-red-600 hover:bg-red-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-black text-lg shadow-lg transition ring-2 ring-white/30">
                 ✕
@@ -153,7 +344,7 @@
 
     <!-- 🌌 黑洞吞噬＆全螢幕盤子大便毀滅遮罩 (黑洞重抽結果) -->
     <div id="blackHoleOverlay" class="fixed inset-0 z-50 bg-black/95 backdrop-blur-3xl hidden flex items-center justify-center p-4">
-        <div id="blackHoleContentBox" class="relative w-full max-w-lg bg-gradient-to-b from-purple-950 via-slate-950 to-slate-950 border-4 border-purple-500 rounded-3xl p-6 md:p-8 text-center shadow-[0_0_80px_rgba(168,85,247,0.6)] space-y-6">
+        <div id="blackHoleContentBox" class="blackhole-suck-in relative w-full max-w-lg bg-gradient-to-b from-purple-950 via-slate-950 to-slate-950 border-4 border-purple-500 rounded-3xl p-6 md:p-8 text-center shadow-[0_0_80px_rgba(168,85,247,0.6)] space-y-6">
             
             <button onclick="closeBlackHoleOverlay()" class="absolute top-4 right-4 bg-purple-600 hover:bg-purple-500 text-white w-10 h-10 rounded-full flex items-center justify-center font-black text-lg shadow-lg transition">
                 ✕
@@ -177,7 +368,7 @@
     <!-- 頂部功能控制列 -->
     <div class="w-full max-w-5xl flex justify-between items-center mb-4 content-wrapper">
         <div class="flex gap-1 bg-slate-900/80 backdrop-blur-md p-1 rounded-full border border-slate-700 shadow-lg">
-            <button onclick="setTheme('cyberpunk')" id="themeBtnCyber" title="電馭叛客" class="w-7 h-7 rounded-full bg-purple-600 text-xs flex items-center justify-center ring-2 ring-white/50 transition">💜</button>
+            <button onclick="setTheme('cyberpunk')" id="themeBtnCyber" title="電馭叛客" class="theme-btn-active w-7 h-7 rounded-full bg-purple-600 text-xs flex items-center justify-center transition">💜</button>
             <button onclick="setTheme('aurora')" id="themeBtnAurora" title="極光冰晶" class="w-7 h-7 rounded-full bg-emerald-600 text-xs flex items-center justify-center transition opacity-60">💙</button>
             <button onclick="setTheme('gold')" id="themeBtnGold" title="尊榮黑金" class="w-7 h-7 rounded-full bg-amber-500 text-xs flex items-center justify-center transition opacity-60">💛</button>
         </div>
@@ -201,15 +392,15 @@
     <div class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto content-wrapper">
 
         <!-- 左側欄：查詢與抽獎核心互動 (佔 7 格) -->
-        <div class="lg:col-span-7 bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-700/80 p-6 md:p-8 space-y-6 text-slate-200 flex flex-col justify-between">
+        <div class="aura-border tilt-card lg:col-span-7 bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-slate-700/80 p-6 md:p-8 float-card glow-pulse space-y-6 text-slate-200 flex flex-col justify-between">
             <div class="space-y-6">
                 <div class="text-center space-y-2">
-                    <div class="bg-indigo-500/20 text-indigo-400 w-12 h-12 rounded-2xl flex items-center justify-center mx-auto shadow-inner border border-indigo-500/30">
+                    <div class="icon-badge-spin icon-chip bg-indigo-500/20 text-indigo-400 w-12 h-12 rounded-2xl flex items-center justify-center mx-auto shadow-inner border border-indigo-500/30">
                         <i data-lucide="star" class="w-6 h-6 fill-indigo-400"></i>
                     </div>
-                    <h1 class="text-xl font-black text-white">展商城-顧客訂單查詢與評價</h1>
+                    <h1 class="title-glow text-xl font-black text-white">展商城-顧客訂單查詢與評價</h1>
                     <p class="text-xs text-slate-400">請輸入您的「訂單編號」(例如 OD-001) 來查看訂單進度</p>
-                    <a href="shop.html" class="inline-flex items-center gap-2 mt-3 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-medium transition shadow-sm"><i data-lucide="shopping-cart" class="w-4 h-4"></i>立即下單</a>
+                    <a href="shop.html" class="premium-btn inline-flex items-center gap-2 mt-3 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-medium transition"><i data-lucide="shopping-cart" class="w-4 h-4"></i>立即下單</a>
                 </div>
 
                 <!-- 查詢表單 -->
@@ -218,13 +409,13 @@
                         <label class="block text-xs font-semibold text-slate-300 mb-1">訂單編號</label>
                         <div class="flex gap-2">
                             <input type="text" id="searchOrderId" placeholder="例如: OD-001" class="flex-1 px-4 py-2.5 bg-slate-950/80 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 uppercase placeholder-slate-600">
-                            <button onclick="searchOrder()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition shadow-sm">查詢</button>
+                            <button onclick="searchOrder()" class="shine-btn interactive-pop premium-btn bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition">查詢</button>
                         </div>
                     </div>
                 </div>
 
                 <!-- 查詢結果與互動區塊 -->
-                <div id="resultContainer" class="hidden space-y-5 pt-4 border-t border-slate-800">
+                <div id="resultContainer" class="hidden result-enter space-y-5 pt-4 border-t border-slate-800">
                     <div class="bg-slate-950/60 p-4 rounded-2xl space-y-2 border border-slate-800">
                         <div class="flex justify-between text-xs text-slate-400">
                             <span>買家: <strong id="resCustomer" class="text-white"></strong></span>
@@ -282,7 +473,7 @@
                             <button type="button" onclick="setRating(4)" class="text-2xl text-slate-600 hover:text-amber-400 transition">★</button>
                             <button type="button" onclick="setRating(5)" class="text-2xl text-slate-600 hover:text-amber-400 transition">★</button>
                         </div>
-                        <button onclick="submitRating()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-xl text-sm font-bold shadow-sm transition">送出評價並解鎖盤子遊戲</button>
+                        <button onclick="submitRating()" class="shine-btn interactive-pop premium-btn w-full bg-emerald-600 hover:bg-emerald-500 text-white py-3 rounded-xl text-sm font-bold transition" style="--btn-shadow: rgba(16,185,129,.5);">送出評價並解鎖盤子遊戲</button>
                     </div>
 
                     <div id="ratedNotice" class="hidden text-center py-3 bg-emerald-950/60 text-emerald-300 text-xs font-bold rounded-xl border border-emerald-800">
@@ -314,7 +505,7 @@
 
                         <div id="slotResultText" class="text-xs font-bold text-yellow-300 min-h-[18px]"></div>
 
-                        <button id="spinBtn" onclick="startFruitSpinner()" class="w-full bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-400 hover:to-amber-500 text-slate-950 py-3 rounded-xl text-xs font-black shadow-lg transition tracking-wide flex items-center justify-center gap-2">
+                        <button id="spinBtn" onclick="startFruitSpinner()" class="shine-btn interactive-pop premium-btn w-full bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-400 hover:to-amber-500 text-slate-950 py-3 rounded-xl text-xs font-black transition tracking-wide flex items-center justify-center gap-2" style="--btn-shadow: rgba(245,158,11,.55);">
                             <i data-lucide="dices" class="w-4 h-4"></i> 開始盤子抽獎 🍽️💩🐱
                         </button>
                     </div>
@@ -331,19 +522,20 @@
 
                         <!-- 輪盤外觀容器 -->
                         <div class="relative w-52 h-52 mx-auto flex items-center justify-center">
+                            <div class="wheel-floor-shadow"></div>
                             <!-- 頂端指針 -->
-                            <div class="absolute -top-3 z-30 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[18px] border-t-pink-500 drop-shadow-md"></div>
+                            <div class="absolute -top-3 z-30 w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[18px] border-t-pink-500 drop-shadow-md pointer-bounce"></div>
                             
                             <!-- 轉動盤面 -->
                             <div id="rouletteWheel" class="w-48 h-48 rounded-full border-4 border-purple-400/80 shadow-[0_0_25px_rgba(168,85,247,0.4)] relative overflow-hidden transition-all duration-[4000ms] cubic-bezier(0.15, 0.85, 0.15, 1) flex items-center justify-center bg-slate-900">
                                 <canvas id="wheelCanvas" width="192" height="192" class="absolute inset-0"></canvas>
-                                <div class="absolute z-20 w-10 h-10 bg-slate-950 rounded-full border-2 border-purple-400 flex items-center justify-center text-xs shadow-inner">🎯</div>
+                                <div class="hub-pulse absolute z-20 w-10 h-10 bg-slate-950 rounded-full border-2 border-purple-400 flex items-center justify-center text-xs shadow-inner">🎯</div>
                             </div>
                         </div>
 
                         <div id="rouletteResultText" class="text-xs font-bold text-purple-300 min-h-[18px]"></div>
 
-                        <button id="spinRouletteBtn" onclick="startRoulette()" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-xl text-xs font-black shadow-lg transition tracking-wide flex items-center justify-center gap-2">
+                        <button id="spinRouletteBtn" onclick="startRoulette()" class="shine-btn interactive-pop premium-btn w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white py-3 rounded-xl text-xs font-black transition tracking-wide flex items-center justify-center gap-2" style="--btn-shadow: rgba(168,85,247,.55);">
                             <i data-lucide="sparkles" class="w-4 h-4"></i> 轉動瘋狂命運輪盤 🎡✨
                         </button>
                     </div>
@@ -356,14 +548,14 @@
                             <p class="text-[11px] text-slate-400">請用滑鼠或手指在下方銀漆區域來回刮動，看你抽到什麼好康！</p>
                         </div>
 
-                        <div class="relative w-56 h-64 mx-auto rounded-2xl overflow-hidden shadow-2xl border-4 border-amber-300/80">
+                        <div id="scratchCardShell" class="scratch-card-shell relative w-56 h-64 mx-auto rounded-2xl overflow-hidden border-4 border-amber-300/80">
                             <div class="absolute inset-0 holo-shine flex flex-col items-center justify-between p-4 text-center text-white z-0">
                                 <div class="flex justify-between w-full items-center">
                                     <span id="cardRarity" class="text-[10px] bg-black/60 px-2 py-0.5 rounded-full font-black text-amber-300 tracking-wider">PRIZE</span>
                                     <i data-lucide="sparkles" class="w-4 h-4 text-amber-300"></i>
                                 </div>
                                 <div class="space-y-1 my-auto">
-                                    <div class="text-3xl" id="cardIcon">🧻</div>
+                                    <div class="text-3xl prize-icon-float" id="cardIcon">🧻</div>
                                     <h4 id="cardTitle" class="text-sm font-black tracking-wide drop-shadow">神秘小禮物(衛生紙一張)</h4>
                                     <p id="cardDesc" class="text-[10px] text-slate-100 font-medium drop-shadow-sm">絕對實用的尊爵級消耗品</p>
                                 </div>
@@ -372,16 +564,16 @@
                             <canvas id="scratchCanvas" width="224" height="256" class="absolute inset-0 z-10 cursor-crosshair"></canvas>
                         </div>
 
-                        <div id="scratchStatusText" class="text-xs font-bold text-amber-300">👇 開始動手刮開銀漆吧！</div>
+                        <div id="scratchStatusText" class="scratch-status-ready text-xs font-bold text-amber-300">👇 開始動手刮開銀漆吧！</div>
 
                         <!-- 🕳️ 黑洞重抽按鈕 (對不滿意獎品的買家召喚) -->
                         <div id="blackHoleButtonWrapper" class="pt-2">
-                            <button onclick="triggerBlackHoleReroll()" class="w-full bg-gradient-to-r from-purple-900 via-indigo-900 to-black hover:from-purple-800 hover:to-slate-900 text-purple-200 border border-purple-500/60 py-3 rounded-xl text-xs font-black shadow-lg transition tracking-wide flex items-center justify-center gap-2">
+                            <button onclick="triggerBlackHoleReroll()" class="premium-btn w-full bg-gradient-to-r from-purple-900 via-indigo-900 to-black hover:from-purple-800 hover:to-slate-900 text-purple-200 border border-purple-500/60 py-3 rounded-xl text-xs font-black transition tracking-wide flex items-center justify-center gap-2" style="--btn-shadow: rgba(88,28,135,.6);">
                                 <i data-lucide="orbit" class="w-4 h-4 text-purple-400"></i> 召喚宇宙黑洞吞噬重抽 (黑洞命運豪賭) 🕳️✨
                             </button>
                         </div>
 
-                        <button id="downloadCardBtn" onclick="downloadCardImage()" class="hidden w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white py-2.5 rounded-xl text-xs font-bold shadow-md transition flex items-center justify-center gap-2">
+                        <button id="downloadCardBtn" onclick="downloadCardImage()" class="hidden premium-btn w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white py-2.5 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2" style="--btn-shadow: rgba(245,158,11,.5);">
                             <i data-lucide="download" class="w-4 h-4"></i> 下載我的中獎獎項截圖 (PNG)
                         </button>
                     </div>
@@ -394,7 +586,7 @@
                         <p class="text-[11px] text-slate-400">抽完獎後獲得陷害道具！輸入朋友的「訂單編號」，讓他的訂單一查詢就噴出滿版大便！</p>
                         <div class="flex gap-2">
                             <input type="text" id="targetPrankId" placeholder="輸入好友訂單編號 (例如 OD-002)" class="flex-1 px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white uppercase placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-red-500">
-                            <button onclick="sendPrank()" class="bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition shadow-sm">發動陷害 💩</button>
+                            <button onclick="sendPrank()" class="shine-btn interactive-pop premium-btn bg-red-600 hover:bg-red-500 text-white px-4 py-2 rounded-xl text-xs font-bold transition" style="--btn-shadow: rgba(220,38,38,.5);">發動陷害 💩</button>
                         </div>
                     </div>
                 </div>
@@ -405,10 +597,10 @@
         <div class="lg:col-span-5 flex flex-col space-y-6">
 
             <!-- 🏆 尊爵榮譽盤子榜 (記錄誰抽中了什麼獎項) -->
-            <div class="bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-yellow-500/40 p-6 space-y-4 text-slate-200">
+            <div class="tilt-card bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-yellow-500/40 p-6 float-card space-y-4 text-slate-200">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                     <div class="flex items-center gap-2">
-                        <div class="bg-yellow-500/20 text-yellow-400 w-8 h-8 rounded-xl flex items-center justify-center border border-yellow-500/30">
+                        <div class="icon-chip bg-yellow-500/20 text-yellow-400 w-8 h-8 rounded-xl flex items-center justify-center border border-yellow-500/30">
                             <i data-lucide="award" class="w-4 h-4"></i>
                         </div>
                         <div>
@@ -425,10 +617,10 @@
             </div>
 
             <!-- 🧾 全站即時消費動態牆 -->
-            <div class="bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-indigo-500/30 p-6 space-y-4 text-slate-200 flex-1">
+            <div class="tilt-card bg-slate-900/90 backdrop-blur-xl rounded-3xl shadow-2xl border border-indigo-500/30 p-6 float-card space-y-4 text-slate-200 flex-1">
                 <div class="flex justify-between items-center border-b border-slate-800 pb-3">
                     <div class="flex items-center gap-2">
-                        <div class="bg-indigo-500/20 text-indigo-400 w-8 h-8 rounded-xl flex items-center justify-center border border-indigo-500/30">
+                        <div class="icon-chip bg-indigo-500/20 text-indigo-400 w-8 h-8 rounded-xl flex items-center justify-center border border-indigo-500/30">
                             <i data-lucide="receipt" class="w-4 h-4"></i>
                         </div>
                         <div>
@@ -464,6 +656,52 @@
             </div>
         </div>
     </div>
+
+
+    <script>
+        // ===== 安全版互動動畫控制器 =====
+        // 不監聽整個頁面的 class 變化，避免干擾 Firebase / 評價流程。
+        (() => {
+            let lastMove = 0;
+            document.addEventListener('pointermove', (e) => {
+                const now = performance.now();
+                if (now - lastMove < 50) return;
+                lastMove = now;
+                document.documentElement.style.setProperty('--mx', `${(e.clientX / innerWidth) * 100}%`);
+                document.documentElement.style.setProperty('--my', `${(e.clientY / innerHeight) * 100}%`);
+            }, { passive: true });
+
+            document.addEventListener('click', (e) => {
+                const btn = e.target.closest('button, a');
+                if (!btn || btn.disabled) return;
+                btn.classList.remove('click-pop');
+                void btn.offsetWidth;
+                btn.classList.add('click-pop');
+                setTimeout(() => btn.classList.remove('click-pop'), 220);
+            }, { passive: true });
+
+            window.addEventListener('load', () => {
+                document.body.classList.add('page-loaded');
+            });
+
+            // 卡片指標式微傾斜，增加立體精品質感（僅桌面滑鼠環境）
+            const tiltEls = document.querySelectorAll('.tilt-card');
+            tiltEls.forEach(el => {
+                el.addEventListener('pointermove', (e) => {
+                    if (e.pointerType !== 'mouse') return;
+                    const rect = el.getBoundingClientRect();
+                    const px = (e.clientX - rect.left) / rect.width - 0.5;
+                    const py = (e.clientY - rect.top) / rect.height - 0.5;
+                    el.style.setProperty('--tiltX', `${px * 6}deg`);
+                    el.style.setProperty('--tiltY', `${-py * 6}deg`);
+                });
+                el.addEventListener('pointerleave', () => {
+                    el.style.setProperty('--tiltX', `0deg`);
+                    el.style.setProperty('--tiltY', `0deg`);
+                });
+            });
+        })();
+    </script>
 
     <!-- Firebase SDKs -->
     <script type="module">
@@ -545,31 +783,56 @@
         window.addEventListener('resize', resizeBgCanvas);
         resizeBgCanvas();
 
-        for (let i = 0; i < 45; i++) {
+        for (let i = 0; i < 70; i++) {
             particles.push({
                 x: Math.random() * bgCanvas.width,
                 y: Math.random() * bgCanvas.height,
-                radius: Math.random() * 2 + 0.8,
-                speedX: (Math.random() - 0.5) * 0.4,
-                speedY: (Math.random() - 0.5) * 0.4,
-                alpha: Math.random() * 0.6 + 0.2
+                radius: Math.random() * 1.8 + 0.6,
+                speedX: (Math.random() - 0.5) * 0.35,
+                speedY: (Math.random() - 0.5) * 0.35,
+                alpha: Math.random() * 0.6 + 0.2,
+                twinklePhase: Math.random() * Math.PI * 2,
+                twinkleSpeed: 0.015 + Math.random() * 0.02
             });
         }
 
         function animateBg() {
             bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+
+            // 連線效果：靠近的粒子之間畫出淡淡連線，增加高級感
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 130) {
+                        bgCtx.beginPath();
+                        bgCtx.moveTo(particles[i].x, particles[i].y);
+                        bgCtx.lineTo(particles[j].x, particles[j].y);
+                        bgCtx.strokeStyle = `rgba(165, 180, 252, ${0.12 * (1 - dist / 130)})`;
+                        bgCtx.lineWidth = 0.6;
+                        bgCtx.stroke();
+                    }
+                }
+            }
+
             particles.forEach(p => {
                 p.x += p.speedX;
                 p.y += p.speedY;
+                p.twinklePhase += p.twinkleSpeed;
                 if (p.x < 0) p.x = bgCanvas.width;
                 if (p.x > bgCanvas.width) p.x = 0;
                 if (p.y < 0) p.y = bgCanvas.height;
                 if (p.y > bgCanvas.height) p.y = 0;
 
+                const twinkle = 0.55 + Math.sin(p.twinklePhase) * 0.45;
                 bgCtx.beginPath();
                 bgCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                bgCtx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
+                bgCtx.fillStyle = `rgba(255, 255, 255, ${p.alpha * twinkle})`;
+                bgCtx.shadowBlur = 6;
+                bgCtx.shadowColor = 'rgba(165, 180, 252, 0.55)';
                 bgCtx.fill();
+                bgCtx.shadowBlur = 0;
             });
             requestAnimationFrame(animateBg);
         }
@@ -579,9 +842,17 @@
             playSound('click');
             const body = document.getElementById('bodyRoot');
             body.className = `text-slate-100 min-h-screen flex flex-col items-center justify-between p-4 py-8 theme-${themeName}`;
-            document.getElementById('themeBtnCyber').style.opacity = themeName === 'cyberpunk' ? '1' : '0.6';
-            document.getElementById('themeBtnAurora').style.opacity = themeName === 'aurora' ? '1' : '0.6';
-            document.getElementById('themeBtnGold').style.opacity = themeName === 'gold' ? '1' : '0.6';
+            const themeBtns = { cyberpunk: document.getElementById('themeBtnCyber'), aurora: document.getElementById('themeBtnAurora'), gold: document.getElementById('themeBtnGold') };
+            Object.keys(themeBtns).forEach(key => {
+                const btn = themeBtns[key];
+                if (key === themeName) {
+                    btn.style.opacity = '1';
+                    btn.classList.add('theme-btn-active');
+                } else {
+                    btn.style.opacity = '0.6';
+                    btn.classList.remove('theme-btn-active');
+                }
+            });
             speakSweetVoice("已切換風格");
         };
 
@@ -733,10 +1004,11 @@
 
         function renderHiddenSpinnerItems() {
             const track = document.getElementById('spinnerTrack');
+            track.parentElement.classList.add('slot-frame-active');
             let html = '';
             for (let i = 0; i < 15; i++) {
                 html += `
-                    <div class="flex-shrink-0 w-20 h-24 rounded-xl border-2 border-slate-700 bg-slate-900 flex flex-col items-center justify-center p-1.5 opacity-60">
+                    <div class="slot-card flex-shrink-0 w-20 h-24 rounded-xl border-2 border-slate-700 bg-slate-900 flex flex-col items-center justify-center p-1.5 opacity-60">
                         <div class="text-2xl animate-pulse">❓</div>
                         <div class="text-[11px] font-black mt-1 text-slate-400">???</div>
                         <div class="text-[9px] font-bold text-slate-500 mt-0.5">未知獎品</div>
@@ -762,25 +1034,63 @@
                 const startAngle = index * sliceAngle - Math.PI / 2;
                 const endAngle = (index + 1) * sliceAngle - Math.PI / 2;
 
+                // 每片扇形使用放射狀漸層，中心亮、外緣暗，質感更立體
+                const grad = ctx.createRadialGradient(radius, radius, radius * 0.15, radius, radius, radius);
+                grad.addColorStop(0, lightenColor(prize.color, 28));
+                grad.addColorStop(1, prize.color);
+
                 ctx.beginPath();
                 ctx.moveTo(radius, radius);
                 ctx.arc(radius, radius, radius - 4, startAngle, endAngle);
                 ctx.closePath();
-                ctx.fillStyle = prize.color;
+                ctx.fillStyle = grad;
                 ctx.fill();
                 ctx.lineWidth = 1.5;
-                ctx.strokeStyle = '#ffffff33';
+                ctx.strokeStyle = '#ffffff40';
                 ctx.stroke();
 
                 ctx.save();
                 ctx.translate(radius, radius);
                 ctx.rotate(startAngle + sliceAngle / 2);
                 ctx.textAlign = 'right';
+                ctx.shadowColor = 'rgba(0,0,0,.65)';
+                ctx.shadowBlur = 3;
                 ctx.fillStyle = '#ffffff';
                 ctx.font = 'bold 11px "Inter", sans-serif';
                 ctx.fillText(prize.icon + ' ' + prize.text, radius - 14, 4);
                 ctx.restore();
             });
+
+            // 外圈光澤環與內圈玻璃高光，提升整體精緻度
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(radius, radius, radius - 2, 0, Math.PI * 2);
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = 'rgba(255,255,255,.5)';
+            ctx.stroke();
+            ctx.restore();
+
+            const glossGrad = ctx.createLinearGradient(0, 0, 0, height);
+            glossGrad.addColorStop(0, 'rgba(255,255,255,.22)');
+            glossGrad.addColorStop(0.5, 'rgba(255,255,255,0)');
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(radius, radius, radius - 4, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.fillStyle = glossGrad;
+            ctx.fillRect(0, 0, width, height / 1.6);
+            ctx.restore();
+        }
+
+        function lightenColor(hex, percent) {
+            try {
+                const num = parseInt(hex.replace('#', ''), 16);
+                let r = (num >> 16) + Math.round(2.55 * percent);
+                let g = ((num >> 8) & 0x00ff) + Math.round(2.55 * percent);
+                let b = (num & 0x0000ff) + Math.round(2.55 * percent);
+                r = Math.min(255, r); g = Math.min(255, g); b = Math.min(255, b);
+                return `rgb(${r}, ${g}, ${b})`;
+            } catch (e) { return hex; }
         }
 
         async function loadTestimonials() {
@@ -937,6 +1247,13 @@
                 icons[i].className = "w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-bold shadow-md transition-all ring-4 ring-indigo-500/20";
                 texts[i].className = "text-[10px] font-bold text-indigo-400";
             }
+            // 目前所在階段加上呼吸光暈；已抵達完成階段給予慶祝彈跳
+            const currentIdx = activeStep - 1;
+            if (activeStep === 4) {
+                icons[currentIdx].classList.add('step-final-burst');
+            } else {
+                icons[currentIdx].classList.add('step-active-pulse');
+            }
             return activeStep === 4;
         }
 
@@ -944,9 +1261,15 @@
             playSound('click');
             const queryId = document.getElementById('searchOrderId').value.trim().toUpperCase();
             if (!queryId) {
+                const input = document.getElementById('searchOrderId');
+                input.classList.add('shake-error');
+                setTimeout(() => input.classList.remove('shake-error'), 450);
                 alert('請輸入訂單編號！');
                 return;
             }
+
+            const searchBtn = document.querySelector('button[onclick="searchOrder()"]');
+            if (searchBtn) searchBtn.classList.add('btn-loading');
 
             try {
                 const querySnapshot = await getDocs(collection(db, "orders"));
@@ -959,6 +1282,7 @@
                 });
 
                 if (!found) {
+                    if (searchBtn) searchBtn.classList.remove('btn-loading');
                     alert('找不到此訂單編號！');
                     speakSweetVoice("找不到這個訂單編號哦！");
                     document.getElementById('resultContainer').classList.add('hidden');
@@ -1025,9 +1349,13 @@
                     }
                 }
 
-                document.getElementById('resultContainer').classList.remove('hidden');
+                const resultBox = document.getElementById('resultContainer');
+                resultBox.classList.remove('hidden');
+                resultBox.classList.remove('result-enter'); void resultBox.offsetWidth; resultBox.classList.add('result-enter');
+                if (searchBtn) searchBtn.classList.remove('btn-loading');
                 lucide.createIcons();
             } catch (e) {
+                if (searchBtn) searchBtn.classList.remove('btn-loading');
                 alert('查詢發生錯誤：' + e.message);
             }
         };
@@ -1042,7 +1370,10 @@
             selectedRating = stars;
             const buttons = document.querySelectorAll('#starSelector button');
             buttons.forEach((btn, index) => {
-                btn.className = index < stars ? 'text-2xl text-amber-400 transition' : 'text-2xl text-slate-600 hover:text-amber-400 transition';
+                btn.className = index < stars ? 'text-2xl text-amber-400 star-glow-active transition' : 'text-2xl text-slate-600 hover:text-amber-400 transition';
+                if (index < stars) {
+                    btn.classList.remove('star-pop'); void btn.offsetWidth; btn.classList.add('star-pop');
+                }
             });
         };
 
@@ -1070,7 +1401,7 @@
                 lucide.createIcons();
                 loadTestimonials();
 
-                try { confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 } }); } catch (e) {}
+                try { confetti({ particleCount: 80, spread: 60, origin: { y: 0.7 }, colors: ['#818cf8', '#c4b5fd', '#f472b6', '#fde68a'] }); } catch (e) {}
 
             } catch (err) {
                 alert('送出評價失敗：' + err.message);
@@ -1109,7 +1440,7 @@
             let html = '';
             customList.forEach((item, idx) => {
                 html += `
-                    <div class="flex-shrink-0 w-20 h-24 rounded-xl border-2 flex flex-col items-center justify-center p-1.5 transition-all ${item.bg}" data-index="${idx}">
+                    <div class="slot-card flex-shrink-0 w-20 h-24 rounded-xl border-2 flex flex-col items-center justify-center p-1.5 transition-all ${item.bg}" data-index="${idx}">
                         <div class="text-2xl">${item.icon}</div>
                         <div class="text-[11px] font-black mt-1 text-white truncate w-full text-center">${item.name}</div>
                         <div class="text-[9px] font-bold ${item.text} mt-0.5">${item.rarity}</div>
@@ -1130,9 +1461,11 @@
                 } else {
                     clearInterval(rollInterval);
                     cards[18].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-                    cards[18].className = `flex-shrink-0 w-20 h-24 rounded-xl border-2 flex flex-col items-center justify-center p-1.5 transition-all ${targetItem.bg} ring-4 ring-yellow-400 scale-105 shadow-[0_0_20px_rgba(250,204,21,0.8)]`;
+                    cards[18].className = `slot-card slot-card-winner flex-shrink-0 w-20 h-24 rounded-xl border-2 flex flex-col items-center justify-center p-1.5 transition-all ${targetItem.bg} ring-4 ring-yellow-400 scale-105`;
+                    track.parentElement.classList.remove('slot-frame-active');
 
                     resultText.innerHTML = `🌟 拉霸中獎：<span class="text-yellow-300 font-black">${targetItem.name} (${targetItem.icon})</span>！`;
+                    resultText.classList.remove('result-text-win'); void resultText.offsetWidth; resultText.classList.add('result-text-win');
                     spinBtn.innerText = "第一關通關完成";
                     playSound('win');
 
@@ -1145,7 +1478,7 @@
                         lucide.createIcons();
                     }, 500);
 
-                    try { confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } }); } catch (e) {}
+                    try { confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 }, colors: ['#fde047', '#f59e0b', '#fff7ed', '#fbbf24'] }); } catch (e) {}
                 }
             }, 90);
         };
@@ -1159,6 +1492,8 @@
             const resultText = document.getElementById('rouletteResultText');
 
             btn.disabled = true;
+            btn.classList.add('btn-loading');
+            wheel.classList.add('roulette-spinning');
             resultText.innerText = "🎡 輪盤旋轉中... 神秘獎項決定中...";
 
             // 🐛 Bug 修正：若帶有 prankedBy 詛咒，輪盤強制轉到黃金大便
@@ -1185,7 +1520,10 @@
 
             setTimeout(() => {
                 const wonPrize = roulettePrizes[winningIndex];
+                wheel.classList.remove('roulette-spinning');
+                btn.classList.remove('btn-loading');
                 resultText.innerHTML = `🎉 輪盤加碼大獎：<span class="text-purple-300 font-black">${wonPrize.icon} ${wonPrize.text}</span>！`;
+                resultText.classList.remove('result-text-win'); void resultText.offsetWidth; resultText.classList.add('result-text-win');
                 btn.innerText = "輪盤彩蛋完成";
                 playSound('win');
                 speakSweetVoice(`太神啦！輪盤加碼抽中了 ${wonPrize.text}！接著準備刮開你的最終大獎！`);
@@ -1224,7 +1562,7 @@
                     lucide.createIcons();
                 }, 600);
 
-                try { confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 } }); } catch (e) {}
+                try { confetti({ particleCount: 150, spread: 100, origin: { y: 0.6 }, colors: ['#c084fc', '#f472b6', '#818cf8', '#fbcfe8'] }); } catch (e) {}
             }, 4000);
         };
 
@@ -1247,7 +1585,7 @@
                     </p>
                 `;
                 speakSweetVoice("奇蹟發生！黑洞吐出了尊爵神話大獎！");
-                try { confetti({ particleCount: 200, spread: 120, origin: { y: 0.5 } }); } catch (e) {}
+                try { confetti({ particleCount: 200, spread: 120, origin: { y: 0.5 }, colors: ['#fde047', '#fff7ed', '#fbbf24', '#facc15'] }); } catch (e) {}
             } else {
                 box.innerHTML = `
                     <div class="text-7xl poop-alert-shake">💩🏺💩</div>
@@ -1313,30 +1651,72 @@
             const ctx = canvas.getContext('2d');
             isScratchedCompleted = false;
             document.getElementById('downloadCardBtn').classList.add('hidden');
-            document.getElementById('scratchStatusText').innerText = "👇 開始動手刮開銀漆吧！";
+            document.getElementById('scratchCardShell').classList.remove('scratch-card-revealed');
+            const statusEl0 = document.getElementById('scratchStatusText');
+            statusEl0.innerText = "👇 開始動手刮開銀漆吧！";
+            statusEl0.classList.add('scratch-status-ready');
 
             ctx.globalCompositeOperation = 'source-over';
-            ctx.fillStyle = '#64748b';
+
+            // 金屬箔漸層底色，取代單一灰色，質感更高級
+            const foilGrad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            foilGrad.addColorStop(0, '#94a3b8');
+            foilGrad.addColorStop(0.35, '#64748b');
+            foilGrad.addColorStop(0.65, '#475569');
+            foilGrad.addColorStop(1, '#94a3b8');
+            ctx.fillStyle = foilGrad;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.fillStyle = '#475569';
-            for (let i = 0; i < 3000; i++) {
-                ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 1.5, 1.5);
+            // 細緻雜訊顆粒，增加金屬刮刮卡質感
+            ctx.fillStyle = '#334155';
+            for (let i = 0; i < 2200; i++) {
+                ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 1.4, 1.4);
             }
+            ctx.fillStyle = 'rgba(255,255,255,.35)';
+            for (let i = 0; i < 900; i++) {
+                ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 1, 1);
+            }
+
+            // 斜向高光條紋，模擬光澤反射
+            ctx.save();
+            ctx.globalAlpha = 0.18;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 14;
+            for (let x = -canvas.height; x < canvas.width; x += 34) {
+                ctx.beginPath();
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x + canvas.height, canvas.height);
+                ctx.stroke();
+            }
+            ctx.restore();
 
             ctx.fillStyle = '#f8fafc';
             ctx.font = 'bold 16px "Inter", sans-serif';
             ctx.textAlign = 'center';
+            ctx.shadowColor = 'rgba(0,0,0,.4)';
+            ctx.shadowBlur = 4;
             ctx.fillText('✨ 趣味獎項刮刮樂 ✨', canvas.width / 2, canvas.height / 2 - 10);
             ctx.font = '12px "Inter", sans-serif';
             ctx.fillText('(按住並滑動手指刮開)', canvas.width / 2, canvas.height / 2 + 15);
+            ctx.shadowBlur = 0;
 
             let isDrawing = false;
+            let lastPos = null;
             function scratch(x, y) {
                 ctx.globalCompositeOperation = 'destination-out';
+                // 若滑動速度快，補上路徑線段避免出現斷點鋸齒
+                if (lastPos) {
+                    ctx.lineWidth = 44;
+                    ctx.lineCap = 'round';
+                    ctx.beginPath();
+                    ctx.moveTo(lastPos.x, lastPos.y);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                }
                 ctx.beginPath();
                 ctx.arc(x, y, 22, 0, Math.PI * 2, false);
                 ctx.fill();
+                lastPos = { x, y };
                 checkScratchProgress();
             }
 
@@ -1347,12 +1727,12 @@
                 return { x: clientX - rect.left, y: clientY - rect.top };
             }
 
-            canvas.onmousedown = (e) => { isDrawing = true; const pos = getPosition(e); scratch(pos.x, pos.y); };
+            canvas.onmousedown = (e) => { isDrawing = true; lastPos = null; const pos = getPosition(e); scratch(pos.x, pos.y); };
             canvas.onmousemove = (e) => { if (!isDrawing) return; const pos = getPosition(e); scratch(pos.x, pos.y); };
-            window.onmouseup = () => { isDrawing = false; };
-            canvas.ontouchstart = (e) => { isDrawing = true; const pos = getPosition(e); scratch(pos.x, pos.y); e.preventDefault(); };
+            window.onmouseup = () => { isDrawing = false; lastPos = null; };
+            canvas.ontouchstart = (e) => { isDrawing = true; lastPos = null; const pos = getPosition(e); scratch(pos.x, pos.y); e.preventDefault(); };
             canvas.ontouchmove = (e) => { if (!isDrawing) return; const pos = getPosition(e); scratch(pos.x, pos.y); e.preventDefault(); };
-            canvas.ontouchend = () => { isDrawing = false; };
+            canvas.ontouchend = () => { isDrawing = false; lastPos = null; };
         }
 
         function checkScratchProgress() {
@@ -1367,12 +1747,15 @@
             if (transparentPixels / (pixels.length / 16) > 0.35) {
                 isScratchedCompleted = true;
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                document.getElementById('scratchStatusText').innerHTML = "🎉 刮開成功！不滿意的話可以召喚下方黑洞重抽！";
+                const statusEl = document.getElementById('scratchStatusText');
+                statusEl.innerHTML = "🎉 刮開成功！不滿意的話可以召喚下方黑洞重抽！";
+                statusEl.classList.remove('scratch-status-ready');
+                document.getElementById('scratchCardShell').classList.add('scratch-card-revealed');
                 document.getElementById('downloadCardBtn').classList.remove('hidden');
                 playSound('win');
                 speakSweetVoice("刮開成功！快看看是不是你想要的大獎吧！");
                 lucide.createIcons();
-                try { confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } }); } catch (e) {}
+                try { confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 }, colors: ['#fbbf24', '#f59e0b', '#fef3c7', '#fde68a'] }); } catch (e) {}
             }
         }
 
