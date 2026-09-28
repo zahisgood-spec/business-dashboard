@@ -4,18 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>展商城｜顧客下單</title>
-  <link rel="icon" type="image/png" href="shop.png">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     body { font-family: 'Inter', sans-serif; }
 
-    /* 🛍️ 商城進階功能 */
+    /* 🛍️ 商城功能 */
     .shop-feature-panel{background:rgba(255,255,255,.96);border:1px solid #e2e8f0;border-radius:1.25rem;padding:1rem;box-shadow:0 4px 14px rgba(15,23,42,.04)}
-    .cart-float{position:fixed;right:1rem;bottom:1rem;z-index:40}
-    .product-sale-badge{position:absolute;top:.75rem;left:.75rem}
-    .product-hot-badge{position:absolute;top:.75rem;right:.75rem}
+    .product-sale-badge{position:absolute;top:.75rem;left:.75rem;z-index:3}
+    .product-hot-badge{position:absolute;top:.75rem;right:.75rem;z-index:3}
     .countdown{font-variant-numeric:tabular-nums}
     .product-unavailable{filter:grayscale(.2);opacity:.82}
 
@@ -27,22 +26,142 @@
     .homepage-marquee-track{display:inline-block;min-width:100%;padding-left:100%;animation:zah-marquee 18s linear infinite}
     @keyframes zah-marquee{from{transform:translateX(0)}to{transform:translateX(-100%)}}
 
+    /* ===================================================== */
+    /* ==============  高品質視覺與動畫套件  ================ */
+    /* ===================================================== */
+    html { scroll-behavior: smooth; }
+    body { overflow-x: hidden; position: relative; }
+    main { position: relative; z-index: 1; }
+
+    /* 背景：柔光斑 + 游標跟隨聚光燈 */
+    body::before, body::after { content:''; position:fixed; z-index:0; border-radius:9999px; pointer-events:none; filter:blur(60px); }
+    body::before { top:-10%; left:-8%; width:380px; height:380px; background:radial-gradient(circle, rgba(99,102,241,.16), transparent 70%); animation:blobFloat 16s ease-in-out infinite; }
+    body::after { bottom:-12%; right:-10%; width:420px; height:420px; background:radial-gradient(circle, rgba(244,63,94,.10), transparent 70%); animation:blobFloat 20s ease-in-out infinite reverse; }
+    @keyframes blobFloat { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(30px,-20px) scale(1.08)} }
+    #spotlight { position:fixed; inset:0; z-index:0; pointer-events:none; background:radial-gradient(520px circle at var(--mx,50%) var(--my,30%), rgba(99,102,241,.09), transparent 60%); }
+
+    /* 頂部捲動進度條 */
+    #scrollProgress { position:fixed; top:0; left:0; width:100%; height:3px; z-index:90; transform-origin:0 50%; transform:scaleX(0); background:linear-gradient(90deg,#6366f1,#a855f7,#f43f5e); box-shadow:0 0 10px rgba(99,102,241,.5); }
+
+    /* 標題區進場與文字流光 */
+    .rise { animation: riseIn .8s cubic-bezier(.16,1,.3,1) both; }
+    @keyframes riseIn { from{opacity:0; transform:translateY(24px); filter:blur(6px)} to{opacity:1; transform:none; filter:none} }
+    .brand-badge { animation:brandFloat 3.6s ease-in-out infinite; box-shadow:0 10px 26px -8px rgba(79,70,229,.55), inset 0 1px 0 rgba(255,255,255,.25); }
+    @keyframes brandFloat { 0%,100%{transform:translateY(0) rotate(0)} 50%{transform:translateY(-4px) rotate(-3deg)} }
+    .title-shimmer { background:linear-gradient(90deg,#0f172a 0%,#4f46e5 35%,#a855f7 50%,#4f46e5 65%,#0f172a 100%); background-size:220% 100%; -webkit-background-clip:text; background-clip:text; color:transparent; animation:shimmerText 6s linear infinite; }
+    @keyframes shimmerText { to { background-position:-220% 0; } }
+
+    /* 捲動顯現 */
+    .reveal { opacity:0; transform:translateY(28px); transition:opacity .8s ease, transform .8s cubic-bezier(.16,1,.3,1), box-shadow .3s ease; }
+    .reveal.in { opacity:1; transform:none; }
+    .shop-feature-panel:hover { box-shadow:0 14px 34px -14px rgba(15,23,42,.14); }
+
+    /* 骨架載入 */
+    .skeleton { background:linear-gradient(100deg,#eef2f7 30%,#f8fafc 50%,#eef2f7 70%); background-size:200% 100%; animation:skeleton 1.3s ease-in-out infinite; }
+    @keyframes skeleton { to { background-position:-200% 0; } }
+
+    /* 商品卡片：3D 傾斜 + 追光 + 圖片縮放 */
+    .product-card { position:relative; transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(var(--lift,0px)); transition:transform .22s ease-out, box-shadow .3s ease, border-color .3s ease; will-change:transform; }
+    .product-card::before { content:''; position:absolute; inset:0; z-index:2; pointer-events:none; opacity:0; transition:opacity .3s ease; background:radial-gradient(260px circle at var(--gx,50%) var(--gy,0%), rgba(129,140,248,.2), transparent 60%); }
+    .product-card:hover { --lift:-6px; box-shadow:0 26px 50px -18px rgba(15,23,42,.28); border-color:#c7d2fe; }
+    .product-card:hover::before { opacity:1; }
+    .product-card:not(:hover) { transition:transform .6s cubic-bezier(.16,1,.3,1), box-shadow .3s ease, border-color .3s ease; }
+    .grid-animate .product-card { animation:cardPopIn .55s cubic-bezier(.16,1,.3,1) both; }
+    @keyframes cardPopIn { from{opacity:0; transform:perspective(900px) translateY(22px) scale(.96)} to{opacity:1; transform:perspective(900px)} }
+    .product-image-wrap { overflow:hidden; }
+    .product-image-wrap img { transition:transform .6s cubic-bezier(.2,.8,.2,1); }
+    .product-card:hover .product-image-wrap img { transform:scale(1.09); }
+    .badge-pulse { animation:badgePulse 1.8s ease-in-out infinite; }
+    @keyframes badgePulse { 0%,100%{transform:scale(1); box-shadow:0 0 0 0 rgba(244,63,94,.45)} 50%{transform:scale(1.06); box-shadow:0 0 0 7px rgba(244,63,94,0)} }
+    .badge-hot-pulse { animation:badgeHot 2.2s ease-in-out infinite; }
+    @keyframes badgeHot { 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.15)} }
+    .countdown { animation:countdownPulse 1.4s ease-in-out infinite; }
+    @keyframes countdownPulse { 0%,100%{opacity:.85} 50%{opacity:1} }
+
+    /* 排序按鈕啟用狀態 */
+    .sort-btn { transition:transform .2s ease, box-shadow .2s ease, background-color .2s ease; }
+    .sort-active { box-shadow:0 0 0 2px rgba(99,102,241,.45); transform:translateY(-1px); }
+
+    /* 熱門排行榜 */
+    #popularProductsList > div { transition:transform .25s ease, box-shadow .25s ease; animation:cardPopIn .5s cubic-bezier(.16,1,.3,1) both; }
+    #popularProductsList > div:hover { transform:translateY(-3px); box-shadow:0 10px 24px -10px rgba(245,158,11,.35); }
+
+    /* 主要按鈕：立體陰影 + 光澤掃過 + 漣漪 */
+    .shine-sweep { position:relative; overflow:hidden; isolation:isolate; }
+    .shine-sweep::after { content:''; position:absolute; top:-140%; left:-50%; width:35%; height:380%; transform:rotate(22deg); background:rgba(255,255,255,.35); transition:left .6s ease; pointer-events:none; }
+    .shine-sweep:hover::after { left:130%; }
+    .premium-cta { transition:transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease, filter .22s ease; box-shadow:0 10px 24px -10px var(--cta-shadow, rgba(79,70,229,.55)), inset 0 1px 0 rgba(255,255,255,.2); }
+    .premium-cta:hover:not(:disabled) { transform:translateY(-2px); filter:brightness(1.05); }
+    .premium-cta:active:not(:disabled) { transform:translateY(0) scale(.98); }
+    .premium-cta:disabled { box-shadow:none; cursor:not-allowed; }
+    .ripple-host { position:relative; overflow:hidden; }
+    .ripple { position:absolute; border-radius:50%; background:rgba(255,255,255,.5); transform:scale(0); animation:rippleAnim .65s ease-out; pointer-events:none; z-index:0; }
+    @keyframes rippleAnim { to { transform:scale(2.6); opacity:0; } }
+    .btn-loading-spin::before { content:''; display:inline-block; width:14px; height:14px; border-radius:50%; border:2px solid rgba(255,255,255,.4); border-top-color:#fff; margin-right:8px; vertical-align:-2px; animation:spinLoad .7s linear infinite; }
+    @keyframes spinLoad { to { transform:rotate(360deg); } }
+
+    /* 表單欄位：聚焦時標籤與光暈 */
+    .field label { transition:color .25s ease, transform .25s ease; }
+    .field:focus-within label { color:#4f46e5; transform:translateX(3px); }
+    input, select, textarea { transition:box-shadow .25s ease, border-color .25s ease, background-color .25s ease; }
+    .flash-fill { animation:flashFill 1s ease-out; }
+    @keyframes flashFill { 0%{box-shadow:0 0 0 0 rgba(99,102,241,.55)} 100%{box-shadow:0 0 0 12px rgba(99,102,241,0)} }
+    .price-pop { animation:pricePop .5s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes pricePop { from{opacity:0; transform:translateY(6px) scale(.94)} to{opacity:1; transform:none} }
+
+    /* Banner 進場 */
+    .homepage-banner-wrap { animation:bannerReveal .8s cubic-bezier(.16,1,.3,1) both; }
+    @keyframes bannerReveal { from{opacity:0; transform:scale(.98); filter:blur(6px)} to{opacity:1; transform:none; filter:none} }
+
+    /* 成功彈窗 */
+    #successModal.flex { animation:overlayFade .25s ease both; }
+    #successModal.flex > div { animation:modalPop .45s cubic-bezier(.34,1.35,.64,1) both; }
+    #successModal.closing { animation:overlayOut .22s ease both; }
+    #successModal.closing > div { animation:modalOut .22s ease both; }
+    @keyframes overlayFade { from{opacity:0} to{opacity:1} }
+    @keyframes overlayOut { to{opacity:0} }
+    @keyframes modalPop { from{opacity:0; transform:scale(.9) translateY(14px)} to{opacity:1; transform:none} }
+    @keyframes modalOut { to{opacity:0; transform:scale(.95) translateY(8px)} }
+    .success-icon { position:relative; }
+    .success-icon::after { content:''; position:absolute; inset:0; border-radius:1rem; border:2px solid rgba(16,185,129,.5); animation:ringPulse 1.6s ease-out infinite; }
+    @keyframes ringPulse { from{transform:scale(1); opacity:.8} to{transform:scale(1.7); opacity:0} }
+    .check-circle { stroke-dasharray:145; stroke-dashoffset:145; animation:drawStroke .6s ease-out .15s forwards; }
+    .check-path { stroke-dasharray:40; stroke-dashoffset:40; animation:drawStroke .4s ease-out .65s forwards; }
+    @keyframes drawStroke { to { stroke-dashoffset:0; } }
+    .id-char { display:inline-block; opacity:0; animation:idChar .45s cubic-bezier(.34,1.56,.64,1) both; }
+    @keyframes idChar { from{opacity:0; transform:translateY(12px) scale(.6)} to{opacity:1; transform:none} }
+
+    /* Toast 提示 */
+    .toast { position:relative; overflow:hidden; pointer-events:auto; display:flex; align-items:center; gap:.6rem; min-width:240px; max-width:92vw; padding:.8rem 1.1rem; border-radius:1rem; background:rgba(255,255,255,.95); backdrop-filter:blur(10px); border:1px solid #e2e8f0; box-shadow:0 18px 40px -14px rgba(15,23,42,.35); font-size:.85rem; font-weight:700; color:#0f172a; animation:toastIn .45s cubic-bezier(.34,1.4,.64,1) both; }
+    .toast.out { animation:toastOut .3s ease both; }
+    .toast-bar { position:absolute; left:0; bottom:0; height:3px; width:100%; transform-origin:0 50%; background:#6366f1; animation:toastBar linear forwards; }
+    .toast-success .toast-bar { background:#10b981; }
+    .toast-error { border-color:#fecdd3; }
+    .toast-error .toast-bar { background:#f43f5e; }
+    @keyframes toastIn { from{opacity:0; transform:translateY(-16px) scale(.92)} to{opacity:1; transform:none} }
+    @keyframes toastOut { to{opacity:0; transform:translateY(-10px) scale(.95)} }
+    @keyframes toastBar { from{transform:scaleX(1)} to{transform:scaleX(0)} }
+
+    @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } .reveal{opacity:1;transform:none} }
   </style>
 </head>
 
 <body class="min-h-screen bg-slate-100 text-slate-800">
+  <div id="scrollProgress"></div>
+  <div id="spotlight" aria-hidden="true"></div>
+  <div id="toastHost" class="fixed top-4 inset-x-0 z-[100] flex flex-col items-center gap-2 pointer-events-none px-4"></div>
+
   <main class="min-h-screen flex items-center justify-center px-4 py-10">
     <section class="w-full max-w-xl">
 
       <!-- 標題 -->
-      <div class="text-center mb-7">
-        <div class="mx-auto w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-200">
+      <div class="text-center mb-7 rise">
+        <div class="brand-badge mx-auto w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-200">
           <i data-lucide="shopping-bag" class="w-6 h-6"></i>
         </div>
-        <h1 class="mt-4 text-2xl font-extrabold text-slate-900">展商城</h1>
+        <h1 class="title-shimmer mt-4 text-2xl font-extrabold">展商城</h1>
         <p class="mt-1 text-sm text-slate-500">顧客下單</p>
       </div>
-
 
       <!-- 🏠 首頁 Banner／公告／跑馬燈：由 index.html 的首頁設定同步 -->
       <div id="homepageContent" class="space-y-4 mb-6 hidden">
@@ -67,24 +186,30 @@
 
       <!-- 商品目錄 -->
       <div class="mb-6">
-        <div class="flex items-end justify-between mb-3 px-1">
+        <div class="flex items-end justify-between mb-3 px-1 reveal">
           <div><h2 class="text-lg font-extrabold text-slate-900">熱門商品</h2><p class="text-xs text-slate-400 mt-1">選擇商品後會自動帶入下方訂單表格</p></div>
         </div>
         <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="col-span-full bg-white rounded-2xl border border-slate-200 p-8 text-center text-xs text-slate-400">商品載入中…</div>
+          <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+            <div class="h-32 skeleton"></div>
+            <div class="p-4 space-y-2"><div class="h-3 w-1/3 rounded skeleton"></div><div class="h-4 w-2/3 rounded skeleton"></div><div class="h-3 w-full rounded skeleton"></div><div class="h-9 w-full rounded-xl skeleton mt-3"></div></div>
+          </div>
+          <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+            <div class="h-32 skeleton"></div>
+            <div class="p-4 space-y-2"><div class="h-3 w-1/3 rounded skeleton"></div><div class="h-4 w-2/3 rounded skeleton"></div><div class="h-3 w-full rounded skeleton"></div><div class="h-9 w-full rounded-xl skeleton mt-3"></div></div>
+          </div>
         </div>
       </div>
 
-
-      <!-- 🛍️ 商城搜尋／分類／購物車 -->
-      <div class="shop-feature-panel mb-5">
+      <!-- 🛍️ 商城搜尋／分類 -->
+      <div class="shop-feature-panel mb-5 reveal">
         <div class="flex flex-col md:flex-row gap-3 md:items-center md:justify-between">
-          <div class="flex-1">
+          <div class="flex-1 field">
             <label class="block text-xs font-semibold text-slate-500 mb-1">搜尋商品</label>
             <input id="shopSearchInput" type="search" placeholder="搜尋商品名稱、遊戲、分類..."
               class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10">
           </div>
-          <div class="md:w-52">
+          <div class="md:w-52 field">
             <label class="block text-xs font-semibold text-slate-500 mb-1">商品分類</label>
             <select id="shopCategoryFilter"
               class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:bg-white focus:border-indigo-500">
@@ -92,14 +217,14 @@
             </select>
           </div>
           <div class="flex gap-2">
-            <button id="shopSortHot" type="button" class="px-4 py-3 rounded-xl bg-rose-50 text-rose-600 text-xs font-bold hover:bg-rose-100">🔥 熱門</button>
-            <button id="shopSortPrice" type="button" class="px-4 py-3 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold hover:bg-slate-200">價格排序</button>
+            <button id="shopSortHot" type="button" class="sort-btn sort-active px-4 py-3 rounded-xl bg-rose-50 text-rose-600 text-xs font-bold hover:bg-rose-100">🔥 熱門</button>
+            <button id="shopSortPrice" type="button" class="sort-btn px-4 py-3 rounded-xl bg-slate-100 text-slate-600 text-xs font-bold hover:bg-slate-200">價格排序</button>
           </div>
         </div>
       </div>
 
       <!-- 🔥 熱門商品排行榜 -->
-      <div id="popularProductsPanel" class="shop-feature-panel mb-5 hidden">
+      <div id="popularProductsPanel" class="shop-feature-panel mb-5 hidden reveal">
         <div class="flex items-center justify-between mb-3">
           <div>
             <h3 class="font-extrabold text-slate-900">🔥 熱門商品排行榜</h3>
@@ -111,7 +236,7 @@
       </div>
 
       <!-- 下單表單 -->
-      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8 reveal">
         <div class="flex items-center gap-3 pb-5 mb-6 border-b border-slate-100">
           <div class="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
             <i data-lucide="clipboard-pen-line" class="w-5 h-5"></i>
@@ -123,21 +248,21 @@
         </div>
 
         <form id="orderForm" class="space-y-5">
-          <div>
+          <div class="field">
             <label class="block text-sm font-semibold text-slate-700 mb-2">顧客名稱</label>
             <input id="customer" required maxlength="40"
               placeholder="請輸入您的名稱或暱稱"
               class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10">
           </div>
 
-          <div>
+          <div class="field">
             <label class="block text-sm font-semibold text-slate-700 mb-2">遊戲名稱</label>
             <input id="gameName" required maxlength="80"
               placeholder="例如：Roblox"
               class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10">
           </div>
 
-          <div>
+          <div class="field">
             <label class="block text-sm font-semibold text-slate-700 mb-2">購買商品</label>
             <input id="productName" required maxlength="100"
               placeholder="請先從上方選擇商品，也可手動輸入"
@@ -145,14 +270,14 @@
             <p id="selectedProductPrice" class="hidden mt-2 text-xs font-bold text-indigo-600"></p>
           </div>
 
-          <div>
+          <div class="field">
             <label class="block text-sm font-semibold text-slate-700 mb-2">遊戲 UID / 玩家 ID</label>
             <input id="gameUid" required maxlength="100"
               placeholder="請輸入遊戲 UID"
               class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10">
           </div>
 
-          <div>
+          <div class="field">
             <label class="block text-sm font-semibold text-slate-700 mb-2">備註 <span class="font-normal text-slate-400">（可選）</span></label>
             <textarea id="memo" maxlength="300" rows="4"
               placeholder="有其他需要告知的內容可以寫在這裡"
@@ -160,53 +285,26 @@
           </div>
 
           <button id="submitBtn" type="submit"
-            class="w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white py-3.5 font-bold text-sm transition shadow-lg shadow-indigo-200 disabled:opacity-50 disabled:cursor-not-allowed">
+            class="premium-cta shine-sweep ripple-host w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white py-3.5 font-bold text-sm transition disabled:opacity-50 disabled:cursor-not-allowed" style="--cta-shadow: rgba(79,70,229,.5);">
             送出訂單
           </button>
         </form>
       </div>
 
-      <p class="text-center text-xs text-slate-400 mt-5">
+      <p class="text-center text-xs text-slate-400 mt-5 reveal">
         訂單送出後請保存訂單編號，之後可至顧客查詢頁查看進度。
       </p>
     </section>
   </main>
 
-
-  <!-- 🛒 購物車 -->
-  <div class="cart-float">
-    <button id="cartOpenBtn" type="button" class="relative rounded-2xl bg-slate-900 hover:bg-slate-800 text-white px-5 py-3.5 shadow-2xl text-sm font-extrabold flex items-center gap-2">
-      🛒 購物車
-      <span id="cartCountBadge" class="min-w-6 h-6 px-1 rounded-full bg-indigo-500 flex items-center justify-center text-xs">0</span>
-    </button>
-  </div>
-
-  <div id="cartModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-    <div class="w-full max-w-lg bg-white rounded-3xl shadow-2xl p-6">
-      <div class="flex items-center justify-between border-b border-slate-100 pb-4">
-        <div>
-          <h2 class="text-lg font-extrabold text-slate-900">🛒 我的購物車</h2>
-          <p class="text-xs text-slate-400 mt-1">可先加入多個商品，再選擇商品進入下單表單。</p>
-        </div>
-        <button id="cartCloseBtn" type="button" class="text-slate-400 hover:text-slate-700">✕</button>
-      </div>
-      <div id="cartItems" class="py-4 space-y-3 max-h-[50vh] overflow-y-auto"></div>
-      <div class="border-t border-slate-100 pt-4 flex items-center justify-between">
-        <span class="text-sm font-bold text-slate-500">購物車總額</span>
-        <span id="cartTotal" class="text-xl font-black text-indigo-600">NT$0</span>
-      </div>
-      <div class="grid grid-cols-2 gap-3 mt-4">
-        <button id="cartClearBtn" type="button" class="rounded-xl bg-slate-100 hover:bg-slate-200 py-3 text-sm font-bold text-slate-600">清空</button>
-        <button id="cartCheckoutBtn" type="button" class="rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white py-3 text-sm font-bold">選擇商品並下單</button>
-      </div>
-    </div>
-  </div>
-
   <!-- 成功視窗 -->
   <div id="successModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
     <div class="w-full max-w-sm bg-white rounded-3xl shadow-2xl p-7 text-center">
-      <div class="mx-auto w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-        <i data-lucide="check" class="w-7 h-7"></i>
+      <div class="success-icon mx-auto w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
+        <svg viewBox="0 0 52 52" class="w-9 h-9" aria-hidden="true">
+          <circle class="check-circle" cx="26" cy="26" r="23" fill="none" stroke="currentColor" stroke-width="3"/>
+          <path class="check-path" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="M15 27l8 8 15-17"/>
+        </svg>
       </div>
 
       <h2 class="mt-4 text-xl font-extrabold text-slate-900">訂單建立成功</h2>
@@ -218,11 +316,11 @@
 
       <div class="grid grid-cols-2 gap-3 mt-5">
         <button onclick="copyOrder()"
-          class="rounded-xl bg-slate-100 hover:bg-slate-200 py-3 text-sm font-bold text-slate-700">
+          class="rounded-xl bg-slate-100 hover:bg-slate-200 py-3 text-sm font-bold text-slate-700 transition">
           複製編號
         </button>
         <a id="rateLink" href="rate.html"
-          class="rounded-xl bg-indigo-600 hover:bg-indigo-700 py-3 text-sm font-bold text-white flex items-center justify-center">
+          class="premium-cta shine-sweep rounded-xl bg-indigo-600 hover:bg-indigo-700 py-3 text-sm font-bold text-white flex items-center justify-center" style="--cta-shadow: rgba(79,70,229,.5);">
           前往查單
         </a>
       </div>
@@ -232,6 +330,94 @@
       </button>
     </div>
   </div>
+
+<!-- ✨ 互動動畫控制器（一般腳本，先於 module 載入） -->
+<script>
+  (() => {
+    // Toast 提示
+    window.showToast = function(msg, type = 'info', ms = 3200) {
+      const host = document.getElementById('toastHost');
+      if (!host) { alert(msg); return; }
+      const icons = { success: '✅', error: '⚠️', info: '✨' };
+      while (host.children.length >= 3) host.firstElementChild.remove();
+      const el = document.createElement('div');
+      el.className = 'toast toast-' + type;
+      el.innerHTML = '<span class="toast-icon"></span><span class="toast-msg"></span><i class="toast-bar"></i>';
+      el.querySelector('.toast-icon').textContent = icons[type] || icons.info;
+      el.querySelector('.toast-msg').textContent = msg;
+      el.querySelector('.toast-bar').style.animationDuration = ms + 'ms';
+      host.appendChild(el);
+      setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 300); }, ms);
+    };
+
+    // 游標聚光燈
+    let lastMove = 0;
+    document.addEventListener('pointermove', e => {
+      const now = performance.now();
+      if (now - lastMove < 40) return;
+      lastMove = now;
+      document.documentElement.style.setProperty('--mx', (e.clientX / innerWidth * 100) + '%');
+      document.documentElement.style.setProperty('--my', (e.clientY / innerHeight * 100) + '%');
+    }, { passive: true });
+
+    // 捲動進度條
+    const bar = document.getElementById('scrollProgress');
+    const onScroll = () => {
+      const h = document.documentElement.scrollHeight - innerHeight;
+      bar.style.transform = 'scaleX(' + (h > 0 ? Math.min(1, scrollY / h) : 0) + ')';
+    };
+    addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+
+    // 捲動顯現
+    const revealEls = document.querySelectorAll('.reveal');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+      }, { threshold: 0.12 });
+      revealEls.forEach(el => io.observe(el));
+    } else {
+      revealEls.forEach(el => el.classList.add('in'));
+    }
+
+    // 按鈕漣漪
+    document.addEventListener('click', e => {
+      const b = e.target.closest('.ripple-host');
+      if (!b || b.disabled) return;
+      const r = b.getBoundingClientRect();
+      const size = Math.max(r.width, r.height);
+      const s = document.createElement('span');
+      s.className = 'ripple';
+      s.style.width = s.style.height = size + 'px';
+      s.style.left = (e.clientX - r.left - size / 2) + 'px';
+      s.style.top = (e.clientY - r.top - size / 2) + 'px';
+      b.appendChild(s);
+      setTimeout(() => s.remove(), 700);
+    });
+
+    // 商品卡片 3D 傾斜與追光（事件委派，商品重繪也不受影響）
+    const grid = document.getElementById('productGrid');
+    grid.addEventListener('pointermove', e => {
+      if (e.pointerType !== 'mouse') return;
+      const card = e.target.closest('.product-card');
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width;
+      const py = (e.clientY - r.top) / r.height;
+      card.style.setProperty('--ry', ((px - .5) * 8) + 'deg');
+      card.style.setProperty('--rx', (-(py - .5) * 8) + 'deg');
+      card.style.setProperty('--gx', (px * 100) + '%');
+      card.style.setProperty('--gy', (py * 100) + '%');
+    });
+    grid.addEventListener('pointerout', e => {
+      const card = e.target.closest('.product-card');
+      if (card && !card.contains(e.relatedTarget)) {
+        card.style.setProperty('--rx', '0deg');
+        card.style.setProperty('--ry', '0deg');
+      }
+    });
+  })();
+</script>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -250,134 +436,266 @@
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const toast = (m, t, ms) => window.showToast(m, t, ms);
+
   let lastOrderId = "";
+  let shopProducts = [];
+  let productsLoaded = false;
+  let selectedProduct = null;
+  let shopViewMode = "hot";
+  let lastSaleSig = "";
+
+  // 舊版購物車資料已不再使用，順手清掉
+  try { localStorage.removeItem("zahShopCart"); } catch (_) {}
+
+  const esc = v => String(v ?? "").replace(/[&<>'"]/g, ch => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"
+  }[ch]));
 
   async function getNextOrderId() {
     const snapshot = await getDocs(collection(db, "orders"));
     let maxNum = 0;
-
     snapshot.forEach(docSnap => {
-      const data = docSnap.data();
-      const rawId = String(data.id || "").trim().toUpperCase();
+      const rawId = String(docSnap.data().id || "").trim().toUpperCase();
       const match = rawId.match(/^OD-(\d+)$/);
       if (match) {
         const num = parseInt(match[1], 10);
         if (!Number.isNaN(num)) maxNum = Math.max(maxNum, num);
       }
     });
-
     return "OD-" + String(maxNum + 1).padStart(3, "0");
   }
 
-  let products = [];
-  let selectedProduct = null;
+  // ---------- 商品資料判斷 ----------
+  const getStatus = p => String(p.status || p.saleStatus || "上架").trim();
+  const getSold = p => Number(p.sold || p.sales || p.totalSold || 0);
+  const isSaleActive = p => {
+    const salePrice = Number(p.salePrice);
+    if (!Number.isFinite(salePrice) || salePrice <= 0) return false;
+    const end = p.saleEnd || p.discountEnd || p.promotionEnd;
+    // 沒設定結束時間 → 優惠持續有效；有設定 → 尚未到期才算
+    if (!end) return true;
+    const endTime = new Date(end).getTime();
+    return Number.isFinite(endTime) && endTime > Date.now();
+  };
+  const displayPrice = p => isSaleActive(p) ? Number(p.salePrice) : Number(p.price || 0);
+  const stockValue = p => p.stock === undefined || p.stock === null || p.stock === "" ? null : Number(p.stock);
+  const isAvailable = p => {
+    const status = getStatus(p);
+    const stock = stockValue(p);
+    return !["下架","暫停販售","停售","disabled","paused"].includes(status) && (stock === null || stock > 0);
+  };
 
-  function escapeHtml(value) {
-    return String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  function formatCountdown(end) {
+    const ms = new Date(end).getTime() - Date.now();
+    if (!Number.isFinite(ms) || ms <= 0) return "優惠已結束";
+    const d = Math.floor(ms / 86400000);
+    const h = Math.floor(ms / 3600000) % 24;
+    const m = Math.floor(ms / 60000) % 60;
+    const s = Math.floor(ms / 1000) % 60;
+    return `限時優惠 ${d ? d + "天 " : ""}${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
   }
 
-  function renderProducts() {
-    const grid = document.getElementById('productGrid');
-    if (!products.length) {
+  // ---------- 商品列表渲染 ----------
+  function renderEnhancedProducts(animate = true) {
+    if (!productsLoaded) return;
+    const grid = document.getElementById("productGrid");
+    const search = document.getElementById("shopSearchInput").value.trim().toLowerCase();
+    const cat = document.getElementById("shopCategoryFilter").value;
+
+    if (!shopProducts.length) {
+      grid.classList.remove("grid-animate");
       grid.innerHTML = '<div class="col-span-full bg-white rounded-2xl border border-slate-200 p-8 text-center text-xs text-slate-400">目前尚無商品，請稍後再來。</div>';
       return;
     }
-    grid.innerHTML = products.map(p => `
-      <article class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:-translate-y-0.5 hover:shadow-md transition">
-        <div class="h-32 bg-gradient-to-br from-indigo-50 to-slate-100 flex items-center justify-center overflow-hidden">
-          ${p.image ? `<img src="${escapeHtml(p.image)}" class="w-full h-full object-cover" onerror="this.style.display='none'">` : '<i data-lucide="package" class="w-10 h-10 text-indigo-300"></i>'}
+
+    let list = shopProducts.filter(p => {
+      const text = `${p.name || ""} ${p.game || ""} ${p.category || ""}`.toLowerCase();
+      return (!search || text.includes(search)) && (cat === "all" || String(p.category || "未分類") === cat);
+    });
+
+    if (shopViewMode === "hot") list.sort((a,b) => getSold(b) - getSold(a));
+    if (shopViewMode === "priceAsc") list.sort((a,b) => displayPrice(a) - displayPrice(b));
+
+    grid.classList.toggle("grid-animate", animate);
+
+    if (!list.length) {
+      grid.innerHTML = '<div class="col-span-full bg-white rounded-2xl border border-slate-200 p-8 text-center text-xs text-slate-400">找不到符合條件的商品。</div>';
+      return;
+    }
+
+    grid.innerHTML = list.map((p, i) => {
+      const price = displayPrice(p);
+      const sale = isSaleActive(p);
+      const stock = stockValue(p);
+      const status = getStatus(p);
+      const sold = getSold(p);
+      const unavailable = !isAvailable(p);
+      const end = p.saleEnd || p.discountEnd || p.promotionEnd;
+      return `<article class="product-card relative bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden ${unavailable ? "product-unavailable" : ""}" style="animation-delay:${Math.min(i * 0.06, 0.5)}s">
+        ${sale ? `<span class="product-sale-badge badge-pulse bg-rose-500 text-white text-[10px] px-2 py-1 rounded-full font-extrabold">限時特價</span>` : ""}
+        ${i < 3 && sold > 0 && shopViewMode === "hot" ? `<span class="product-hot-badge badge-hot-pulse bg-amber-100 text-amber-700 text-[10px] px-2 py-1 rounded-full font-extrabold">🔥 熱門 #${i+1}</span>` : ""}
+        <div class="product-image-wrap h-32 bg-gradient-to-br from-indigo-50 to-slate-100 flex items-center justify-center">
+          ${p.image ? `<img src="${esc(p.image)}" class="w-full h-full object-cover" onerror="this.style.display='none'">` : '<span class="text-4xl">📦</span>'}
         </div>
         <div class="p-4">
-          <div class="text-[10px] font-bold text-indigo-500 uppercase tracking-wider">${escapeHtml(p.game || '精選商品')}</div>
-          <h3 class="font-extrabold text-slate-900 mt-1">${escapeHtml(p.name)}</h3>
-          <p class="text-xs text-slate-400 mt-1 min-h-[32px]">${escapeHtml(p.description || '點擊立即購買，商品資料會自動帶入下單表格。')}</p>
-          <div class="flex items-center justify-between gap-3 mt-4">
-            <span class="text-lg font-black text-indigo-600">NT$${Number(p.price || 0).toLocaleString()}</span>
-            <button onclick="selectProduct('${p.docId}')" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-sm transition">立即購買</button>
+          <div class="text-[10px] font-bold text-indigo-500 uppercase tracking-wider">${esc(p.game || "精選商品")} ${p.category ? "・" + esc(p.category) : ""}</div>
+          <h3 class="font-extrabold text-slate-900 mt-1">${esc(p.name)}</h3>
+          <p class="text-xs text-slate-400 mt-1 min-h-[32px]">${esc(p.description || "精選商城商品")}</p>
+          ${sale && end ? `<div class="mt-2 text-xs text-rose-500 font-bold countdown" data-sale-end="${esc(end)}">${esc(formatCountdown(end))}</div>` : ""}
+          <div class="flex items-end justify-between gap-3 mt-3">
+            <div>
+              ${sale ? `<div class="text-xs text-slate-400 line-through">NT$${Number(p.price || 0).toLocaleString()}</div>` : ""}
+              <span class="text-lg font-black ${sale ? "text-rose-600" : "text-indigo-600"}">NT$${price.toLocaleString()}</span>
+            </div>
+            <span class="text-[10px] ${stock !== null && stock <= 5 ? "text-rose-500" : "text-slate-400"}">${stock === null ? "庫存充足" : stock <= 0 ? "售罄" : "庫存 " + stock}</span>
           </div>
+          <button ${unavailable ? "disabled" : ""} onclick="window.zahBuyNow('${esc(p.docId)}')" class="premium-cta shine-sweep ripple-host mt-3 w-full px-3 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white text-xs font-bold transition" style="--cta-shadow: rgba(79,70,229,.4);">${unavailable ? esc(status === "上架" ? "暫時無法購買" : status) : "立即購買"}</button>
+          <div class="mt-2 text-[10px] text-slate-400">已售 ${sold.toLocaleString()} 件</div>
         </div>
-      </article>`).join('');
-    if (window.lucide) lucide.createIcons();
+      </article>`;
+    }).join("");
   }
 
-  function subscribeProducts() {
-    onSnapshot(collection(db, 'products'), snapshot => {
-      products = snapshot.docs.map(d => ({ docId: d.id, ...d.data() }));
-      products.sort((a,b) => String(a.name || '').localeCompare(String(b.name || ''), 'zh-Hant'));
-      renderProducts();
-    }, err => {
-      console.error(err);
-      document.getElementById('productGrid').innerHTML = '<div class="col-span-full bg-white rounded-2xl border border-rose-100 p-8 text-center text-xs text-rose-500">商品載入失敗，請重新整理。</div>';
+  function renderCategories() {
+    const select = document.getElementById("shopCategoryFilter");
+    const current = select.value;
+    const cats = [...new Set(shopProducts.map(p => String(p.category || "未分類")).filter(Boolean))].sort();
+    select.innerHTML = '<option value="all">全部分類</option>' + cats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
+    if (cats.includes(current)) select.value = current;
+  }
+
+  function renderPopular() {
+    const panel = document.getElementById("popularProductsPanel");
+    const list = document.getElementById("popularProductsList");
+    const top = [...shopProducts].filter(p => getSold(p) > 0).sort((a,b) => getSold(b) - getSold(a)).slice(0, 3);
+    if (!top.length) { panel.classList.add("hidden"); return; }
+    panel.classList.remove("hidden");
+    list.innerHTML = top.map((p, i) => `<div class="rounded-2xl border border-slate-200 p-3 flex items-center gap-3" style="animation-delay:${i * 0.08}s">
+      <span class="text-xl font-black text-amber-500">#${i + 1}</span>
+      <div class="min-w-0 flex-1"><div class="font-bold text-sm truncate">${esc(p.name)}</div><div class="text-xs text-slate-400">已售 ${getSold(p).toLocaleString()} 件</div></div>
+      <span class="font-black text-indigo-600">NT$${displayPrice(p).toLocaleString()}</span>
+    </div>`).join("");
+  }
+
+  const saleSignature = () => shopProducts.map(p => isSaleActive(p) ? "1" : "0").join("");
+
+  onSnapshot(collection(db, "products"), snap => {
+    shopProducts = snap.docs.map(d => ({ docId: d.id, ...d.data() }));
+    productsLoaded = true;
+    lastSaleSig = saleSignature();
+    renderCategories();
+    renderPopular();
+    renderEnhancedProducts(true);
+  }, err => {
+    console.error("商城商品同步失敗", err);
+    document.getElementById("productGrid").innerHTML = '<div class="col-span-full bg-white rounded-2xl border border-rose-100 p-8 text-center text-xs text-rose-500">商品載入失敗，請重新整理。</div>';
+  });
+
+  // 每秒只更新倒數文字；只有優惠狀態真的改變才重繪（避免卡片閃爍與動畫重播）
+  setInterval(() => {
+    document.querySelectorAll("[data-sale-end]").forEach(el => {
+      el.textContent = formatCountdown(el.dataset.saleEnd);
     });
+    if (!productsLoaded) return;
+    const sig = saleSignature();
+    if (sig !== lastSaleSig) {
+      lastSaleSig = sig;
+      renderPopular();
+      renderEnhancedProducts(false);
+    }
+  }, 1000);
+
+  // ---------- 篩選 / 排序 ----------
+  const sortHotBtn = document.getElementById("shopSortHot");
+  const sortPriceBtn = document.getElementById("shopSortPrice");
+  function setSortMode(mode) {
+    shopViewMode = mode;
+    sortHotBtn.classList.toggle("sort-active", mode === "hot");
+    sortPriceBtn.classList.toggle("sort-active", mode === "priceAsc");
+    renderEnhancedProducts(true);
+  }
+  document.getElementById("shopSearchInput").addEventListener("input", () => renderEnhancedProducts(false));
+  document.getElementById("shopCategoryFilter").addEventListener("change", () => renderEnhancedProducts(true));
+  sortHotBtn.addEventListener("click", () => setSortMode("hot"));
+  sortPriceBtn.addEventListener("click", () => setSortMode("priceAsc"));
+
+  // ---------- 選擇商品並帶入表單 ----------
+  function flash(el) {
+    el.classList.remove("flash-fill"); void el.offsetWidth; el.classList.add("flash-fill");
   }
 
-  window.selectProduct = function(docId) {
-    selectedProduct = products.find(p => p.docId === docId) || null;
-    if (!selectedProduct) return;
-    window.__zahSelectedCartProduct = null;
-    // 選擇商品後，商品名稱與遊戲名稱都由後台商品資料自動帶入
-    document.getElementById('productName').value = selectedProduct.name || '';
-    document.getElementById('gameName').value = selectedProduct.game || '';
-    document.getElementById('productName').readOnly = true;
-    document.getElementById('gameName').readOnly = true;
-    document.getElementById('productName').classList.add('bg-indigo-50', 'text-indigo-700');
-    document.getElementById('gameName').classList.add('bg-indigo-50', 'text-indigo-700');
+  window.zahBuyNow = function(docId) {
+    const p = shopProducts.find(x => x.docId === docId);
+    if (!p) return;
+    if (!isAvailable(p)) { toast("此商品目前無法購買。", "error"); return; }
+    selectedProduct = p;
 
-    // 判斷此商品目前是否為優惠價（邏輯與送出訂單時的判斷一致）
-    const saleEnd = selectedProduct.saleEnd || selectedProduct.discountEnd || selectedProduct.promotionEnd;
-    const salePriceNum = Number(selectedProduct.salePrice);
-    const saleActive = Number.isFinite(salePriceNum) && salePriceNum > 0 && (
-      !saleEnd ||
-      (Number.isFinite(new Date(saleEnd).getTime()) && new Date(saleEnd).getTime() > Date.now())
-    );
-    const originalPrice = Number(selectedProduct.price || 0);
-    const shownPrice = saleActive ? salePriceNum : originalPrice;
+    const productInput = document.getElementById("productName");
+    const gameInput = document.getElementById("gameName");
+    productInput.value = p.name || "";
+    gameInput.value = p.game || "";
+    productInput.readOnly = true;
+    gameInput.readOnly = true;
+    productInput.classList.add("bg-indigo-50", "text-indigo-700");
+    gameInput.classList.add("bg-indigo-50", "text-indigo-700");
+    flash(productInput); flash(gameInput);
 
-    const priceEl = document.getElementById('selectedProductPrice');
+    const saleActive = isSaleActive(p);
+    const originalPrice = Number(p.price || 0);
+    const shownPrice = displayPrice(p);
+    const priceEl = document.getElementById("selectedProductPrice");
     priceEl.textContent = saleActive
       ? `商品售價：NT$${shownPrice.toLocaleString()}（優惠價，原價 NT$${originalPrice.toLocaleString()}）`
       : `商品售價：NT$${shownPrice.toLocaleString()}`;
-    priceEl.classList.remove('hidden');
-    document.getElementById('customer').focus();
-    document.getElementById('orderForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    priceEl.classList.remove("hidden");
+    priceEl.classList.remove("price-pop"); void priceEl.offsetWidth; priceEl.classList.add("price-pop");
+
+    toast("已帶入商品：" + (p.name || ""), "info", 2200);
+    document.getElementById("orderForm").scrollIntoView({ behavior: "smooth", block: "center" });
+    setTimeout(() => document.getElementById("customer").focus({ preventScroll: true }), 450);
   };
 
-  subscribeProducts();
+  // ---------- 送出訂單 ----------
+  function resetProductLock() {
+    ["productName", "gameName"].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.readOnly = false;
+      el.classList.remove("bg-indigo-50", "text-indigo-700");
+    });
+    document.getElementById("selectedProductPrice").classList.add("hidden");
+  }
 
   document.getElementById("orderForm").addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const btn = document.getElementById("submitBtn");
     btn.disabled = true;
+    btn.classList.add("btn-loading-spin");
     btn.textContent = "建立訂單中…";
 
+    let orderId = "";
     try {
       const customer = document.getElementById("customer").value.trim();
       const gameName = document.getElementById("gameName").value.trim();
       const gameUid = document.getElementById("gameUid").value.trim();
       const productName = document.getElementById("productName").value.trim();
       const memo = document.getElementById("memo").value.trim();
-      const cartSelectedProduct = window.__zahSelectedCartProduct || null;
-      const orderProduct = selectedProduct || cartSelectedProduct;
-      const saleEnd = orderProduct?.saleEnd || orderProduct?.discountEnd || orderProduct?.promotionEnd;
-      const salePrice = Number(orderProduct?.salePrice);
-      const saleActive = Number.isFinite(salePrice) && salePrice > 0 && (
-        !saleEnd ||
-        (Number.isFinite(new Date(saleEnd).getTime()) && new Date(saleEnd).getTime() > Date.now())
-      );
-      const productPrice = orderProduct
-        ? Number(saleActive ? salePrice : (orderProduct.price || 0))
-        : 0;
-      const productCost = orderProduct ? Number(orderProduct.cost || 0) : 0;
 
       if (!customer || !gameName || !gameUid || !productName) {
-        alert("請完整填寫必要資料。");
+        toast("請完整填寫必要資料。", "error");
         return;
       }
 
-      const orderId = await getNextOrderId();
-      const now = new Date();
+      const saleActive = selectedProduct ? isSaleActive(selectedProduct) : false;
+      const productPrice = selectedProduct
+        ? Number(saleActive ? selectedProduct.salePrice : (selectedProduct.price || 0))
+        : 0;
+      const productCost = selectedProduct ? Number(selectedProduct.cost || 0) : 0;
 
+      orderId = await getNextOrderId();
+      const now = new Date();
       const date =
         now.getFullYear() + "-" +
         String(now.getMonth() + 1).padStart(2, "0") + "-" +
@@ -385,7 +703,7 @@
         String(now.getHours()).padStart(2, "0") + ":" +
         String(now.getMinutes()).padStart(2, "0");
 
-      const newOrder = {
+      await addDoc(collection(db, "orders"), {
         id: orderId,
         customer: customer,
         product: productName,
@@ -393,381 +711,72 @@
         cost: productCost,
         rating: 0,
         status: "未付款",
-        memo: [
-          `遊戲名稱：${gameName}`,
-          `遊戲UID：${gameUid}`,
-          memo
-        ].filter(Boolean).join("\n"),
+        memo: [`遊戲名稱：${gameName}`, `遊戲UID：${gameUid}`, memo].filter(Boolean).join("\n"),
         date: date
-      };
+      });
+    } catch (error) {
+      console.error(error);
+      toast("訂單建立失敗：" + (error && error.message ? error.message : "請稍後再試"), "error", 4500);
+      return;
+    } finally {
+      btn.disabled = false;
+      btn.classList.remove("btn-loading-spin");
+      btn.textContent = "送出訂單";
+    }
 
-      await addDoc(collection(db, "orders"), newOrder);
-
+    // 到這裡代表訂單已成功寫入；以下只是畫面收尾，任何小問題都不應再跳出「建立失敗」
+    try {
       lastOrderId = orderId;
-      document.getElementById("successOrderId").textContent = orderId;
-
-      // 直接把訂單編號帶到原本的 rate.html
-      document.getElementById("rateLink").href =
-        "rate.html?order=" + encodeURIComponent(orderId);
+      const idEl = document.getElementById("successOrderId");
+      idEl.innerHTML = [...orderId].map((ch, i) => `<span class="id-char" style="animation-delay:${0.3 + i * 0.05}s">${esc(ch)}</span>`).join("");
+      document.getElementById("rateLink").href = "rate.html?order=" + encodeURIComponent(orderId);
 
       const modal = document.getElementById("successModal");
-      modal.classList.remove("hidden");
+      modal.classList.remove("hidden", "closing");
       modal.classList.add("flex");
 
       document.getElementById("orderForm").reset();
-
-      const purchasedDocId = window.__zahSelectedCartProduct?.docId || selectedProduct?.docId;
-      if (purchasedDocId) {
-        const cartRow = cart.find(x => x.docId === purchasedDocId);
-        if (cartRow) {
-          cartRow.qty = Math.max(0, Number(cartRow.qty || 0) - 1);
-          if (cartRow.qty <= 0) cart = cart.filter(x => x.docId !== purchasedDocId);
-          saveCart();
-        }
-      }
-      window.__zahSelectedCartProduct = null;
       selectedProduct = null;
+      resetProductLock();
 
-      ["productName","gameName"].forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.readOnly = false;
-        el.classList.remove("bg-indigo-50", "text-indigo-700");
-      });
-      document.getElementById("selectedProductPrice").classList.add("hidden");
-
-    } catch (error) {
-      alert("訂單建立失敗：" + error.message);
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "送出訂單";
+      try {
+        const colors = ["#6366f1", "#a5b4fc", "#34d399", "#fbbf24", "#f472b6"];
+        confetti({ particleCount: 80, spread: 70, origin: { y: 0.62 }, colors });
+        setTimeout(() => confetti({ particleCount: 45, angle: 60, spread: 60, origin: { x: 0, y: 0.7 }, colors }), 180);
+        setTimeout(() => confetti({ particleCount: 45, angle: 120, spread: 60, origin: { x: 1, y: 0.7 }, colors }), 180);
+      } catch (_) {}
+    } catch (uiError) {
+      console.warn("成功畫面顯示時發生小問題（訂單已建立）：", uiError);
     }
   });
 
   window.copyOrder = async () => {
     if (!lastOrderId) return;
-
     try {
       await navigator.clipboard.writeText(lastOrderId);
-      alert("已複製訂單編號：" + lastOrderId);
+      toast("已複製訂單編號：" + lastOrderId, "success");
     } catch (e) {
-      alert("訂單編號：" + lastOrderId);
+      toast("訂單編號：" + lastOrderId, "info", 5000);
     }
   };
 
   window.closeSuccess = () => {
     const modal = document.getElementById("successModal");
-    modal.classList.add("hidden");
-    modal.classList.remove("flex");
+    if (modal.classList.contains("hidden")) return;
+    modal.classList.add("closing");
+    setTimeout(() => {
+      modal.classList.add("hidden");
+      modal.classList.remove("flex", "closing");
+    }, 220);
   };
+
+  document.getElementById("successModal").addEventListener("click", e => {
+    if (e.target.id === "successModal") window.closeSuccess();
+  });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") window.closeSuccess(); });
 
   lucide.createIcons();
 </script>
-
-  <!-- 🛍️ 商城進階功能：不改動原本下單流程，只在原商品資料上增加前台功能 -->
-  <script type="module">
-    import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    const shopFirebaseConfig = {
-      apiKey: "AIzaSyBjpZ8i-lsWHjrn9wHAOqTFlxKKUWkdZyQ",
-      authDomain: "project-1584313366507677848.firebaseapp.com",
-      projectId: "project-1584313366507677848",
-      storageBucket: "project-1584313366507677848.firebasestorage.app",
-      messagingSenderId: "486873849194",
-      appId: "1:486873849194:web:3eb6181053f070bda05913",
-      measurementId: "G-NYQQKNLE50"
-    };
-
-    const shopApp = getApps().length ? getApp() : initializeApp(shopFirebaseConfig);
-    const shopDb = getFirestore(shopApp);
-    let shopProducts = [];
-    let shopViewMode = "hot";
-
-    // 🛒 購物車資料容錯：避免舊資料損壞造成整個商城進階腳本停止。
-    function loadCartSafe(){
-      try {
-        const raw = localStorage.getItem("zahShopCart");
-        const parsed = raw ? JSON.parse(raw) : [];
-        if (!Array.isArray(parsed)) return [];
-        return parsed
-          .filter(x => x && typeof x.docId === "string" && x.docId.trim())
-          .map(x => ({ docId: x.docId, qty: Math.max(1, Math.floor(Number(x.qty) || 1)) }));
-      } catch (e) {
-        console.warn("購物車資料格式異常，已自動重設：", e);
-        try { localStorage.removeItem("zahShopCart"); } catch (_) {}
-        return [];
-      }
-    }
-
-    let cart = loadCartSafe();
-
-    const esc = v => String(v ?? "").replace(/[&<>'"]/g, ch => ({
-      "&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"
-    }[ch]));
-
-    const getStatus = p => String(p.status || p.saleStatus || "上架").trim();
-    const isSaleActive = p => {
-      const salePrice = Number(p.salePrice);
-      if (!Number.isFinite(salePrice) || salePrice <= 0) return false;
-
-      const end = p.saleEnd || p.discountEnd || p.promotionEnd;
-      // 後台若沒有設定優惠結束時間，優惠價持續有效；
-      // 有設定結束時間時，只有尚未到期才算優惠中。
-      if (!end) return true;
-
-      const endTime = new Date(end).getTime();
-      return Number.isFinite(endTime) && endTime > Date.now();
-    };
-    const displayPrice = p => isSaleActive(p) ? Number(p.salePrice) : Number(p.price || 0);
-    const stockValue = p => p.stock === undefined || p.stock === null || p.stock === "" ? null : Number(p.stock);
-    const isAvailable = p => {
-      const status = getStatus(p);
-      const stock = stockValue(p);
-      return !["下架","暫停販售","停售","disabled","paused"].includes(status) && (stock === null || stock > 0);
-    };
-
-    function saveCart(){
-      const validIds = new Set(shopProducts.map(p => p.docId));
-      cart = cart
-        .filter(x => validIds.has(x.docId))
-        .map(x => ({ docId: x.docId, qty: Math.max(1, Math.floor(Number(x.qty) || 1)) }));
-      localStorage.setItem("zahShopCart", JSON.stringify(cart));
-      renderCart();
-    }
-
-    function addCart(docId){
-      const p = shopProducts.find(x => x.docId === docId);
-      if (!p || !isAvailable(p)) return alert("此商品目前無法購買。");
-
-      const stock = stockValue(p);
-      const row = cart.find(x => x.docId === docId);
-      if (row) {
-        const nextQty = Math.max(1, Math.floor(Number(row.qty) || 1)) + 1;
-        if (stock !== null && nextQty > stock) {
-          row.qty = Math.max(1, stock);
-          saveCart();
-          return alert("已達目前庫存數量。");
-        }
-        row.qty = nextQty;
-      } else {
-        cart.push({ docId, qty: 1 });
-      }
-      saveCart();
-      alert("已加入購物車！");
-    }
-
-    function removeCart(docId){
-      cart = cart.filter(x => x.docId !== docId);
-      saveCart();
-    }
-
-    function changeCartQty(docId, delta){
-      const row = cart.find(x => x.docId === docId);
-      const p = shopProducts.find(x => x.docId === docId);
-      if (!row || !p) return;
-
-      let nextQty = Math.max(1, Math.floor(Number(row.qty) || 1)) + Number(delta || 0);
-      const stock = stockValue(p);
-
-      if (stock !== null) {
-        if (stock <= 0) return removeCart(docId);
-        nextQty = Math.min(nextQty, stock);
-      }
-
-      if (nextQty <= 0) removeCart(docId);
-      else {
-        row.qty = nextQty;
-        saveCart();
-      }
-    }
-
-    function renderCart(){
-      const productMap = new Map(shopProducts.map(p => [p.docId, p]));
-      cart = cart
-        .filter(row => productMap.has(row.docId))
-        .map(row => ({ docId: row.docId, qty: Math.max(1, Math.floor(Number(row.qty) || 1)) }));
-
-      const count = cart.reduce((n,x)=>n + Number(x.qty || 0),0);
-      document.getElementById("cartCountBadge").textContent = count;
-
-      const box = document.getElementById("cartItems");
-      let total = 0;
-
-      if (!cart.length) {
-        box.innerHTML = '<div class="py-10 text-center text-sm text-slate-400">購物車目前是空的</div>';
-      } else {
-        box.innerHTML = cart.map(row => {
-          const p = productMap.get(row.docId);
-          if (!p) return "";
-
-          const price = displayPrice(p);
-          total += price * row.qty;
-          const stock = stockValue(p);
-          const unavailable = !isAvailable(p);
-          const maxed = stock !== null && row.qty >= stock;
-
-          return `<div class="rounded-2xl border border-slate-200 p-3 flex items-center gap-3 ${unavailable ? "opacity-60" : ""}">
-            <div class="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden shrink-0">
-              ${p.image ? `<img src="${esc(p.image)}" class="w-full h-full object-cover" onerror="this.style.display='none'>` : '<div class="w-full h-full flex items-center justify-center">📦</div>'}
-            </div>
-            <div class="min-w-0 flex-1">
-              <div class="font-bold text-sm truncate">${esc(p.name)}</div>
-              <div class="text-xs text-indigo-600 font-bold">NT$${price.toLocaleString()} × ${row.qty}</div>
-              ${stock !== null ? `<div class="text-[10px] text-slate-400 mt-0.5">庫存 ${stock}</div>` : ""}
-            </div>
-            <div class="flex items-center gap-2">
-              <button type="button" onclick="window.zahCartQty('${esc(row.docId)}',-1)" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200">−</button>
-              <span class="min-w-5 text-center text-sm font-bold">${row.qty}</span>
-              <button type="button" ${maxed || unavailable ? "disabled" : ""} onclick="window.zahCartQty('${esc(row.docId)}',1)" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-40">＋</button>
-            </div>
-            <button type="button" onclick="window.zahCartRemove('${esc(row.docId)}')" class="text-rose-500 hover:text-rose-700 text-xs font-bold">刪除</button>
-          </div>`;
-        }).join("");
-      }
-
-      document.getElementById("cartTotal").textContent = "NT$" + total.toLocaleString();
-    }
-
-    function formatCountdown(end){
-      const ms = new Date(end).getTime() - Date.now();
-      if (!Number.isFinite(ms) || ms <= 0) return "優惠已結束";
-      const d = Math.floor(ms / 86400000);
-      const h = Math.floor(ms / 3600000) % 24;
-      const m = Math.floor(ms / 60000) % 60;
-      const s = Math.floor(ms / 1000) % 60;
-      return `限時優惠 ${d ? d+"天 " : ""}${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;
-    }
-
-    function renderEnhancedProducts(){
-      const grid = document.getElementById("productGrid");
-      const search = document.getElementById("shopSearchInput").value.trim().toLowerCase();
-      const cat = document.getElementById("shopCategoryFilter").value;
-
-      let list = shopProducts.filter(p => {
-        const text = `${p.name || ""} ${p.game || ""} ${p.category || ""}`.toLowerCase();
-        return (!search || text.includes(search)) && (cat === "all" || String(p.category || "未分類") === cat);
-      });
-
-      if (shopViewMode === "hot") list.sort((a,b)=>Number(b.sold || b.sales || b.totalSold || 0)-Number(a.sold || a.sales || a.totalSold || 0));
-      if (shopViewMode === "priceAsc") list.sort((a,b)=>displayPrice(a)-displayPrice(b));
-
-      if (!list.length) {
-        grid.innerHTML = '<div class="col-span-full bg-white rounded-2xl border border-slate-200 p-8 text-center text-xs text-slate-400">找不到符合條件的商品。</div>';
-        return;
-      }
-
-      grid.innerHTML = list.map((p,i) => {
-        const price = displayPrice(p);
-        const sale = isSaleActive(p);
-        const stock = stockValue(p);
-        const status = getStatus(p);
-        const sold = Number(p.sold || p.sales || p.totalSold || 0);
-        const unavailable = !isAvailable(p);
-        const end = p.saleEnd || p.discountEnd || p.promotionEnd;
-        return `<article class="relative bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden hover:-translate-y-0.5 hover:shadow-md transition ${unavailable ? "product-unavailable" : ""}">
-          ${sale ? `<span class="product-sale-badge bg-rose-500 text-white text-[10px] px-2 py-1 rounded-full font-extrabold">限時特價</span>` : ""}
-          ${i < 3 && sold > 0 ? `<span class="product-hot-badge bg-amber-100 text-amber-700 text-[10px] px-2 py-1 rounded-full font-extrabold">🔥 熱門 #${i+1}</span>` : ""}
-          <div class="h-32 bg-gradient-to-br from-indigo-50 to-slate-100 flex items-center justify-center overflow-hidden">
-            ${p.image ? `<img src="${esc(p.image)}" class="w-full h-full object-cover" onerror="this.style.display='none'">` : '<span class="text-4xl">📦</span>'}
-          </div>
-          <div class="p-4">
-            <div class="text-[10px] font-bold text-indigo-500 uppercase tracking-wider">${esc(p.game || "精選商品")} ${p.category ? "・"+esc(p.category) : ""}</div>
-            <h3 class="font-extrabold text-slate-900 mt-1">${esc(p.name)}</h3>
-            <p class="text-xs text-slate-400 mt-1 min-h-[32px]">${esc(p.description || "精選商城商品")}</p>
-            ${sale ? `<div class="mt-2 text-xs text-rose-500 font-bold countdown" data-sale-end="${esc(end)}">${esc(formatCountdown(end))}</div>` : ""}
-            <div class="flex items-end justify-between gap-3 mt-3">
-              <div>
-                ${sale ? `<div class="text-xs text-slate-400 line-through">NT$${Number(p.price||0).toLocaleString()}</div>` : ""}
-                <span class="text-lg font-black ${sale ? "text-rose-600" : "text-indigo-600"}">NT$${price.toLocaleString()}</span>
-              </div>
-              <span class="text-[10px] ${stock !== null && stock <= 5 ? "text-rose-500" : "text-slate-400"}">${stock === null ? "庫存充足" : stock <= 0 ? "售罄" : "庫存 "+stock}</span>
-            </div>
-            <div class="flex gap-2 mt-3">
-              <button ${unavailable ? "disabled" : ""} onclick="window.zahAddCart('${esc(p.docId)}')" class="flex-1 px-3 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-40 text-slate-700 text-xs font-bold">加入購物車</button>
-              <button ${unavailable ? "disabled" : ""} onclick="window.zahBuyNow('${esc(p.docId)}')" class="flex-1 px-3 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-300 text-white text-xs font-bold">${unavailable ? esc(status || "暫停販售") : "立即購買"}</button>
-            </div>
-            <div class="mt-2 text-[10px] text-slate-400">已售 ${sold.toLocaleString()} 件</div>
-          </div>
-        </article>`;
-      }).join("");
-      if (window.lucide) lucide.createIcons();
-    }
-
-    function renderCategories(){
-      const select = document.getElementById("shopCategoryFilter");
-      const current = select.value;
-      const cats = [...new Set(shopProducts.map(p => String(p.category || "未分類")).filter(Boolean))].sort();
-      select.innerHTML = '<option value="all">全部分類</option>' + cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
-      if (cats.includes(current)) select.value = current;
-    }
-
-    function renderPopular(){
-      const panel = document.getElementById("popularProductsPanel");
-      const list = document.getElementById("popularProductsList");
-      const top = [...shopProducts].sort((a,b)=>Number(b.sold||b.sales||b.totalSold||0)-Number(a.sold||a.sales||a.totalSold||0)).filter(p=>Number(p.sold||p.sales||p.totalSold||0)>0).slice(0,3);
-      if (!top.length) { panel.classList.add("hidden"); return; }
-      panel.classList.remove("hidden");
-      list.innerHTML = top.map((p,i)=>`<div class="rounded-2xl border border-slate-200 p-3 flex items-center gap-3">
-        <span class="text-xl font-black text-amber-500">#${i+1}</span>
-        <div class="min-w-0 flex-1"><div class="font-bold text-sm truncate">${esc(p.name)}</div><div class="text-xs text-slate-400">已售 ${Number(p.sold||p.sales||p.totalSold||0).toLocaleString()} 件</div></div>
-        <span class="font-black text-indigo-600">NT$${displayPrice(p).toLocaleString()}</span>
-      </div>`).join("");
-    }
-
-    window.zahAddCart = addCart;
-    window.zahCartRemove = removeCart;
-    window.zahCartQty = changeCartQty;
-    window.zahBuyNow = docId => {
-      const p = shopProducts.find(x=>x.docId===docId);
-      if (!p || !isAvailable(p)) return alert("此商品目前無法購買。");
-      const original = window.selectProduct;
-      if (typeof original === "function") original(docId);
-      window.__zahSelectedCartProduct = p;
-      setTimeout(()=>document.getElementById("orderForm").scrollIntoView({behavior:"smooth",block:"center"}),100);
-    };
-
-    document.getElementById("shopSearchInput").addEventListener("input", renderEnhancedProducts);
-    document.getElementById("shopCategoryFilter").addEventListener("change", renderEnhancedProducts);
-    document.getElementById("shopSortHot").addEventListener("click",()=>{shopViewMode="hot";renderEnhancedProducts();});
-    document.getElementById("shopSortPrice").addEventListener("click",()=>{shopViewMode="priceAsc";renderEnhancedProducts();});
-    document.getElementById("cartOpenBtn").addEventListener("click",()=>{
-      renderCart();
-      const modal = document.getElementById("cartModal");
-      modal.classList.remove("hidden");
-      modal.classList.add("flex");
-    });
-    document.getElementById("cartCloseBtn").addEventListener("click",()=>{document.getElementById("cartModal").classList.add("hidden");document.getElementById("cartModal").classList.remove("flex");});
-    document.getElementById("cartClearBtn").addEventListener("click",()=>{cart=[];saveCart();});
-    document.getElementById("cartCheckoutBtn").addEventListener("click",()=>{
-      const row = cart.find(x => {
-        const p = shopProducts.find(item => item.docId === x.docId);
-        return p && isAvailable(p);
-      });
-      if (!row) return alert(cart.length ? "購物車中的商品目前都無法購買。" : "購物車目前沒有商品。");
-      window.zahBuyNow(row.docId);
-      document.getElementById("cartModal").classList.add("hidden");
-      document.getElementById("cartModal").classList.remove("flex");
-    });
-
-    onSnapshot(collection(shopDb,"products"), snap=>{
-      shopProducts=snap.docs.map(d=>({docId:d.id,...d.data()}));
-      renderCategories();
-      renderPopular();
-      renderEnhancedProducts();
-      renderCart();
-    }, err=>console.error("商城商品同步失敗",err));
-
-    setInterval(()=>{
-      document.querySelectorAll("[data-sale-end]").forEach(el=>{
-        el.textContent=formatCountdown(el.dataset.saleEnd);
-      });
-      if (shopProducts.length) renderEnhancedProducts();
-    },1000);
-
-    renderCart();
-  </script>
-
 
   <!-- 🏠 首頁內容同步：只讀取 index.html 儲存的 homepage 設定，不影響原本商城功能 -->
   <script type="module">
@@ -799,7 +808,7 @@
       const marqueeBox = byId('homepageMarquee');
 
       if (bannerUrl) {
-        byId('homepageBannerImage').src = bannerUrl;
+        if (byId('homepageBannerImage').getAttribute('src') !== bannerUrl) byId('homepageBannerImage').src = bannerUrl;
         banner.classList.remove('hidden');
       } else {
         byId('homepageBannerImage').removeAttribute('src');
@@ -809,6 +818,7 @@
       if (notice) {
         byId('homepageNoticeText').textContent = notice;
         noticeBox.classList.remove('hidden');
+        noticeBox.classList.add('in');
       } else {
         byId('homepageNoticeText').textContent = '';
         noticeBox.classList.add('hidden');
