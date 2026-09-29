@@ -403,7 +403,30 @@
 
         /* 圖示徽章統一柔光底 */
         .icon-chip { box-shadow: inset 0 0 0 1px rgba(255,255,255,.06), 0 4px 14px -6px rgba(0,0,0,.5); }
-    </style>
+    
+        /* ===== BOSS 倒數 / 稀有度 / VIP / 頒獎典禮 / 黑洞 2.0 ===== */
+        #bossCountdown{position:fixed;inset:0;z-index:160;display:none;align-items:center;justify-content:center;background:radial-gradient(circle at 50% 50%,rgba(124,58,237,.22),rgba(2,6,23,.97) 58%);backdrop-filter:blur(20px);overflow:hidden}
+        #bossCountdown.is-open{display:flex;animation:bossIn .35s ease both}.boss-count-core{position:relative;text-align:center;z-index:3}.boss-count-kicker{font-size:11px;font-weight:1000;letter-spacing:.35em;color:#fde68a}.boss-count-number{font-size:clamp(110px,24vw,260px);font-weight:1000;line-height:.8;color:#fff;text-shadow:0 0 25px #fde68a,0 0 80px #a855f7;animation:bossNumber .82s cubic-bezier(.16,1,.3,1) both}.boss-count-label{margin-top:24px;font-size:clamp(15px,2vw,25px);font-weight:1000;color:#c4b5fd;letter-spacing:.18em}.boss-count-ring{position:absolute;left:50%;top:50%;width:22vw;height:22vw;min-width:180px;min-height:180px;max-width:520px;max-height:520px;border:2px solid rgba(253,230,138,.7);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 50px rgba(250,204,21,.25),inset 0 0 50px rgba(168,85,247,.18);animation:bossRing .9s ease-out both}.boss-count-ring.r2{animation-delay:.12s;border-color:rgba(168,85,247,.5);transform:translate(-50%,-50%) scale(.72)}
+        @keyframes bossIn{from{opacity:0}to{opacity:1}}@keyframes bossNumber{0%{opacity:0;transform:scale(2.3);filter:blur(15px)}45%{opacity:1;transform:scale(.88);filter:blur(0)}100%{transform:scale(1)}}@keyframes bossRing{from{opacity:0;transform:translate(-50%,-50%) scale(.1)}to{opacity:1;transform:translate(-50%,-50%) scale(1.35)}}
+        #awardCeremony{position:fixed;inset:0;z-index:150;display:none;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 50% 42%,rgba(250,204,21,.18),rgba(76,29,149,.18) 30%,rgba(2,6,23,.97) 72%);backdrop-filter:blur(18px);overflow:hidden}.award-card{position:relative;width:min(92vw,720px);padding:42px 28px 34px;text-align:center;border-radius:34px;background:linear-gradient(145deg,rgba(30,41,59,.9),rgba(2,6,23,.9));border:1px solid rgba(255,255,255,.18);box-shadow:0 40px 120px rgba(0,0,0,.75),0 0 90px rgba(250,204,21,.22),inset 0 1px 0 rgba(255,255,255,.14);animation:awardIn .75s cubic-bezier(.16,1,.3,1) both}.award-card::before{content:'';position:absolute;inset:-2px;border-radius:inherit;background:conic-gradient(from 0deg,#fde68a,transparent 15%,#c084fc 35%,transparent 52%,#f472b6 70%,transparent 86%,#fde68a);z-index:-1;filter:blur(1px);animation:awardBorder 4s linear infinite}.award-kicker{font-size:11px;font-weight:1000;letter-spacing:.4em;color:#fde68a}.award-title{font-size:clamp(30px,7vw,68px);font-weight:1000;color:#fff;margin-top:8px;text-shadow:0 0 22px rgba(250,204,21,.45)}.award-icon{font-size:clamp(80px,15vw,150px);margin:18px 0 8px;filter:drop-shadow(0 0 30px rgba(255,255,255,.35));animation:awardIcon 1.4s cubic-bezier(.34,1.56,.64,1) both}.award-rarity{display:inline-flex;padding:7px 16px;border-radius:999px;font-size:12px;font-weight:1000;letter-spacing:.12em;border:1px solid rgba(253,230,138,.5);background:rgba(250,204,21,.1);color:#fde68a}.award-name{font-size:clamp(18px,3vw,30px);font-weight:1000;color:#fff;margin-top:12px}.award-sub{font-size:12px;color:#94a3b8;margin-top:8px}.award-vip{margin-top:18px;font-size:12px;color:#c4b5fd;font-weight:900}.award-bar{height:5px;border-radius:99px;background:linear-gradient(90deg,#fde68a,#c084fc,#f472b6,#fde68a);background-size:250% 100%;animation:awardBar 2s linear infinite;margin-top:20px}.award-spark{position:absolute;width:7px;height:24px;background:#fde68a;box-shadow:0 0 15px currentColor;left:50%;top:50%;animation:awardSpark 1.2s ease-out both;transform-origin:center 120px}.award-close{margin-top:22px;padding:10px 22px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16);color:#e2e8f0;font-size:12px;font-weight:900}.award-close:hover{background:rgba(255,255,255,.14)}
+        @keyframes awardIn{from{opacity:0;transform:scale(.65) translateY(35px)}60%{transform:scale(1.035) translateY(-5px)}to{opacity:1;transform:none}}@keyframes awardIcon{from{opacity:0;transform:scale(.2) rotate(-30deg)}to{opacity:1;transform:scale(1) rotate(0)}}@keyframes awardBorder{to{transform:rotate(360deg)}}@keyframes awardBar{to{background-position:-250% 0}}@keyframes awardSpark{from{opacity:0;transform:rotate(var(--ar)) translateY(0) scale(.4)}20%{opacity:1}to{opacity:0;transform:rotate(var(--ar)) translateY(-260px) scale(1)}}
+        .rarity-common{color:#cbd5e1!important;text-shadow:none}.rarity-rare{color:#60a5fa!important;text-shadow:0 0 15px rgba(96,165,250,.6)}.rarity-epic{color:#c084fc!important;text-shadow:0 0 18px rgba(192,132,252,.65)}.rarity-legendary{color:#fbbf24!important;text-shadow:0 0 20px rgba(251,191,36,.7)}.rarity-mythic{color:#f472b6!important;text-shadow:0 0 25px rgba(244,114,182,.75)}
+        .vip-hud{display:flex;align-items:center;justify-content:center;gap:8px;margin:12px auto 0;width:max-content;max-width:100%;padding:7px 13px;border-radius:999px;background:rgba(15,23,42,.72);border:1px solid rgba(250,204,21,.28);box-shadow:0 0 25px rgba(250,204,21,.08);font-size:10px;font-weight:1000;color:#fde68a;letter-spacing:.08em}.vip-hud b{color:#fff}.vip-dot{width:7px;height:7px;border-radius:50%;background:#fde68a;box-shadow:0 0 10px #fde68a;animation:vipDot 1s ease-in-out infinite alternate}@keyframes vipDot{to{transform:scale(.5);opacity:.4}}
+        #blackHoleOverlay.blackhole-mega{background:radial-gradient(circle at 50% 50%,rgba(124,58,237,.32),rgba(0,0,0,.98) 62%)}#blackHoleOverlay.blackhole-mega::before{content:'';position:absolute;width:45vw;height:45vw;border:2px solid rgba(168,85,247,.4);border-radius:50%;box-shadow:0 0 80px rgba(168,85,247,.35),inset 0 0 80px rgba(236,72,153,.18);animation:blackMegaSpin 2.5s linear infinite}@keyframes blackMegaSpin{to{transform:rotate(360deg) scale(1.08)}}#blackHoleContentBox.blackhole-hero{z-index:2;max-width:650px;background:linear-gradient(145deg,rgba(49,16,74,.78),rgba(2,6,23,.92));border-color:rgba(192,132,252,.65);box-shadow:0 0 120px rgba(168,85,247,.55),inset 0 0 50px rgba(99,102,241,.12)}.blackhole-big{font-size:clamp(90px,18vw,180px);line-height:.8;filter:drop-shadow(0 0 35px rgba(168,85,247,.8));animation:blackholeBig 1.5s ease-in-out infinite alternate}@keyframes blackholeBig{to{transform:scale(1.08) rotate(8deg);filter:drop-shadow(0 0 65px rgba(236,72,153,.9))}}.blackhole-warning{font-size:11px;letter-spacing:.3em;color:#c4b5fd;font-weight:1000}
+        .mega-wheel-physical{transform-origin:center;will-change:transform;}.mega-wheel-stage.physical-spin .mega-wheel-ring{animation:physicalRing .22s linear infinite}.mega-wheel-stage.physical-spin .mega-wheel-pointer{animation:physicalPointer .13s ease-in-out infinite alternate}@keyframes physicalRing{to{transform:rotate(360deg)}}@keyframes physicalPointer{to{transform:translateX(-50%) translateY(7px)}}
+
+/* ===== ZAH LUCK SYSTEM 2.0 ===== */
+#luckSystemHud{position:fixed;right:18px;top:82px;z-index:70;width:min(270px,calc(100vw - 36px));padding:14px 15px;border:1px solid rgba(255,255,255,.16);border-radius:18px;background:rgba(2,6,23,.78);backdrop-filter:blur(18px);box-shadow:0 18px 55px rgba(0,0,0,.38),0 0 30px rgba(129,140,248,.12);color:#fff}
+.luck-hud-top{display:flex;align-items:center;justify-content:space-between;gap:10px}.luck-brand{font-size:10px;letter-spacing:.22em;font-weight:1000;color:#fde68a}.luck-level{font-size:11px;font-weight:1000;color:#c4b5fd}.luck-stat{display:flex;justify-content:space-between;margin-top:9px;font-size:10px;color:#94a3b8}.luck-stat b{color:#fff}.luck-bar{height:7px;margin-top:6px;border-radius:99px;background:#111827;overflow:hidden;border:1px solid rgba(255,255,255,.08)}.luck-fill{height:100%;width:0;background:linear-gradient(90deg,#6366f1,#c084fc,#fde68a);box-shadow:0 0 14px rgba(192,132,252,.7);transition:width .7s cubic-bezier(.16,1,.3,1)}
+.luck-hud-actions{display:flex;gap:6px;margin-top:10px}.luck-hud-actions button{flex:1;padding:7px 6px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.05);color:#cbd5e1;font-size:9px;font-weight:900;cursor:pointer}.luck-hud-actions button:hover{background:rgba(255,255,255,.1);color:#fff}
+#luckSystemPanel{position:fixed;inset:0;z-index:125;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.78);backdrop-filter:blur(18px)}#luckSystemPanel.open{display:flex;animation:panelIn .35s ease both}@keyframes panelIn{from{opacity:0;transform:scale(1.03)}to{opacity:1;transform:scale(1)}}
+.luck-panel{width:min(1050px,96vw);max-height:88vh;overflow:auto;border-radius:28px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(145deg,rgba(15,23,42,.97),rgba(3,7,18,.97));box-shadow:0 40px 120px rgba(0,0,0,.7);padding:24px}.luck-panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.luck-panel-title{font-size:clamp(24px,4vw,42px);font-weight:1000;color:#fff}.luck-panel-sub{font-size:11px;color:#64748b;margin-top:5px}.luck-close{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.15);background:#111827;color:#fff;font-weight:900;cursor:pointer}.luck-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:20px 0}.luck-tab{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.1);background:#0f172a;color:#94a3b8;font-size:10px;font-weight:900;cursor:pointer}.luck-tab.active{color:#fde68a;border-color:rgba(250,204,21,.45);background:rgba(250,204,21,.08)}
+.luck-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.luck-tile{padding:15px;border-radius:17px;border:1px solid rgba(255,255,255,.09);background:rgba(15,23,42,.78);min-height:105px}.luck-tile.locked{opacity:.48;filter:grayscale(.5)}.luck-tile-icon{font-size:30px}.luck-tile-title{margin-top:7px;font-size:11px;font-weight:1000;color:#fff}.luck-tile-sub{margin-top:4px;font-size:9px;color:#64748b;line-height:1.5}.achievement-unlock{animation:achievementPop .7s cubic-bezier(.16,1,.3,1) both}@keyframes achievementPop{0%{transform:scale(.7);opacity:0}65%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+#luckToast{position:fixed;left:50%;bottom:24px;z-index:150;transform:translate(-50%,30px);opacity:0;pointer-events:none;padding:11px 17px;border-radius:999px;border:1px solid rgba(250,204,21,.35);background:rgba(15,23,42,.92);box-shadow:0 12px 50px rgba(0,0,0,.5),0 0 28px rgba(250,204,21,.18);font-size:11px;font-weight:1000;color:#fde68a;transition:.45s}.luck-toast.show{transform:translate(-50%,0);opacity:1}
+#secretEventOverlay,#jackpotOverlay{position:fixed;inset:0;z-index:145;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.9);backdrop-filter:blur(16px);overflow:hidden}#secretEventOverlay.open,#jackpotOverlay.open{display:flex}.secret-core,.jackpot-core{position:relative;text-align:center;width:min(720px,92vw);padding:45px 25px;border-radius:35px;border:1px solid rgba(255,255,255,.2);background:radial-gradient(circle at 50% 35%,rgba(129,140,248,.2),transparent 38%),linear-gradient(145deg,#030712,#111827);box-shadow:0 0 120px rgba(99,102,241,.3)}.secret-glitch{font-size:clamp(48px,11vw,110px);font-weight:1000;color:#fff;text-shadow:7px 0 #f43f5e,-7px 0 #22d3ee;animation:glitch .17s steps(2) infinite}@keyframes glitch{50%{transform:translate(3px,-2px)}100%{transform:translate(-3px,2px)}}.secret-label{margin-top:8px;font-size:12px;letter-spacing:.35em;color:#a5b4fc;font-weight:1000}.secret-desc{margin-top:12px;color:#94a3b8;font-size:12px}.jackpot-core{box-shadow:0 0 150px rgba(250,204,21,.3),inset 0 0 80px rgba(250,204,21,.04);border-color:rgba(250,204,21,.5)}.jackpot-word{font-size:clamp(55px,14vw,150px);font-weight:1000;line-height:.85;color:#fde68a;text-shadow:0 0 18px #f59e0b,0 0 60px rgba(250,204,21,.8);animation:jackpotPulse .7s ease-in-out infinite alternate}@keyframes jackpotPulse{to{transform:scale(1.05);filter:brightness(1.35)}}.jackpot-prize{font-size:clamp(34px,8vw,82px);margin-top:25px;animation:awardIconFloat 1.2s ease-in-out infinite alternate}.world-casino #megaSlotStage{background:radial-gradient(circle at 50% 40%,rgba(245,158,11,.2),transparent 38%),rgba(2,6,23,.97)}.world-fate #megaRouletteStage{background:radial-gradient(circle at 50% 45%,rgba(168,85,247,.22),transparent 40%),rgba(2,6,23,.97)}
+@media(max-width:700px){#luckSystemHud{top:auto;bottom:12px;right:12px;left:12px;width:auto}.luck-hud-actions{display:none}.luck-panel{padding:17px}.mega-close{z-index:30}}
+
+</style>
 </head>
 <body id="bodyRoot" class="theme-cyberpunk text-slate-100 min-h-screen flex flex-col items-center justify-between p-4 py-8">
 
@@ -492,7 +515,7 @@
         <div class="mega-particles" id="megaSlotParticles"></div>
         <button class="mega-close" onclick="closeMegaStage('slot')">✕</button>
         <div class="mega-shell">
-            <div class="mega-head"><div class="mega-kicker">✦ ZAHSHOP VIP BONUS MACHINE ✦</div><div class="mega-title">巨型盤子命運拉霸</div><div class="mega-sub">燈光啟動・命運鎖定・正在從獎池抽出你的專屬結果</div><div class="mega-lights"><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span></div></div>
+            <div class="mega-head"><div class="mega-kicker">✦ ZAHSHOP VIP BONUS MACHINE ✦</div><div class="mega-title">巨型盤子命運拉霸</div><div id="slotVipHud" class="vip-hud"><span class="vip-dot"></span> VIP LEVEL <b id="slotVipLevel">1</b> ・ LUCK <b id="slotVipLuck">0</b></div><div class="mega-sub">燈光啟動・命運鎖定・正在從獎池抽出你的專屬結果</div><div class="mega-lights"><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span><span class="mega-light"></span></div></div>
             <div class="mega-slot-machine" id="megaSlotMachine">
                 <div class="mega-slot-window"><div class="mega-slot-pointer"></div><div class="mega-slot-centerline"></div><div id="megaSlotTrack" class="mega-slot-track"></div></div>
             </div>
@@ -506,7 +529,7 @@
         <div class="mega-particles" id="megaRouletteParticles"></div>
         <button class="mega-close" onclick="closeMegaStage('roulette')">✕</button>
         <div class="mega-shell">
-            <div class="mega-head"><div class="mega-kicker">✦ ULTIMATE FATE WHEEL ✦</div><div class="mega-title">尊爵級・瘋狂命運大輪盤</div><div class="mega-sub">所有獎項已封存・指針落下前，沒有人知道最後的命運</div></div>
+            <div class="mega-head"><div class="mega-kicker">✦ ULTIMATE FATE WHEEL ✦</div><div class="mega-title">尊爵級・瘋狂命運大輪盤</div><div id="rouletteVipHud" class="vip-hud"><span class="vip-dot"></span> VIP LEVEL <b id="rouletteVipLevel">1</b> ・ LUCK <b id="rouletteVipLuck">0</b></div><div class="mega-sub">所有獎項已封存・指針落下前，沒有人知道最後的命運</div></div>
             <div class="mega-wheel-stage" id="megaWheelStage">
                 <div class="mega-wheel-crown left">👑</div><div class="mega-wheel-crown right">👑</div>
                 <div class="mega-wheel-pointer"></div>
@@ -516,6 +539,26 @@
             <div id="megaRouletteResult" class="mega-wheel-result">🎡 命運輪盤待機中……</div>
         </div>
     </div>
+
+
+    <!-- 🔥 BOSS 級抽獎倒數 -->
+    <div id="bossCountdown" aria-hidden="true"><div class="boss-count-ring"></div><div class="boss-count-ring r2"></div><div class="boss-count-core"><div class="boss-count-kicker">✦ VIP BONUS SYSTEM ARMED ✦</div><div id="bossCountdownNumber" class="boss-count-number">3</div><div id="bossCountdownLabel" class="boss-count-label">命運系統啟動</div></div></div>
+
+    <!-- 🏆 中獎頒獎典禮 -->
+    <div id="awardCeremony" aria-hidden="true"><div class="award-card"><div id="awardKicker" class="award-kicker">✦ CONGRATULATIONS ✦</div><div class="award-title">中獎典禮</div><div id="awardIcon" class="award-icon">🏆</div><div id="awardRarity" class="award-rarity">LEGENDARY</div><div id="awardName" class="award-name">命運大獎</div><div id="awardSub" class="award-sub">你的幸運已被 VIP 系統永久記錄</div><div id="awardVip" class="award-vip">👑 VIP LEVEL 1 ・ +100 LUCK EXP</div><div class="award-bar"></div><button class="award-close" onclick="closeAwardCeremony()">收下獎項 ✨</button></div></div>
+
+
+<!-- 🌌 ZAH LUCK SYSTEM 2.0 HUD -->
+<div id="luckSystemHud">
+  <div class="luck-hud-top"><span class="luck-brand">✦ ZAH LUCK SYSTEM 2.0</span><span class="luck-level">VIP <b id="hudVipLevel">1</b></span></div>
+  <div class="luck-stat"><span>LUCK POWER</span><b id="hudLuckPower">0%</b></div><div class="luck-bar"><div id="hudLuckFill" class="luck-fill"></div></div>
+  <div class="luck-stat"><span>COMBO</span><b id="hudCombo">×0</b></div>
+  <div class="luck-hud-actions"><button onclick="openLuckPanel('collection')">📖 圖鑑</button><button onclick="openLuckPanel('achievements')">🏆 成就</button><button onclick="openLuckPanel('records')">📊 紀錄</button></div>
+</div>
+<div id="luckToast"></div>
+<div id="luckSystemPanel" onclick="if(event.target===this)closeLuckPanel()"><div class="luck-panel"><div class="luck-panel-head"><div><div class="luck-panel-title">ZAH LUCK SYSTEM</div><div class="luck-panel-sub">你的抽獎紀錄、獎品收藏與秘密成就</div></div><button class="luck-close" onclick="closeLuckPanel()">✕</button></div><div class="luck-tabs"><button id="tabCollection" class="luck-tab active" onclick="renderLuckPanel('collection')">📖 圖鑑</button><button id="tabAchievements" class="luck-tab" onclick="renderLuckPanel('achievements')">🏆 成就</button><button id="tabRecords" class="luck-tab" onclick="renderLuckPanel('records')">📊 紀錄</button></div><div id="luckPanelContent"></div></div></div>
+<div id="secretEventOverlay"><div class="secret-core"><div class="secret-glitch">SYSTEM BREACH</div><div class="secret-label">✦ SECRET EVENT DISCOVERED ✦</div><div class="secret-desc">未知獎池突破限制。虛空正在觀察你的抽獎。</div><div id="secretEventPrize" class="jackpot-prize">👁️</div><button class="award-close" onclick="closeSecretEvent()" style="margin-top:25px">進入秘密事件</button></div></div>
+<div id="jackpotOverlay"><div class="jackpot-core"><div class="secret-label">✦ ULTRA RARE EVENT ✦</div><div class="jackpot-word">JACKPOT</div><div id="jackpotPrize" class="jackpot-prize">💎</div><div class="secret-desc">你的幸運突破了系統上限。</div><button class="award-close" onclick="closeJackpot()" style="margin-top:25px">收下神級獎勵</button></div></div>
 
     <!-- 頂部功能控制列 -->
     <div class="w-full max-w-5xl flex justify-between items-center mb-4 content-wrapper">
@@ -1626,9 +1669,12 @@
                 setTimeout(()=>{
                     card.classList.add('slot-card-winner');
                     machine.classList.add('mega-winning');
-                    win.innerHTML=`🏆 抽獎結果：<strong>${targetItem.icon} ${targetItem.name}</strong><div style="font-size:11px;color:#cbd5e1;margin-top:5px">${targetItem.rarity}・命運已鎖定</div>`;
+                    const rr=getRarityMeta(targetItem.rarity);
+                    win.innerHTML=`🏆 抽獎結果：<strong class="${rr.cls}">${targetItem.icon} ${targetItem.name}</strong><div style="font-size:11px;color:#cbd5e1;margin-top:5px">${rr.label}・命運已鎖定</div>`;
+                    const vip=addVipExp(rr.exp);
                     playSound('win');
-                    try{confetti({particleCount:180,spread:110,startVelocity:48,scalar:1.1,origin:{y:.52},colors:['#fde047','#f59e0b','#fff7ed','#c084fc','#f472b6']});}catch(e){}
+                    showAwardCeremony(targetItem.icon,targetItem.name,rr.label,rr.exp,vip,'盤子命運拉霸');
+                    try{confetti({particleCount:220,spread:125,startVelocity:52,scalar:1.15,origin:{y:.52},colors:['#fde047','#f59e0b','#fff7ed','#c084fc','#f472b6']});}catch(e){}
                 },5350);
                 setTimeout(()=>closeMegaStage('slot'),7200);
             });
@@ -1648,19 +1694,58 @@
             const megaTarget=1800+(roulettePrizes.length-winningIndex)*sliceDegree-sliceDegree/2;
             requestAnimationFrame(()=>{
                 requestAnimationFrame(()=>{
-                    stage.classList.add('mega-wheel-spinning');
+                    stage.classList.add('mega-wheel-spinning','physical-spin');
                     canvas.style.transition='transform 5.2s cubic-bezier(.12,.8,.12,1)';
                     canvas.style.transform=`rotate(${megaTarget}deg)`;
                 });
             });
             setTimeout(()=>{
-                stage.classList.remove('mega-wheel-spinning');
+                stage.classList.remove('mega-wheel-spinning','physical-spin');
                 const prize=roulettePrizes[winningIndex];
-                result.innerHTML=`🎉 命運落點：<strong style="color:#fde68a">${prize.icon} ${prize.text}</strong><div style="font-size:11px;color:#cbd5e1;margin-top:5px">ULTIMATE BONUS UNLOCKED</div>`;
-                try{confetti({particleCount:220,spread:125,startVelocity:52,scalar:1.15,origin:{y:.5},colors:['#fde047','#c084fc','#f472b6','#60a5fa','#fff']});}catch(e){}
+                const rr=getRarityMeta(prize.text);
+                result.innerHTML=`🎉 命運落點：<strong class="${rr.cls}">${prize.icon} ${prize.text}</strong><div style="font-size:11px;color:#cbd5e1;margin-top:5px">${rr.label}・ULTIMATE BONUS UNLOCKED</div>`;
+                const vip=addVipExp(rr.exp);
+                showAwardCeremony(prize.icon,prize.text,rr.label,rr.exp,vip,'ULTIMATE FATE WHEEL');
+                try{confetti({particleCount:260,spread:135,startVelocity:55,scalar:1.2,origin:{y:.5},colors:['#fde047','#c084fc','#f472b6','#60a5fa','#fff']});}catch(e){}
             },5350);
             setTimeout(()=>closeMegaStage('roulette'),7600);
         }
+
+
+        function getRarityMeta(raw=''){
+            const x=String(raw).toLowerCase();
+            if(/神話|mythic|彩虹|億萬|奇蹟/.test(x)) return {label:'MYTHIC',cls:'rarity-mythic',exp:500};
+            if(/傳說|legend|黃金|尊爵|影之神|高級/.test(x)) return {label:'LEGENDARY',cls:'rarity-legendary',exp:250};
+            if(/稀有|rare|傲嬌|特級/.test(x)) return {label:'EPIC',cls:'rarity-epic',exp:150};
+            if(/幽默|可愛|小確幸|搞笑/.test(x)) return {label:'RARE',cls:'rarity-rare',exp:80};
+            return {label:'COMMON',cls:'rarity-common',exp:30};
+        }
+        function getVipState(){
+            try{const n=Number(localStorage.getItem('zah_vip_exp')||0);return {exp:n,level:Math.max(1,Math.floor(n/500)+1)};}catch(e){return {exp:0,level:1};}
+        }
+        function addVipExp(exp){
+            try{const before=getVipState();const next=before.exp+Number(exp||0);localStorage.setItem('zah_vip_exp',String(next));const after=getVipState();updateVipHud();return after;}catch(e){return getVipState();}
+        }
+        function updateVipHud(){const v=getVipState();['slotVipLevel','rouletteVipLevel'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=v.level});['slotVipLuck','rouletteVipLuck'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=v.exp});}
+        function playBossCountdown(){
+            return new Promise(resolve=>{
+                const overlay=document.getElementById('bossCountdown'),num=document.getElementById('bossCountdownNumber'),label=document.getElementById('bossCountdownLabel');
+                if(!overlay){resolve();return;}
+                overlay.classList.add('is-open'); overlay.setAttribute('aria-hidden','false');
+                const seq=[['3','命運系統啟動'],['2','VIP 獎池鎖定'],['1','BOSS DRAW READY'],['GO!','LET FATE DECIDE']]; let i=0;
+                const step=()=>{num.textContent=seq[i][0];label.textContent=seq[i][1];num.style.animation='none';void num.offsetWidth;num.style.animation='bossNumber .82s cubic-bezier(.16,1,.3,1) both';playSound(i===3?'win':'tick');if(i===3){setTimeout(()=>{overlay.classList.remove('is-open');overlay.setAttribute('aria-hidden','true');resolve()},700)}else{i++;setTimeout(step,850)}};step();
+            });
+        }
+        function showAwardCeremony(icon,name,rarity,exp,vip,source){
+            const o=document.getElementById('awardCeremony');if(!o)return;
+            document.getElementById('awardIcon').textContent=icon;document.getElementById('awardName').textContent=name;document.getElementById('awardRarity').textContent=rarity;document.getElementById('awardKicker').textContent=`✦ ${source} ✦`;document.getElementById('awardVip').textContent=`👑 VIP LEVEL ${vip.level} ・ +${exp} LUCK EXP ・ TOTAL ${vip.exp}`;
+            o.style.display='flex';o.setAttribute('aria-hidden','false');
+            for(let i=0;i<18;i++){const sp=document.createElement('span');sp.className='award-spark';sp.style.setProperty('--ar',`${i*20}deg`);sp.style.color=i%2?'#c084fc':'#fde68a';o.appendChild(sp);}
+            playSound('win');
+            setTimeout(()=>closeAwardCeremony(),4200);
+        }
+        function closeAwardCeremony(){const o=document.getElementById('awardCeremony');if(!o)return;o.style.display='none';o.setAttribute('aria-hidden','true');o.querySelectorAll('.award-spark').forEach(e=>e.remove());}
+        updateVipHud();
 
         window.submitRating = async function() {
             playSound('click');
@@ -1695,6 +1780,7 @@
         // 🍽️ 第一關：盤子拉霸抽獎動畫
         window.startFruitSpinner = async function() {
             playSound('click');
+            await playBossCountdown();
             speakSweetVoice("第一關盤子拉霸轉動中！來看看你抽到什麼！");
             const spinBtn = document.getElementById('spinBtn');
             const resultText = document.getElementById('slotResultText');
@@ -1769,8 +1855,9 @@
         };
 
         // 🎡 第二關：幸運大輪盤旋轉動畫
-        window.startRoulette = function() {
+        window.startRoulette = async function() {
             playSound('click');
+            await playBossCountdown();
             speakSweetVoice("幸運大輪盤開始旋轉！看看命運會把你轉到哪裡去！");
             const btn = document.getElementById('spinRouletteBtn');
             const wheel = document.getElementById('rouletteWheel');
@@ -1853,37 +1940,25 @@
         };
 
         // 🕳️ 宇宙黑洞吞噬重抽系統
-        window.triggerBlackHoleReroll = function() {
+        window.triggerBlackHoleReroll = async function() {
             playSound('prank');
-            const overlay = document.getElementById('blackHoleOverlay');
-            const box = document.getElementById('bhResultContainer');
+            const overlay=document.getElementById('blackHoleOverlay'),box=document.getElementById('blackHoleContentBox'),res=document.getElementById('bhResultContainer');
+            if(!overlay||!box||!res)return;
+            overlay.classList.add('blackhole-mega');box.classList.add('blackhole-hero');
             overlay.classList.remove('hidden');
-
-            // 隨機判定：有 15% 機率中尊爵神話大獎，85% 機率中大黑洞毀滅大便
-            const isSuccess = Math.random() < 0.15;
-
-            if (isSuccess) {
-                box.innerHTML = `
-                    <div class="text-6xl animate-bounce">✨🧻🎟️✨</div>
-                    <h3 class="text-xl font-black text-yellow-400">奇蹟發生！黑洞吐出神話大獎！</h3>
-                    <p class="text-xs text-slate-200 bg-slate-950 p-4 rounded-xl border border-yellow-500/50">
-                        恭喜你打破黑洞定律！獲得：<strong class="text-yellow-300 text-sm">衛生紙3張 + 0.001元折價券</strong>！
-                    </p>
-                `;
+            res.innerHTML=`<div class="blackhole-big">🕳️</div><div class="blackhole-warning">VOID REROLL SYSTEM // WARNING</div><div class="text-lg font-black text-purple-200 mt-3">正在吞噬你的獎品……</div><div class="text-xs text-slate-400 mt-2">3 秒後黑洞將重新決定命運</div>`;
+            await new Promise(r=>setTimeout(r,3000));
+            const isSuccess=Math.random()<0.15;
+            if(isSuccess){
+                const exp=500,vip=addVipExp(exp);
+                res.innerHTML=`<div class="text-7xl award-icon">✨🧻🎟️✨</div><div class="text-xs tracking-[.3em] font-black text-yellow-300">MYTHIC VOID DROP</div><h3 class="text-2xl font-black text-yellow-400 mt-3">奇蹟發生！黑洞吐出神話大獎！</h3><p class="text-xs text-slate-200 bg-slate-950 p-4 rounded-xl border border-yellow-500/50 mt-4">獲得：<strong class="text-yellow-300 text-sm">衛生紙3張 + 0.001元折價券</strong></p><div class="text-xs text-purple-300 font-black mt-3">👑 VIP LEVEL ${vip.level} ・ +${exp} LUCK EXP</div>`;
                 speakSweetVoice("奇蹟發生！黑洞吐出了尊爵神話大獎！");
-                try { confetti({ particleCount: 200, spread: 120, origin: { y: 0.5 }, colors: ['#fde047', '#fff7ed', '#fbbf24', '#facc15'] }); } catch (e) {}
-            } else {
-                box.innerHTML = `
-                    <div class="text-7xl poop-alert-shake">💩🏺💩</div>
-                    <h3 class="text-xl font-black text-red-400">黑洞崩潰！全螢幕大便降臨！</h3>
-                    <p class="text-xs text-slate-300 bg-slate-950 p-4 rounded-xl border border-red-500/50 leading-relaxed">
-                        黑洞嫌棄你的貪婪，將你的螢幕徹底吞噬！現在滿畫面都是<strong class="text-amber-400 font-bold">盤子與大便</strong>，黑洞已永久封印，再也不能重抽囉！
-                    </p>
-                `;
+                try{confetti({particleCount:300,spread:140,startVelocity:58,origin:{y:.5},colors:['#fde047','#fff7ed','#c084fc','#f472b6']});}catch(e){}
+            }else{
+                const exp=30,vip=addVipExp(exp);
+                res.innerHTML=`<div class="text-8xl poop-alert-shake">💩🕳️💩</div><div class="text-xs tracking-[.3em] font-black text-red-400">VOID COLLAPSE</div><h3 class="text-2xl font-black text-red-400 mt-3">黑洞崩潰！命運拒絕重抽！</h3><p class="text-xs text-slate-300 bg-slate-950 p-4 rounded-xl border border-red-500/50 leading-relaxed mt-4">黑洞嫌棄你的貪婪，整個虛空炸裂，只留下<strong class="text-amber-400 font-bold">盤子與大便</strong>。</p><div class="text-xs text-purple-300 font-black mt-3">👑 VIP LEVEL ${vip.level} ・ +${exp} LUCK EXP</div>`;
                 speakSweetVoice("黑洞崩潰！全螢幕大便將你吞噬！");
             }
-
-            // 隱藏黑洞按鈕，防止再次召喚
             document.getElementById('blackHoleButtonWrapper').classList.add('hidden');
         };
 
@@ -2086,5 +2161,30 @@
 
         lucide.createIcons();
     </script>
+
+<script>
+/* ===== ZAH LUCK SYSTEM 2.0 ENGINE ===== */
+(function(){
+  const KEY='zah_luck_system_v2';
+  const base={combo:0,lastDraw:0,totalDraws:0,bestCombo:0,bestRarity:'COMMON',secretEvents:0,jackpots:0,achievements:[],collection:{},titles:['新手']};
+  function state(){try{return Object.assign({},base,JSON.parse(localStorage.getItem(KEY)||'{}'),{collection:Object.assign({},base.collection,(JSON.parse(localStorage.getItem(KEY)||'{}').collection||{}))})}catch(e){return {...base,collection:{}}}}
+  function save(x){localStorage.setItem(KEY,JSON.stringify(x))}
+  function rarityRank(r){return ({COMMON:1,RARE:2,EPIC:3,LEGENDARY:4,MYTHIC:5}[r]||1)}
+  function toast(t){const e=document.getElementById('luckToast');if(!e)return;e.textContent=t;e.classList.add('show');clearTimeout(window.__luckToast);window.__luckToast=setTimeout(()=>e.classList.remove('show'),2600)}
+  function combo(){const x=state(),now=Date.now();if(now-x.lastDraw>25000)x.combo=0;x.combo++;x.lastDraw=now;x.totalDraws++;x.bestCombo=Math.max(x.bestCombo,x.combo);save(x);updateHud();return x.combo}
+  function registerReward(icon,name,rarity){const x=state(),key=String(name);x.collection[key]=(x.collection[key]||0)+1;if(rarityRank(rarity)>rarityRank(x.bestRarity))x.bestRarity=rarity;const c=combo();save(x);updateHud();checkAchievements(x,c,rarity);maybeSecret(x,rarity,icon);return {count:x.collection[key],combo:c}}
+  function checkAchievements(x,c,r){const list=[['first','🎰','第一次抽獎','完成第一次抽獎'],['rare','💎','稀有獵人','獲得 RARE 或以上'],['epic','🟣','EPIC Hunter','獲得 EPIC 或以上'],['legendary','👑','傳說降臨','獲得 LEGENDARY 或以上'],['mythic','🌌','神話目擊者','獲得 MYTHIC'],['combo5','🔥','連擊大師','達成 COMBO ×5'],['combo10','⚡','超限連擊','達成 COMBO ×10'],['collector5','📖','收藏家','收集 5 種不同獎品'],['jackpot','🎆','JACKPOT','觸發 Mega Jackpot'],['secret','☠️','VOID WALKER','發現秘密事件']];let changed=false;for(const [id,ic,t,d] of list){let ok=id==='first'?x.totalDraws>=1:id==='rare'?rarityRank(r)>=2:id==='epic'?rarityRank(r)>=3:id==='legendary'?rarityRank(r)>=4:id==='mythic'?rarityRank(r)>=5:id==='combo5'?c>=5:id==='combo10'?c>=10:id==='collector5'?Object.keys(x.collection).length>=5:id==='jackpot'?x.jackpots>0:id==='secret'?x.secretEvents>0:false;if(ok&&!x.achievements.includes(id)){x.achievements.push(id);changed=true;setTimeout(()=>toast(`🏆 成就解鎖：${ic} ${t}`),400);}}if(changed)save(x)}
+  function maybeSecret(x,r,icon){if(Math.random()<0.025){x.secretEvents++;save(x);setTimeout(()=>{const o=document.getElementById('secretEventOverlay');if(o){document.getElementById('secretEventPrize').textContent=icon||'👁️';o.classList.add('open')}toast('☠️ SECRET EVENT DETECTED');checkAchievements(x,x.combo,r)},700)}if(r==='MYTHIC'&&Math.random()<0.12){x.jackpots++;save(x);setTimeout(()=>{const o=document.getElementById('jackpotOverlay');if(o){document.getElementById('jackpotPrize').textContent=icon||'💎';o.classList.add('open')}toast('🎆 ULTRA RARE JACKPOT!');checkAchievements(x,x.combo,r);try{confetti({particleCount:420,spread:160,startVelocity:65,scalar:1.35,origin:{y:.5},colors:['#fde047','#fff','#c084fc','#f472b6','#60a5fa']})}catch(e){}},1200)}}
+  function updateHud(){const x=state(),v=typeof getVipState==='function'?getVipState():{level:1,exp:0};const luck=Math.min(100,Math.round((v.exp%500)/5)+Math.min(20,x.combo*2));document.getElementById('hudVipLevel').textContent=v.level;document.getElementById('hudLuckPower').textContent=luck+'%';document.getElementById('hudLuckFill').style.width=luck+'%';document.getElementById('hudCombo').textContent='×'+x.combo}
+  window.openLuckPanel=function(tab='collection'){document.getElementById('luckSystemPanel').classList.add('open');renderLuckPanel(tab)};window.closeLuckPanel=function(){document.getElementById('luckSystemPanel').classList.remove('open')};
+  window.renderLuckPanel=function(tab){document.querySelectorAll('.luck-tab').forEach(e=>e.classList.remove('active'));const id=tab==='collection'?'tabCollection':tab==='achievements'?'tabAchievements':'tabRecords';document.getElementById(id).classList.add('active');const x=state(),c=document.getElementById('luckPanelContent');if(tab==='collection'){const names=Object.keys(x.collection);c.innerHTML=`<div class="luck-grid">${(typeof platePoopCats!=='undefined'?platePoopCats:[]).map((p,i)=>{const n=x.collection[p.name]||0;return `<div class="luck-tile ${n?'':'locked'}"><div class="luck-tile-icon">${n?p.icon:'❓'}</div><div class="luck-tile-title">${n?p.name:'???'}</div><div class="luck-tile-sub">${n?`已獲得 ${n} 次・${getRarityMeta(p.rarity).label}`:'尚未發現'}</div></div>`}).join('')}${names.filter(n=>!(typeof platePoopCats!=='undefined'&&platePoopCats.some(p=>p.name===n))).map(n=>`<div class="luck-tile"><div class="luck-tile-icon">🎁</div><div class="luck-tile-title">${n}</div><div class="luck-tile-sub">輪盤／秘密獎勵・已發現 ${x.collection[n]} 次</div></div>`).join('')}</div>`}else if(tab==='achievements'){const defs=[['first','🎰','第一次抽獎','完成第一次抽獎'],['rare','💎','稀有獵人','獲得 RARE 或以上'],['epic','🟣','EPIC Hunter','獲得 EPIC 或以上'],['legendary','👑','傳說降臨','獲得 LEGENDARY 或以上'],['mythic','🌌','神話目擊者','獲得 MYTHIC'],['combo5','🔥','連擊大師','達成 COMBO ×5'],['combo10','⚡','超限連擊','達成 COMBO ×10'],['collector5','📖','收藏家','收集 5 種不同獎品'],['jackpot','🎆','JACKPOT','觸發 Mega Jackpot'],['secret','☠️','VOID WALKER','發現秘密事件']];c.innerHTML=`<div class="luck-grid">${defs.map(d=>`<div class="luck-tile ${x.achievements.includes(d[0])?'achievement-unlock':'locked'}"><div class="luck-tile-icon">${x.achievements.includes(d[0])?d[1]:'🔒'}</div><div class="luck-tile-title">${d[2]}</div><div class="luck-tile-sub">${d[3]}</div></div>`).join('')}</div>`}else{c.innerHTML=`<div class="luck-grid"><div class="luck-tile"><div class="luck-tile-icon">👑</div><div class="luck-tile-title">VIP LEVEL</div><div class="luck-tile-sub">${typeof getVipState==='function'?getVipState().level:1}</div></div><div class="luck-tile"><div class="luck-tile-icon">🔥</div><div class="luck-tile-title">最高 COMBO</div><div class="luck-tile-sub">×${x.bestCombo}</div></div><div class="luck-tile"><div class="luck-tile-icon">🎰</div><div class="luck-tile-title">累積抽獎</div><div class="luck-tile-sub">${x.totalDraws} 次</div></div><div class="luck-tile"><div class="luck-tile-icon">💎</div><div class="luck-tile-title">最高稀有度</div><div class="luck-tile-sub">${x.bestRarity}</div></div><div class="luck-tile"><div class="luck-tile-icon">☠️</div><div class="luck-tile-title">秘密事件</div><div class="luck-tile-sub">${x.secretEvents} 次</div></div><div class="luck-tile"><div class="luck-tile-icon">🎆</div><div class="luck-tile-title">JACKPOT</div><div class="luck-tile-sub">${x.jackpots} 次</div></div></div>`}}
+  window.closeSecretEvent=function(){document.getElementById('secretEventOverlay').classList.remove('open');toast('☠️ VOID WALKER 模式已記錄')};window.closeJackpot=function(){document.getElementById('jackpotOverlay').classList.remove('open');toast('🎆 JACKPOT 已寫入你的幸運紀錄')};
+  const oldAward=window.showAwardCeremony;if(typeof oldAward==='function'){window.showAwardCeremony=function(icon,name,rarity,exp,vip,source){const rr=registerReward(icon,name,rarity);oldAward(icon,name,rarity,exp,vip,source);setTimeout(()=>{const a=document.getElementById('awardSub');if(a)a.textContent=`COMBO ×${rr.combo} ・ 本獎品已發現 ${rr.count} 次 ・ 幸運系統已記錄`},20)}}
+  const oldOpen=window.openMegaStage;if(typeof oldOpen==='function'){window.openMegaStage=function(type){document.body.classList.toggle('world-casino',type==='slot');document.body.classList.toggle('world-fate',type==='roulette');oldOpen(type)}}
+  const oldClose=window.closeMegaStage;if(typeof oldClose==='function'){window.closeMegaStage=function(type){oldClose(type);document.body.classList.remove('world-casino','world-fate')}}
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeLuckPanel();closeSecretEvent();closeJackpot()}});updateHud();
+})();
+</script>
+
 </body>
 </html>
