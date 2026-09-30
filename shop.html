@@ -845,5 +845,416 @@
     });
   </script>
 
+<!-- ✨ 展商城高質感升級包（樣式＋動畫） -->
+<style id="zah-upgrade-css">
+  :root { --ease-out: cubic-bezier(.16,1,.3,1); }
+
+  /* 1. 背景：極光流動 + 點陣紋理 */
+  body { background: linear-gradient(180deg,#f1f5f9 0%,#eef2ff 55%,#f8fafc 100%); background-attachment: fixed; }
+  body::before { animation: blobFloat 16s ease-in-out infinite, hueSpin 24s linear infinite; }
+  body::after  { animation: blobFloat 20s ease-in-out infinite reverse, hueSpin 30s linear infinite reverse; }
+  @keyframes hueSpin { to { filter: blur(60px) hue-rotate(360deg); } }
+  main::before { content:''; position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background-image: radial-gradient(rgba(99,102,241,.13) 1px, transparent 1.2px); background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 20%, transparent 75%); mask-image: radial-gradient(ellipse at 50% 30%, #000 20%, transparent 75%); }
+
+  /* 2. 品牌圖示：光環擴散 */
+  .brand-badge { position: relative; }
+  .brand-badge::before, .brand-badge::after { content:''; position:absolute; inset:0; border-radius:1rem; border:2px solid rgba(99,102,241,.45); animation: orbit 3.2s ease-out infinite; pointer-events:none; }
+  .brand-badge::after { animation-delay: 1.6s; }
+  @keyframes orbit { from { transform: scale(1); opacity: .7; } to { transform: scale(2); opacity: 0; } }
+
+  /* 3. 區塊標題：底線展開 */
+  .reveal h2 { position: relative; display: inline-block; }
+  .reveal h2::after { content:''; position:absolute; left:0; bottom:-5px; height:3px; width:0; border-radius:9px; background: linear-gradient(90deg,#6366f1,#a855f7,#f43f5e); transition: width .9s var(--ease-out) .25s; }
+  .reveal.in h2::after { width: 2.2rem; }
+
+  /* 4. 商品卡片：漸層描邊 + 圖片掃光 + 圓角質感 */
+  .product-card { border-radius: 1.4rem; background: rgba(255,255,255,.92); backdrop-filter: blur(6px); }
+  .product-card::after { content:''; position:absolute; inset:0; border-radius:inherit; padding:1.5px; z-index:4; pointer-events:none; opacity:0; transition: opacity .35s ease;
+    background: linear-gradient(135deg,#6366f1,#a855f7,#f43f5e);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+  .product-card:hover::after { opacity: 1; }
+  .product-image-wrap { position: relative; }
+  .product-image-wrap::after { content:''; position:absolute; top:0; left:-80%; width:45%; height:100%; transform: skewX(-20deg); pointer-events:none;
+    background: linear-gradient(120deg, transparent, rgba(255,255,255,.6), transparent); }
+  .product-card:hover .product-image-wrap::after { animation: imgShine .9s ease; }
+  @keyframes imgShine { to { left: 140%; } }
+  .product-card h3 { transition: color .25s ease; }
+  .product-card:hover h3 { color: #4f46e5; }
+
+  /* 5. 低庫存閃動、售罄斜紋 */
+  .product-card .text-rose-500[class*="text-[10px]"] { animation: lowStock 1.4s ease-in-out infinite; }
+  @keyframes lowStock { 0%,100% { opacity: 1 } 50% { opacity: .45 } }
+  .product-unavailable .product-image-wrap { background-image: repeating-linear-gradient(135deg, rgba(148,163,184,.14) 0 10px, transparent 10px 20px); }
+
+  /* 6. 熱門排行：前三名金銀銅光暈 */
+  #popularProductsList > div:nth-child(1) { border-color:#fcd34d; background: linear-gradient(135deg,#fffbeb,#fff); }
+  #popularProductsList > div:nth-child(2) { border-color:#cbd5e1; background: linear-gradient(135deg,#f8fafc,#fff); }
+  #popularProductsList > div:nth-child(3) { border-color:#fdba74; background: linear-gradient(135deg,#fff7ed,#fff); }
+  #popularProductsList > div:nth-child(1) > span:first-child { animation: crown 2.4s ease-in-out infinite; display:inline-block; }
+  @keyframes crown { 0%,100% { transform: rotate(-6deg) scale(1) } 50% { transform: rotate(6deg) scale(1.18) } }
+
+  /* 7. 跑馬燈：漸層底 + 懸停暫停 + 邊緣淡出 */
+  #homepageMarquee { background: linear-gradient(90deg,#0f172a,#312e81,#0f172a); background-size: 200% 100%; animation: marqueeBg 8s linear infinite; }
+  @keyframes marqueeBg { to { background-position: -200% 0; } }
+  .homepage-marquee { -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
+  .homepage-marquee:hover .homepage-marquee-track { animation-play-state: paused; }
+
+  /* 8. 表單：欄位依序滑入、填寫完成綠色提示 */
+  .reveal .field, .reveal #submitBtn { opacity: 0; transform: translateY(16px); }
+  .reveal.in .field, .reveal.in #submitBtn { animation: fieldIn .7s var(--ease-out) both; }
+  .reveal.in .field:nth-child(1) { animation-delay: .10s } .reveal.in .field:nth-child(2) { animation-delay: .18s }
+  .reveal.in .field:nth-child(3) { animation-delay: .26s } .reveal.in .field:nth-child(4) { animation-delay: .34s }
+  .reveal.in .field:nth-child(5) { animation-delay: .42s } .reveal.in #submitBtn { animation-delay: .52s }
+  @keyframes fieldIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  #orderForm input:not(:placeholder-shown):valid, #orderForm textarea:not(:placeholder-shown):valid { border-color: #6ee7b7; background-color: #f0fdf4; }
+  #formProgress { height: 4px; border-radius: 9px; background: #e2e8f0; overflow: hidden; margin: -1rem 0 1.5rem; }
+  #formProgress i { display:block; height:100%; width:0; border-radius:inherit; background: linear-gradient(90deg,#6366f1,#a855f7,#10b981); background-size: 200% 100%; transition: width .5s var(--ease-out); animation: marqueeBg 3s linear infinite; }
+  #formProgress.done i { box-shadow: 0 0 12px rgba(16,185,129,.6); }
+
+  /* 9. 成功視窗：光暈 */
+  #successModal > div { box-shadow: 0 30px 80px -20px rgba(79,70,229,.45), 0 0 0 1px rgba(255,255,255,.6) inset; }
+  #successOrderId { background: linear-gradient(135deg,#eef2ff,#faf5ff); }
+
+  /* 10. 浮動「前往下單」按鈕 + 回頂端 */
+  #zahFab { position: fixed; right: 1rem; bottom: 1.25rem; z-index: 60; display: flex; align-items: center; gap: .5rem; padding: .8rem 1.1rem; border-radius: 9999px;
+    background: linear-gradient(135deg,#4f46e5,#7c3aed); color: #fff; font-size: .8rem; font-weight: 800; border: 0; cursor: pointer;
+    box-shadow: 0 16px 34px -10px rgba(79,70,229,.6); opacity: 0; transform: translateY(24px) scale(.9); pointer-events: none; transition: opacity .35s ease, transform .5s var(--ease-out); }
+  #zahFab.show { opacity: 1; transform: none; pointer-events: auto; animation: fabBob 3s ease-in-out infinite .5s; }
+  #zahFab:hover { filter: brightness(1.08); }
+  @keyframes fabBob { 0%,100% { translate: 0 0 } 50% { translate: 0 -4px } }
+
+  /* 11. 頁面載入幕布 */
+  #zahCurtain { position: fixed; inset: 0; z-index: 200; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg,#eef2ff,#faf5ff); pointer-events: none; animation: curtainOut .6s ease .9s both; }
+  @keyframes curtainOut { to { opacity: 0; visibility: hidden; } }
+  #zahCurtain span { width: 46px; height: 46px; border-radius: 50%; border: 4px solid #c7d2fe; border-top-color: #6366f1; animation: spinLoad .8s linear infinite; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal .field, .reveal #submitBtn { opacity: 1; transform: none; }
+    #zahCurtain { display: none; }
+  }
+</style>
+
+<script id="zah-upgrade-js">
+(() => {
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = s => document.querySelector(s);
+
+  /* 載入幕布：純 CSS 自動淡出，JS 只負責放進頁面 */
+  try {
+    const curtain = document.createElement('div');
+    curtain.id = 'zahCurtain'; curtain.innerHTML = '<span></span>';
+    document.body.appendChild(curtain);
+    setTimeout(() => curtain.remove(), 2000);
+  } catch (_) {}
+
+  /* 價格數字滾動（商品重繪後自動觸發） */
+  function countUp(el) {
+    if (el.dataset.cu) return;
+    const m = el.textContent.match(/^(\D*)([\d,]+)(.*)$/);
+    if (!m) return;
+    el.dataset.cu = '1';
+    const target = +m[2].replace(/,/g, '');
+    if (reduced || !target) return;
+    const t0 = performance.now(), dur = 900;
+    (function step(t) {
+      const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+      el.textContent = m[1] + Math.round(target * e).toLocaleString() + m[3];
+      if (p < 1) requestAnimationFrame(step);
+    })(t0);
+  }
+  let pending = false;
+  const runCounts = () => {
+    if (pending) return; pending = true;
+    requestAnimationFrame(() => {
+      pending = false;
+      document.querySelectorAll('#productGrid .product-card span.text-lg, #popularProductsList span.font-black.text-indigo-600').forEach(countUp);
+    });
+  };
+  ['#productGrid', '#popularProductsList'].forEach(sel => {
+    const el = $(sel);
+    if (el) new MutationObserver(runCounts).observe(el, { childList: true, subtree: true });
+  });
+
+  /* 表單完成度進度條 */
+  const form = $('#orderForm');
+  if (form) {
+    const bar = document.createElement('div');
+    bar.id = 'formProgress'; bar.innerHTML = '<i></i>';
+    form.parentElement.insertBefore(bar, form);
+    const ids = ['customer', 'gameName', 'productName', 'gameUid'];
+    const update = () => {
+      const filled = ids.filter(id => { const el = document.getElementById(id); return el && el.value.trim(); }).length;
+      bar.firstChild.style.width = (filled / ids.length * 100) + '%';
+      bar.classList.toggle('done', filled === ids.length);
+    };
+    form.addEventListener('input', update);
+    form.addEventListener('reset', () => setTimeout(update, 0));
+    setInterval(update, 400); // 商品被「立即購買」自動帶入時也同步
+  }
+
+  /* 按鈕磁吸效果（只用 translate，不干擾原本 hover 動畫） */
+  if (!reduced && matchMedia('(hover:hover)').matches) {
+    document.addEventListener('pointermove', e => {
+      const b = e.target.closest && e.target.closest('.premium-cta');
+      if (!b || b.disabled) return;
+      const r = b.getBoundingClientRect();
+      b.style.translate = ((e.clientX - r.left - r.width / 2) * 0.12) + 'px ' + ((e.clientY - r.top - r.height / 2) * 0.22) + 'px';
+    }, { passive: true });
+    document.addEventListener('pointerout', e => {
+      const b = e.target.closest && e.target.closest('.premium-cta');
+      if (b && !b.contains(e.relatedTarget)) b.style.translate = '';
+    });
+  }
+
+  /* 浮動「前往下單」按鈕：表單不在畫面內時才出現 */
+  const fab = document.createElement('button');
+  fab.id = 'zahFab'; fab.type = 'button'; fab.setAttribute('aria-label', '前往下單表單');
+  fab.innerHTML = '<span>🛒</span><span>前往下單</span>';
+  document.body.appendChild(fab);
+  fab.addEventListener('click', () => {
+    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => { const c = document.getElementById('customer'); c && c.focus({ preventScroll: true }); }, 500);
+  });
+  if (form && 'IntersectionObserver' in window) {
+    let formVisible = false;
+    new IntersectionObserver(([en]) => { formVisible = en.isIntersecting; sync(); }).observe(form);
+    const sync = () => fab.classList.toggle('show', !formVisible && scrollY > 320);
+    addEventListener('scroll', sync, { passive: true });
+  }
+})();
+</script>
+
+<!-- ✨ 第二波動畫：粒子背景、打字副標、點擊火花、Banner 視差、表單抖動、按鈕待命光暈 -->
+<style id="zah-more-css">
+  .rise p.typing::after { content:''; display:inline-block; width:2px; height:1em; margin-left:2px; vertical-align:-2px; background:#6366f1; animation: caret .8s steps(1) infinite; }
+  @keyframes caret { 50% { opacity: 0; } }
+  .homepage-banner-wrap { will-change: transform; }
+  #homepageBannerImage { transform: scale(1.1); will-change: transform; }
+  .sort-btn:active { transform: scale(.92); }
+  .spark { position: fixed; z-index: 300; width: 8px; height: 8px; border-radius: 50%; pointer-events: none; }
+  .spark-ring { position: fixed; z-index: 299; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; border: 2px solid rgba(129,140,248,.8); pointer-events: none; animation: sparkRing .6s ease-out forwards; }
+  @keyframes sparkRing { to { transform: scale(5); opacity: 0; } }
+  .shake { animation: shakeX .45s cubic-bezier(.36,.07,.19,.97) both; border-color: #fb7185 !important; box-shadow: 0 0 0 4px rgba(244,63,94,.12); }
+  @keyframes shakeX { 10%,90% { transform: translateX(-2px) } 20%,80% { transform: translateX(4px) } 30%,50%,70% { transform: translateX(-7px) } 40%,60% { transform: translateX(7px) } }
+  #submitBtn.cta-ready { animation: ctaBreath 1.8s ease-in-out infinite; }
+  @keyframes ctaBreath { 0%,100% { box-shadow: 0 10px 24px -10px rgba(79,70,229,.55), 0 0 0 0 rgba(99,102,241,.5) } 50% { box-shadow: 0 14px 30px -10px rgba(79,70,229,.7), 0 0 0 10px rgba(99,102,241,0) } }
+  .product-sale-badge { animation: badgePulse 1.8s ease-in-out infinite, wobble 4s ease-in-out infinite 1s; transform-origin: center; }
+  @keyframes wobble { 0%,86%,100% { rotate: 0deg } 89% { rotate: -8deg } 92% { rotate: 8deg } 95% { rotate: -4deg } 98% { rotate: 3deg } }
+  @media (prefers-reduced-motion: reduce) { #zahParticles { display: none; } #homepageBannerImage { transform: none; } }
+</style>
+<script id="zah-more-js">
+(() => {
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = s => document.querySelector(s);
+
+  /* 1. 漂浮粒子背景 */
+  if (!reduced) try {
+    const c = document.createElement('canvas');
+    c.id = 'zahParticles';
+    c.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none';
+    document.body.prepend(c);
+    const ctx = c.getContext('2d');
+    let W, H, dpr;
+    const cols = ['99,102,241', '168,85,247', '244,63,94', '16,185,129'];
+    const ps = Array.from({ length: 30 }, () => ({ x: Math.random(), y: Math.random(), r: 1.5 + Math.random() * 3.5, v: .00008 + Math.random() * .00022, d: Math.random() * 6.28, col: cols[(Math.random() * cols.length) | 0], a: .18 + Math.random() * .25 }));
+    const size = () => { dpr = Math.min(2, devicePixelRatio || 1); W = c.width = innerWidth * dpr; H = c.height = innerHeight * dpr; };
+    size(); addEventListener('resize', size);
+    let t0 = performance.now();
+    (function loop(t) {
+      const dt = t - t0; t0 = t;
+      if (!document.hidden) {
+        ctx.clearRect(0, 0, W, H);
+        ps.forEach(p => {
+          p.y -= p.v * dt; p.d += .0006 * dt; p.x += Math.sin(p.d) * .00012 * dt;
+          if (p.y < -.05) { p.y = 1.05; p.x = Math.random(); }
+          ctx.beginPath(); ctx.arc(p.x * W, p.y * H, p.r * dpr, 0, 6.283);
+          ctx.fillStyle = `rgba(${p.col},${p.a})`; ctx.fill();
+        });
+      }
+      requestAnimationFrame(loop);
+    })(t0);
+  } catch (_) {}
+
+  /* 2. 副標打字機 */
+  try {
+    const p = $('.rise p'); if (p) {
+      const txt = p.textContent.trim(); p.textContent = '';
+      if (reduced) p.textContent = txt; else {
+        p.classList.add('typing'); let i = 0;
+        setTimeout(function tick() { p.textContent = txt.slice(0, ++i); if (i < txt.length) setTimeout(tick, 140); else setTimeout(() => p.classList.remove('typing'), 1800); }, 700);
+      }
+    }
+  } catch (_) {}
+
+  /* 3. 點擊按鈕火花迸發 */
+  if (!reduced) document.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('.premium-cta, .sort-btn');
+    if (!b || b.disabled) return;
+    const r = b.getBoundingClientRect(), x = e.clientX || r.left + r.width / 2, y = e.clientY || r.top + r.height / 2;
+    const ring = document.createElement('i'); ring.className = 'spark-ring'; ring.style.left = x + 'px'; ring.style.top = y + 'px';
+    document.body.appendChild(ring); setTimeout(() => ring.remove(), 650);
+    const cols = ['#6366f1', '#a855f7', '#f43f5e', '#fbbf24', '#34d399'];
+    for (let i = 0; i < 9; i++) {
+      const s = document.createElement('i'); s.className = 'spark';
+      s.style.left = x - 4 + 'px'; s.style.top = y - 4 + 'px'; s.style.background = cols[i % cols.length];
+      document.body.appendChild(s);
+      const ang = (i / 9) * 6.283 + Math.random() * .5, dist = 34 + Math.random() * 30;
+      s.animate([{ transform: 'translate(0,0) scale(1)', opacity: 1 }, { transform: `translate(${Math.cos(ang) * dist}px,${Math.sin(ang) * dist}px) scale(0)`, opacity: 0 }], { duration: 550 + Math.random() * 200, easing: 'cubic-bezier(.2,.8,.2,1)' }).onfinish = () => s.remove();
+    }
+  });
+
+  /* 4. Banner 視差 */
+  if (!reduced) {
+    const img = $('#homepageBannerImage'); let tick = false;
+    const par = () => { tick = false; if (img) img.style.transform = `scale(1.1) translateY(${Math.min(40, scrollY * .12)}px)`; };
+    addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(par); } }, { passive: true });
+  }
+
+  /* 5. 必填未填 → 欄位抖動 */
+  const form = $('#orderForm');
+  if (form) form.addEventListener('invalid', e => {
+    const el = e.target; el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake');
+    setTimeout(() => el.classList.remove('shake'), 600);
+  }, true);
+
+  /* 6. 資料填完後，送出按鈕呼吸光暈 */
+  const btn = $('#submitBtn'), prog = $('#formProgress');
+  if (btn && prog) setInterval(() => btn.classList.toggle('cta-ready', prog.classList.contains('done') && !btn.disabled), 400);
+
+  /* 7. 切到別的分頁時，標題俏皮提示 */
+  const title = document.title;
+  document.addEventListener('visibilitychange', () => { document.title = document.hidden ? '🛍️ 回來看看～' : title; });
+})();
+</script>
+
+<!-- ✨ 第三波：企業級介面（玻璃導覽列、即時數據、分類膠囊、下單流程步驟、寬版排版） -->
+<style id="zah-pro-css">
+  :root { --ink:#0f172a; --brand:#4f46e5; --glass:rgba(255,255,255,.72); }
+  body { letter-spacing:-.005em; -webkit-font-smoothing:antialiased; font-feature-settings:'tnum','cv11'; }
+  body > .zah-grain { position:fixed; inset:0; z-index:96; pointer-events:none; opacity:.05; mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+
+  /* 寬版排版：商品多欄，表單維持置中窄版 */
+  main > section.w-full { max-width: 64rem; }
+  #productGrid { grid-template-columns: repeat(auto-fill, minmax(232px, 1fr)); gap: 1.25rem; }
+  main section > div.rounded-3xl { max-width: 36rem; margin-inline: auto; }
+  .product-image-wrap { height: 10rem; }
+  .product-card { box-shadow: 0 1px 0 rgba(255,255,255,.9) inset, 0 8px 24px -12px rgba(15,23,42,.18); }
+  .product-card .premium-cta { background: linear-gradient(135deg,#4f46e5,#7c3aed); }
+  .product-card .premium-cta:disabled { background: #cbd5e1; }
+  :focus-visible { outline: 2px solid var(--brand); outline-offset: 3px; border-radius: 10px; }
+  ::selection { background: rgba(99,102,241,.25); }
+  .shop-feature-panel { background: var(--glass); backdrop-filter: blur(14px) saturate(1.4); }
+
+  /* 玻璃導覽列 */
+  #zahNav { position:fixed; top:3px; left:50%; z-index:85; width:min(64rem, calc(100% - 1.5rem)); display:flex; align-items:center; gap:.75rem; padding:.55rem .6rem .55rem 1rem;
+    border-radius:1.1rem; background:var(--glass); backdrop-filter:blur(18px) saturate(1.6); border:1px solid rgba(226,232,240,.9); box-shadow:0 14px 40px -18px rgba(15,23,42,.35);
+    transform:translate(-50%,-140%); transition:transform .6s var(--ease-out, cubic-bezier(.16,1,.3,1)); margin-top:.5rem; }
+  #zahNav.show { transform:translate(-50%,0); }
+  #zahNav .brand { display:flex; align-items:center; gap:.5rem; font-weight:800; font-size:.9rem; color:var(--ink); margin-right:auto; }
+  #zahNav .brand b { width:26px; height:26px; border-radius:8px; background:linear-gradient(135deg,#4f46e5,#a855f7); display:grid; place-items:center; font-size:.8rem; }
+  #zahNav button.lnk { position:relative; padding:.45rem .8rem; border-radius:.7rem; font-size:.78rem; font-weight:700; color:#475569; background:transparent; border:0; cursor:pointer; transition:background .2s, color .2s; }
+  #zahNav button.lnk:hover { background:rgba(99,102,241,.1); color:var(--brand); }
+  .live-pill { display:flex; align-items:center; gap:.4rem; padding:.35rem .7rem; border-radius:9999px; background:#ecfdf5; color:#047857; font-size:.7rem; font-weight:800; }
+  .live-pill i { width:7px; height:7px; border-radius:50%; background:#10b981; animation:livePing 1.6s ease-out infinite; }
+  @keyframes livePing { 0% { box-shadow:0 0 0 0 rgba(16,185,129,.6) } 100% { box-shadow:0 0 0 9px rgba(16,185,129,0) } }
+
+  /* 數據列 */
+  #zahStats { display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem; margin-bottom:1.5rem; }
+  #zahStats > div { position:relative; overflow:hidden; padding:1rem 1.1rem; border-radius:1.2rem; background:var(--glass); backdrop-filter:blur(12px); border:1px solid rgba(226,232,240,.9);
+    box-shadow:0 10px 30px -18px rgba(15,23,42,.25); animation:riseIn .9s var(--ease-out) both; }
+  #zahStats > div:nth-child(2) { animation-delay:.1s } #zahStats > div:nth-child(3) { animation-delay:.2s }
+  #zahStats > div::after { content:''; position:absolute; right:-24px; top:-24px; width:80px; height:80px; border-radius:50%; background:radial-gradient(circle, rgba(99,102,241,.18), transparent 70%); }
+  #zahStats em { display:block; font-style:normal; font-size:.68rem; font-weight:700; color:#94a3b8; letter-spacing:.06em; }
+  #zahStats strong { display:block; margin-top:.2rem; font-size:1.65rem; font-weight:900; color:var(--ink); font-variant-numeric:tabular-nums; }
+
+  /* 分類膠囊 */
+  #zahChips { display:flex; gap:.5rem; overflow-x:auto; padding:.15rem .1rem .6rem; margin-bottom:.4rem; scrollbar-width:none; }
+  #zahChips::-webkit-scrollbar { display:none; }
+  #zahChips button { flex:none; padding:.5rem 1rem; border-radius:9999px; font-size:.78rem; font-weight:700; color:#475569; background:#fff; border:1px solid #e2e8f0; cursor:pointer; transition:all .25s var(--ease-out); }
+  #zahChips button:hover { transform:translateY(-2px); border-color:#a5b4fc; color:var(--brand); }
+  #zahChips button.on { color:#fff; border-color:transparent; background:linear-gradient(135deg,#4f46e5,#7c3aed); box-shadow:0 10px 20px -10px rgba(79,70,229,.7); }
+
+  /* 下單流程步驟 */
+  #zahSteps { position:relative; display:flex; justify-content:space-between; max-width:36rem; margin:0 auto 1.25rem; padding:0 .5rem; }
+  #zahSteps::before, #zahSteps .fill { content:''; position:absolute; top:16px; left:2.2rem; right:2.2rem; height:3px; border-radius:9px; background:#e2e8f0; }
+  #zahSteps .fill { right:auto; width:0; background:linear-gradient(90deg,#6366f1,#10b981); transition:width .8s var(--ease-out); max-width:calc(100% - 4.4rem); }
+  #zahSteps .st { position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:.4rem; font-size:.7rem; font-weight:800; color:#94a3b8; transition:color .4s; }
+  #zahSteps .st b { width:34px; height:34px; border-radius:50%; display:grid; place-items:center; background:#fff; border:2px solid #e2e8f0; font-size:.8rem; transition:all .5s cubic-bezier(.34,1.56,.64,1); }
+  #zahSteps .st.act { color:var(--brand); } #zahSteps .st.act b { border-color:#6366f1; color:#4f46e5; transform:scale(1.15); box-shadow:0 0 0 6px rgba(99,102,241,.15); }
+  #zahSteps .st.ok { color:#059669; } #zahSteps .st.ok b { background:#10b981; border-color:#10b981; color:#fff; }
+
+  @media (max-width:640px) { #zahNav button.lnk { display:none; } #zahStats strong { font-size:1.3rem; } }
+  @media (prefers-reduced-motion:reduce) { #zahNav { transition:none; } }
+</style>
+<script id="zah-pro-js">
+(() => {
+  const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const go = (el, block = 'start') => el && el.scrollIntoView({ behavior:'smooth', block });
+  try {
+    /* 質感顆粒 */
+    const g = document.createElement('div'); g.className = 'zah-grain'; document.body.appendChild(g);
+
+    /* 玻璃導覽列 */
+    const nav = document.createElement('nav'); nav.id = 'zahNav';
+    nav.innerHTML = '<div class="brand"><b>🛍️</b>展商城</div><button class="lnk" data-t="p">商品</button><button class="lnk" data-t="o">下單</button><span class="live-pill"><i></i>即時同步</span>';
+    document.body.appendChild(nav);
+    nav.addEventListener('click', e => { const b = e.target.closest('[data-t]'); if (!b) return; go(b.dataset.t === 'p' ? $('#productGrid') : $('#orderForm'), 'center'); });
+    const navSync = () => nav.classList.toggle('show', scrollY > 160);
+    addEventListener('scroll', navSync, { passive:true }); navSync();
+
+    /* 數據列（依商品卡片即時計算，篩選中不更新） */
+    const rise = $('.rise');
+    const stats = document.createElement('div'); stats.id = 'zahStats';
+    stats.innerHTML = ['商品總數','可購買','累計銷量'].map((t, i) => `<div><em>${t}</em><strong data-i="${i}">0</strong></div>`).join('');
+    rise.parentElement.insertBefore(stats, rise.nextElementSibling);
+    const vals = [0, 0, 0];
+    const tween = (el, to, i) => {
+      const from = vals[i]; vals[i] = to;
+      if (reduced || from === to) { el.textContent = to.toLocaleString(); return; }
+      const t0 = performance.now();
+      (function f(t) { const p = Math.min(1, (t - t0) / 1000), e = 1 - Math.pow(1 - p, 4); el.textContent = Math.round(from + (to - from) * e).toLocaleString(); if (p < 1) requestAnimationFrame(f); })(t0);
+    };
+    const calc = () => {
+      if ($('#shopSearchInput').value.trim() || $('#shopCategoryFilter').value !== 'all') return;
+      const cards = $$('#productGrid .product-card'); if (!cards.length) return;
+      const n = [cards.length, cards.filter(c => !c.classList.contains('product-unavailable')).length,
+        cards.reduce((s, c) => s + (+((c.textContent.match(/已售\s*([\d,]+)/) || [0, '0'])[1].replace(/,/g, ''))), 0)];
+      $$('#zahStats strong').forEach((el, i) => { if (vals[i] !== n[i]) tween(el, n[i], i); });
+    };
+    let cq = 0; new MutationObserver(() => { clearTimeout(cq); cq = setTimeout(calc, 120); }).observe($('#productGrid'), { childList:true });
+
+    /* 分類膠囊（與原本下拉選單雙向同步） */
+    const sel = $('#shopCategoryFilter'), chips = document.createElement('div'); chips.id = 'zahChips';
+    sel.closest('.shop-feature-panel').after(chips);
+    const buildChips = () => {
+      chips.innerHTML = [...sel.options].map(o => `<button type="button" data-v="${o.value.replace(/"/g, '&quot;')}" class="${o.value === sel.value ? 'on' : ''}">${o.value === 'all' ? '全部' : o.textContent}</button>`).join('');
+    };
+    chips.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; sel.value = b.dataset.v; sel.dispatchEvent(new Event('change')); buildChips(); });
+    sel.addEventListener('change', buildChips);
+    new MutationObserver(buildChips).observe(sel, { childList:true }); buildChips();
+
+    /* 下單流程步驟 */
+    const card = $('#orderForm').parentElement, steps = document.createElement('div'); steps.id = 'zahSteps';
+    steps.innerHTML = '<span class="fill"></span>' + ['選擇商品','填寫資料','完成訂單'].map((t, i) => `<div class="st"><b>${i + 1}</b>${t}</div>`).join('');
+    card.parentElement.insertBefore(steps, card);
+    const st = $$('#zahSteps .st'), fill = $('#zahSteps .fill'); let last = -1;
+    setInterval(() => {
+      const picked = !$('#selectedProductPrice').classList.contains('hidden') || !!$('#productName').value.trim();
+      const filled = !!$('#formProgress.done');
+      const m = $('#successModal'), done = m && m.classList.contains('flex') && !m.classList.contains('hidden');
+      const n = done ? 3 : filled ? 2 : picked ? 1 : 0;
+      if (n === last) return; last = n;
+      st.forEach((el, i) => { el.classList.toggle('ok', i < n); el.classList.toggle('act', i === n); });
+      fill.style.width = `calc((100% - 4.4rem) * ${Math.min(n, 2) / 2 + (n === 3 ? 0 : 0)})`;
+      if (n === 3) fill.style.width = 'calc(100% - 4.4rem)';
+    }, 300);
+  } catch (err) { console.warn('zah-pro', err); }
+})();
+</script>
+
 </body>
 </html>
