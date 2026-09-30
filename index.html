@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商務版營運與訂單管理總覽 </title>
+    <title>商務版營運與訂單管理總覽</title>
     <link rel="icon" type="image/png" href="my-logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -201,7 +201,146 @@
 
         @media print { html::before, html::after, #zahScroll { display:none !important; } * { animation:none !important; } }
         @media (prefers-reduced-motion: reduce) { *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:.01ms !important; } }
+    
+
+        /* ===================================================== */
+        /* ===== ZAH ENGINEERING UI / CINEMATIC MICRO-INTERACTION ===== */
+        /* ===================================================== */
+        :root { --eng-x:50vw; --eng-y:35vh; --eng-progress:0; }
+        body#main-body-container { background:
+            radial-gradient(700px 420px at var(--eng-x) var(--eng-y), rgba(99,102,241,.055), transparent 65%),
+            linear-gradient(180deg,#f8fafc 0%,#f1f5f9 100%); }
+        body#main-body-container::before {
+            content:''; position:fixed; inset:0; pointer-events:none; z-index:1; opacity:.42;
+            background-image:linear-gradient(rgba(99,102,241,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,.035) 1px,transparent 1px);
+            background-size:32px 32px; mask-image:linear-gradient(to bottom,rgba(0,0,0,.9),transparent 82%);
+        }
+        body#main-body-container::after {
+            content:''; position:fixed; inset:0; pointer-events:none; z-index:2; opacity:.08;
+            background:repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(15,23,42,.12) 4px);
+            mix-blend-mode:multiply;
+        }
+        main.flex-1.flex.flex-col.h-screen.overflow-hidden { position:relative; z-index:3; }
+        main.flex-1.flex.flex-col.h-screen.overflow-hidden > header {
+            backdrop-filter:blur(18px) saturate(150%); background:rgba(255,255,255,.82) !important;
+            box-shadow:0 1px 0 rgba(148,163,184,.35),0 14px 35px -28px rgba(15,23,42,.35); isolation:isolate;
+        }
+        main.flex-1.flex.flex-col.h-screen.overflow-hidden > header::before {
+            content:'SYSTEM // ZAH-OS  •  FIRESTORE LIVE  •  SECURE CHANNEL';
+            position:absolute; right:18px; top:3px; font:700 7px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;
+            letter-spacing:.18em; color:#94a3b8; opacity:.8; pointer-events:none;
+        }
+        main.flex-1.flex.flex-col.h-screen.overflow-hidden > header .bg-indigo-600.text-white.p-2 {
+            box-shadow:0 0 0 1px rgba(99,102,241,.16),0 10px 28px -12px rgba(79,70,229,.7),inset 0 1px rgba(255,255,255,.28);
+        }
+        .admin-tab-btn { position:relative; overflow:hidden; backdrop-filter:blur(8px); }
+        .admin-tab-btn::before { content:''; position:absolute; inset:0; background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.65) 50%,transparent 65%); transform:translateX(-130%); transition:transform .7s ease; pointer-events:none; }
+        .admin-tab-btn:hover::before { transform:translateX(130%); }
+        .admin-tab-btn.active { box-shadow:0 8px 22px -10px rgba(79,70,229,.65), inset 0 1px rgba(255,255,255,.2); }
+
+        /* 玻璃資料層：只加質感，不改原本色彩邏輯 */
+        #admin-tab-panel-dashboard > div,
+        #admin-tab-panel-shop > div,
+        #admin-tab-panel-orders > div,
+        #admin-tab-panel-settings > div,
+        #admin-tab-panel-products > div,
+        #admin-tab-panel-reviews > div {
+            position:relative; isolation:isolate;
+        }
+        #admin-tab-panel-dashboard > div::after,
+        #admin-tab-panel-shop > div::after,
+        #admin-tab-panel-orders > div::after,
+        #admin-tab-panel-settings > div::after,
+        #admin-tab-panel-products > div::after,
+        #admin-tab-panel-reviews > div::after {
+            content:''; position:absolute; inset:0; pointer-events:none; border-radius:inherit; opacity:0;
+            background:radial-gradient(420px circle at var(--gx,50%) var(--gy,50%),rgba(99,102,241,.10),transparent 58%);
+            transition:opacity .25s ease; z-index:-1;
+        }
+        #admin-tab-panel-dashboard > div:hover::after,
+        #admin-tab-panel-shop > div:hover::after,
+        #admin-tab-panel-orders > div:hover::after,
+        #admin-tab-panel-settings > div:hover::after,
+        #admin-tab-panel-products > div:hover::after,
+        #admin-tab-panel-reviews > div:hover::after { opacity:1; }
+
+        /* 高級「資料更新」光脈：不閃爍、不搶視線 */
+        .engineer-live { position:relative; }
+        .engineer-live::before { content:''; width:6px; height:6px; border-radius:50%; position:absolute; left:-12px; top:50%; transform:translateY(-50%); background:#10b981; box-shadow:0 0 0 0 rgba(16,185,129,.5); animation:engLive 2.2s infinite; }
+        @keyframes engLive { 0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.45)} 45%{box-shadow:0 0 0 5px rgba(16,185,129,0)} }
+
+        /* 卡片邊緣光帶 */
+        #admin-tab-panel-dashboard > .grid > div,
+        #productAdminList > div { border-color:rgba(226,232,240,.9); }
+        #admin-tab-panel-dashboard > .grid > div::marker { display:none; }
+        .engineer-edge { overflow:hidden; }
+        .engineer-edge::before { content:''; position:absolute; inset:0; border-radius:inherit; padding:1px; background:linear-gradient(120deg,transparent 20%,rgba(99,102,241,.35),transparent 55%,rgba(236,72,153,.2),transparent 80%); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; opacity:.55; pointer-events:none; }
+
+        /* 數據卡片 3D 深度 */
+        #admin-tab-panel-dashboard > .grid > div { transform-style:preserve-3d; will-change:transform; }
+        #admin-tab-panel-dashboard > .grid > div > * { transform:translateZ(0); }
+
+        /* 滾動區域更像產品級 App */
+        main.flex-1.flex.flex-col.h-screen.overflow-hidden > main { scrollbar-width:thin; scrollbar-color:#c7d2fe transparent; }
+        main.flex-1.flex.flex-col.h-screen.overflow-hidden > main::-webkit-scrollbar { width:8px; }
+        main.flex-1.flex.flex-col.h-screen.overflow-hidden > main::-webkit-scrollbar-track { background:transparent; }
+        main.flex-1.flex.flex-col.h-screen.overflow-hidden > main::-webkit-scrollbar-thumb { background:linear-gradient(#c7d2fe,#818cf8); border-radius:99px; border:2px solid transparent; background-clip:padding-box; }
+
+        /* 重要按鈕：工程化 hover / active */
+        button, a { -webkit-tap-highlight-color:transparent; }
+        button:not(:disabled), a[class*="bg-"] { will-change:transform; }
+        button:not(:disabled):active { transition-duration:.08s !important; }
+        .eng-focus-ring { animation:engFocus .7s cubic-bezier(.16,1,.3,1); }
+        @keyframes engFocus { 0%{box-shadow:0 0 0 0 rgba(99,102,241,.0)} 35%{box-shadow:0 0 0 7px rgba(99,102,241,.16)} 100%{box-shadow:0 0 0 0 rgba(99,102,241,0)} }
+
+        /* 頁面切換：像 SPA，不像重新載入 */
+        .engineer-page-in { animation:engPageIn .55s cubic-bezier(.16,1,.3,1) both; }
+        @keyframes engPageIn { from{opacity:.15; transform:translateY(10px); filter:blur(4px)} to{opacity:1; transform:none; filter:none} }
+
+        /* 系統級 Toast */
+        #engineer-toast { position:fixed; left:50%; bottom:24px; transform:translate(-50%,18px) scale(.96); z-index:9998; opacity:0; pointer-events:none; min-width:280px; max-width:min(92vw,520px); padding:11px 14px; border:1px solid rgba(148,163,184,.35); border-radius:14px; background:rgba(15,23,42,.92); color:#f8fafc; box-shadow:0 22px 60px -24px rgba(15,23,42,.75); backdrop-filter:blur(18px); transition:all .35s cubic-bezier(.34,1.35,.64,1); font:600 12px/1.4 Inter,sans-serif; }
+        #engineer-toast.show { opacity:1; transform:translate(-50%,0) scale(1); }
+        #engineer-toast .toast-dot { display:inline-block; width:7px; height:7px; border-radius:50%; margin-right:8px; background:#34d399; box-shadow:0 0 12px rgba(52,211,153,.8); }
+
+        /* 減少動畫時保留功能 */
+        @media (prefers-reduced-motion: reduce) { body#main-body-container::before,body#main-body-container::after { display:none; } }
+
     </style>
+
+<style id="zah-live-event-css">
+/* =========================================================
+   ZAH-OS LIVE EVENT SYSTEM // ENGINEERING LAYER
+   Firestore -> Event Bus -> HUD -> Visual/Audio Feedback
+   ========================================================= */
+:root{--live-accent:#22c55e;--live-blue:#38bdf8;--live-purple:#8b5cf6;--live-red:#fb7185}
+#zah-live-hud{position:fixed;right:22px;top:88px;width:min(390px,calc(100vw - 32px));z-index:120;pointer-events:none;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
+.zah-live-shell{border:1px solid rgba(148,163,184,.25);background:linear-gradient(145deg,rgba(8,15,30,.94),rgba(15,23,42,.88));backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);border-radius:18px;box-shadow:0 20px 70px rgba(2,6,23,.34),inset 0 1px rgba(255,255,255,.08);overflow:hidden;transform:translateX(calc(100% + 32px));opacity:0;transition:transform .42s cubic-bezier(.2,.8,.2,1),opacity .3s ease}
+#zah-live-hud.active .zah-live-shell{transform:translateX(0);opacity:1}
+.zah-live-top{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid rgba(148,163,184,.13);background:linear-gradient(90deg,rgba(34,197,94,.07),transparent 42%,rgba(56,189,248,.07))}
+.zah-live-title{display:flex;align-items:center;gap:8px;color:#e2e8f0;font-size:11px;font-weight:800;letter-spacing:.12em}
+.zah-live-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.65);animation:zahLivePulse 1.5s infinite}
+.zah-live-state{font-size:9px;color:#64748b;letter-spacing:.08em}
+.zah-live-body{padding:12px 14px 14px}.zah-live-event{position:relative;padding:11px 11px 11px 14px;border:1px solid rgba(148,163,184,.13);border-radius:12px;background:rgba(15,23,42,.58);overflow:hidden;animation:zahEventIn .5s cubic-bezier(.2,.8,.2,1) both}.zah-live-event:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--event-color,#22c55e);box-shadow:0 0 18px var(--event-color,#22c55e)}
+.zah-live-event+.zah-live-event{margin-top:8px}.zah-event-row{display:flex;align-items:center;justify-content:space-between;gap:8px}.zah-event-kind{font-size:9px;font-weight:900;letter-spacing:.1em;color:var(--event-color,#22c55e)}.zah-event-time{font-size:9px;color:#64748b}.zah-event-main{margin-top:5px;color:#f8fafc;font-family:ui-sans-serif,system-ui,sans-serif;font-size:13px;font-weight:800}.zah-event-meta{margin-top:4px;color:#94a3b8;font-family:ui-sans-serif,system-ui,sans-serif;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.zah-event-value{color:#86efac;font-weight:900}
+#zah-live-hud.new-order-alert .zah-live-shell{animation:zahHudShock .72s ease both;border-color:rgba(34,197,94,.5);box-shadow:0 0 0 1px rgba(34,197,94,.1),0 20px 90px rgba(34,197,94,.2),inset 0 1px rgba(255,255,255,.1)}
+#zah-live-hud.high-value .zah-live-shell{border-color:rgba(251,191,36,.58);box-shadow:0 0 0 1px rgba(251,191,36,.12),0 20px 100px rgba(245,158,11,.22)}
+.zah-live-counter{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:9px;border-top:1px solid rgba(148,163,184,.1);font-size:9px;color:#64748b}.zah-live-counter strong{color:#cbd5e1;font-size:11px}
+#zah-live-flash{position:fixed;inset:0;z-index:119;pointer-events:none;opacity:0;background:radial-gradient(circle at 92% 12%,rgba(34,197,94,.2),transparent 26%)}#zah-live-flash.fire{animation:zahFlash .7s ease-out both}
+.zah-live-scan{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 0%,rgba(255,255,255,.06) 50%,transparent 100%);transform:translateY(-100%);animation:zahScan 1.2s ease-out both}
+tr.zah-live-new-row{position:relative;animation:zahRowIn .9s cubic-bezier(.2,.8,.2,1) both!important;box-shadow:inset 3px 0 #22c55e,0 0 0 1px rgba(34,197,94,.18)!important;background:linear-gradient(90deg,rgba(34,197,94,.12),transparent 58%)!important}
+tr.zah-live-new-row td:first-child:before{content:"LIVE";display:inline-block;margin-right:6px;padding:2px 5px;border-radius:4px;background:#22c55e;color:#052e16;font:900 8px ui-monospace,SFMono-Regular,monospace;vertical-align:middle;animation:zahLivePulse 1s infinite}
+.zah-live-number-burst{animation:zahNumberBurst .65s cubic-bezier(.2,.8,.2,1) both}
+@keyframes zahLivePulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}50%{box-shadow:0 0 0 7px rgba(34,197,94,0)}}
+@keyframes zahEventIn{from{opacity:0;transform:translateX(24px) scale(.98);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+@keyframes zahHudShock{0%{transform:translateX(0) scale(1)}20%{transform:translateX(-5px) scale(1.012)}40%{transform:translateX(3px)}60%{transform:translateX(-2px)}100%{transform:none}}
+@keyframes zahFlash{0%{opacity:0}18%{opacity:1}100%{opacity:0}}
+@keyframes zahScan{from{transform:translateY(-100%)}to{transform:translateY(100%)}}
+@keyframes zahRowIn{0%{opacity:0;transform:translateX(-18px);filter:brightness(1.8)}25%{opacity:1}100%{transform:none;filter:none}}
+@keyframes zahNumberBurst{0%{transform:scale(1);filter:none}45%{transform:scale(1.18);color:#22c55e;text-shadow:0 0 22px rgba(34,197,94,.55)}100%{transform:scale(1);filter:none}}
+@media(max-width:640px){#zah-live-hud{top:72px;right:10px;width:calc(100vw - 20px)}}
+@media(prefers-reduced-motion:reduce){.zah-live-shell,#zah-live-hud.new-order-alert .zah-live-shell,.zah-live-event,tr.zah-live-new-row,#zah-live-flash.fire{animation:none!important;transition:none!important}}
+</style>
+
 </head>
 <body id="main-body-container" class="bg-slate-50 text-slate-800 flex h-screen overflow-hidden transition-all duration-300">
     <!-- 🔐 密碼登入閘門 -->
@@ -1070,6 +1209,14 @@
 
                 if (ordersRealtimeReady) {
                     querySnapshot.docChanges().forEach((change) => {
+                        const eventOrder = { docId: change.doc.id, ...change.doc.data() };
+                        if (change.type === 'added') {
+                            if (window.zahLiveOrderCreated) window.zahLiveOrderCreated(eventOrder, 'firestore');
+                        } else if (change.type === 'modified') {
+                            if (window.zahLiveOrderChanged) window.zahLiveOrderChanged(eventOrder, 'firestore');
+                        } else if (change.type === 'removed') {
+                            if (window.zahLiveOrderDeleted) window.zahLiveOrderDeleted(eventOrder, 'firestore');
+                        }
                         if (change.type !== 'added') return;
                         if (locallyCreatedOrderIds.has(change.doc.id)) {
                             locallyCreatedOrderIds.delete(change.doc.id);
@@ -1649,7 +1796,9 @@
 
             try {
                 const docRef = await addDoc(collection(db, "orders"), newOrder);
+                newOrder.docId = docRef.id;
                 locallyCreatedOrderIds.add(docRef.id);
+                if (window.zahLiveOrderCreated) window.zahLiveOrderCreated(newOrder, 'admin');
                 closeModal();
                 e.target.reset();
                 
@@ -2082,5 +2231,237 @@
         }
     })();
     </script>
+
+
+    <script>
+    /* =========================================================
+       ZAH ENGINEERING MICRO-INTERACTION CORE
+       不接管 Firebase / 訂單邏輯，只負責視覺層
+       ========================================================= */
+    (() => {
+        const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const root = document.documentElement;
+        const body = document.getElementById('main-body-container');
+        if (!body || reduce) return;
+
+        // 1) 指標聚光：只更新 CSS variable，避免大量 DOM 重繪
+        let raf = 0, mx = innerWidth * .5, my = innerHeight * .35;
+        addEventListener('pointermove', e => {
+            mx = e.clientX; my = e.clientY;
+            if (raf) return;
+            raf = requestAnimationFrame(() => {
+                raf = 0;
+                root.style.setProperty('--eng-x', mx + 'px');
+                root.style.setProperty('--eng-y', my + 'px');
+            });
+        }, {passive:true});
+
+        // 2) 主要資料卡 3D 微傾斜：幅度很小，保持專業感
+        const cards = [...document.querySelectorAll('#admin-tab-panel-dashboard > .grid > div')];
+        cards.forEach(card => {
+            card.classList.add('engineer-edge');
+            card.addEventListener('pointermove', e => {
+                const r = card.getBoundingClientRect();
+                const px = (e.clientX-r.left)/r.width-.5;
+                const py = (e.clientY-r.top)/r.height-.5;
+                card.style.setProperty('--gx', ((px+.5)*100)+'%');
+                card.style.setProperty('--gy', ((py+.5)*100)+'%');
+                card.style.transform = `perspective(900px) rotateX(${(-py*2.1).toFixed(2)}deg) rotateY(${(px*2.5).toFixed(2)}deg) translateY(-5px)`;
+            }, {passive:true});
+            card.addEventListener('pointerleave', () => { card.style.transform=''; });
+        });
+
+        // 3) 按鈕磁吸：只對大型操作按鈕啟用，避免整個後台飄來飄去
+        const magnetic = [...document.querySelectorAll('header button, #gate-submit, button[onclick*="openModal"], button[onclick*="save"], button[onclick*="delete"], button[onclick*="batch"]')];
+        magnetic.forEach(btn => {
+            if (btn.dataset.engMagnetic) return;
+            btn.dataset.engMagnetic='1';
+            btn.addEventListener('pointermove', e => {
+                if (btn.disabled) return;
+                const r=btn.getBoundingClientRect(), x=(e.clientX-(r.left+r.width/2))/r.width, y=(e.clientY-(r.top+r.height/2))/r.height;
+                btn.style.transform=`translate(${(x*4).toFixed(1)}px,${(y*3).toFixed(1)}px) scale(1.015)`;
+            }, {passive:true});
+            btn.addEventListener('pointerleave', () => { btn.style.transform=''; });
+        });
+
+        // 4) 任何分頁切換後，內容像產品級 SPA 一樣重新進場
+        const panels = [...document.querySelectorAll('.admin-tab-panel')];
+        const animateActivePanel = () => {
+            const active = panels.find(p => !p.classList.contains('hidden'));
+            if (!active) return;
+            active.classList.remove('engineer-page-in');
+            void active.offsetWidth;
+            active.classList.add('engineer-page-in');
+            setTimeout(() => active.classList.remove('engineer-page-in'), 700);
+        };
+        document.addEventListener('click', e => {
+            if (e.target.closest('.admin-tab-btn')) setTimeout(animateActivePanel, 30);
+        }, true);
+
+        // 5) 系統 Toast：攔截 alert 以外不做任何業務邏輯改動；提供工程化操作回饋
+        let toastTimer;
+        const toast = document.createElement('div');
+        toast.id='engineer-toast';
+        toast.innerHTML='<span class="toast-dot"></span><span id="engineer-toast-text"></span>';
+        document.body.appendChild(toast);
+        const toastText=toast.querySelector('#engineer-toast-text');
+        window.zahEngineerToast = (message) => {
+            toastText.textContent=message;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer=setTimeout(()=>toast.classList.remove('show'),2600);
+        };
+
+        // 6) 首次解鎖後只做一次「系統啟動」微提示
+        window.addEventListener('load', () => {
+            setTimeout(() => window.zahEngineerToast?.('ZAH-OS 已連線 · Firebase realtime channel online'), 900);
+        }, {once:true});
+
+        // 7) 鍵盤快捷鍵提示，不改原本快捷鍵；僅在 Ctrl/Cmd+K 顯示狀態
+        addEventListener('keydown', e => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase()==='k') {
+                e.preventDefault();
+                window.zahEngineerToast?.('COMMAND CHANNEL READY · 可使用滑鼠操作後台模組');
+            }
+        });
+    })();
+    </script>
+
+
+<div id="zah-live-flash"></div>
+<div id="zah-live-hud" aria-live="polite" aria-atomic="false">
+  <div class="zah-live-shell">
+    <div class="zah-live-scan"></div>
+    <div class="zah-live-top">
+      <div class="zah-live-title"><span class="zah-live-dot"></span> ZAH-OS / LIVE EVENT BUS</div>
+      <div class="zah-live-state" id="zah-live-state">FIRESTORE STREAM</div>
+    </div>
+    <div class="zah-live-body">
+      <div id="zah-live-events"></div>
+      <div class="zah-live-counter"><span>EVENT BUFFER</span><strong id="zah-live-count">0</strong></div>
+    </div>
+  </div>
+</div>
+
+
+<script id="zah-live-event-system">
+/* =========================================================
+   ZAH-OS LIVE EVENT SYSTEM
+   Architecture: Firestore Snapshot -> Normalizer -> Event Bus
+                  -> Event Queue -> Renderers -> Feedback
+   ========================================================= */
+(() => {
+  'use strict';
+  const state = {
+    startedAt: Date.now(),
+    seen: new Map(),
+    events: [],
+    sequence: 0,
+    maxEvents: 5,
+    active: false
+  };
+  const hud = document.getElementById('zah-live-hud');
+  const eventBox = document.getElementById('zah-live-events');
+  const countBox = document.getElementById('zah-live-count');
+  const statusBox = document.getElementById('zah-live-state');
+  const flash = document.getElementById('zah-live-flash');
+  if (!hud || !eventBox) return;
+
+  const esc = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const money = (v) => `NT$${Number(v || 0).toLocaleString()}`;
+  const time = () => new Date().toLocaleTimeString('zh-TW',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+
+  window.ZAH_EVENT_BUS = {
+    version: '1.0.0',
+    publish(type, payload = {}) {
+      const id = `${type}:${payload.docId || payload.id || ''}:${payload.signature || ''}`;
+      const now = Date.now();
+      if (state.seen.has(id) && now - state.seen.get(id) < 2500) return false;
+      state.seen.set(id, now);
+      for (const [k,t] of state.seen) if (now-t > 15000) state.seen.delete(k);
+      const event = {seq: ++state.sequence, type, payload, at: now};
+      state.events.unshift(event);
+      state.events = state.events.slice(0, state.maxEvents);
+      render(event);
+      return true;
+    },
+    snapshot() { return [...state.events]; }
+  };
+
+  function render(event) {
+    const o = event.payload.order || event.payload;
+    const isNew = event.type === 'order.created';
+    const high = Number(o.price || 0) >= 2000;
+    const color = high ? '#fbbf24' : (isNew ? '#22c55e' : '#38bdf8');
+    const kind = isNew ? (high ? 'HIGH VALUE ORDER' : 'ORDER CREATED') : event.type.replace('order.','').toUpperCase();
+    const title = isNew ? `新訂單 ${esc(o.id || 'UNKNOWN')}` : `訂單 ${esc(o.id || 'UNKNOWN')} · ${esc(kind)}`;
+    const meta = `${esc(o.customer || '新客戶')} · ${esc(o.product || '未命名商品')}`;
+    const node = document.createElement('div');
+    node.className = 'zah-live-event';
+    node.style.setProperty('--event-color', color);
+    node.innerHTML = `<div class="zah-event-row"><span class="zah-event-kind">${kind}</span><span class="zah-event-time">${time()}</span></div><div class="zah-event-main">${title}</div><div class="zah-event-meta">${meta} · <span class="zah-event-value">${money(o.price)}</span></div>`;
+    eventBox.prepend(node);
+    while (eventBox.children.length > state.maxEvents) eventBox.lastElementChild.remove();
+    countBox.textContent = String(state.sequence).padStart(3,'0');
+    statusBox.textContent = `SEQ ${String(event.seq).padStart(4,'0')} · ${isNew ? 'INGESTED' : 'UPDATED'}`;
+    hud.classList.add('active');
+    if (isNew) {
+      hud.classList.toggle('high-value', high);
+      hud.classList.add('new-order-alert');
+      flash.classList.remove('fire'); void flash.offsetWidth; flash.classList.add('fire');
+      setTimeout(() => hud.classList.remove('new-order-alert'), 760);
+      if (high) setTimeout(() => hud.classList.remove('high-value'), 1800);
+      pulseDashboardNumbers();
+      highlightOrderRow(o);
+      if (typeof window.zahEngineerToast === 'function') window.zahEngineerToast(`LIVE EVENT #${event.seq} · 新訂單 ${o.id || ''} 已進入事件匯流排`);
+      try { if (typeof playSound === 'function') playSound(high ? 'alarm' : 'action'); } catch (_) {}
+    }
+  }
+
+  function pulseDashboardNumbers() {
+    ['card-total-orders','card-today-orders','card-total-revenue','card-total-profit','card-month-profit','card-today-revenue'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.classList.remove('zah-live-number-burst'); void el.offsetWidth; el.classList.add('zah-live-number-burst');
+    });
+  }
+
+  function highlightOrderRow(order) {
+    const rows = [...document.querySelectorAll('#orders-table-body tr')];
+    const row = rows.find(tr => tr.textContent.includes(String(order.id || '')) || tr.textContent.includes(String(order.customer || '')));
+    if (!row) return;
+    row.classList.remove('zah-live-new-row'); void row.offsetWidth; row.classList.add('zah-live-new-row');
+    row.scrollIntoView({behavior:'smooth',block:'nearest'});
+    setTimeout(() => row.classList.remove('zah-live-new-row'), 6200);
+  }
+
+  window.zahLiveOrderCreated = function(order, source='firestore') {
+    return window.ZAH_EVENT_BUS.publish('order.created', {
+      source, order,
+      docId: order?.docId || '',
+      signature: `${order?.id || ''}|${order?.date || ''}|${order?.price || ''}`
+    });
+  };
+  window.zahLiveOrderChanged = function(order, source='firestore') {
+    return window.ZAH_EVENT_BUS.publish('order.updated', {
+      source, order,
+      docId: order?.docId || '',
+      signature: `${order?.status || ''}|${order?.price || ''}|${order?.rating || ''}|${order?.memo || ''}`
+    });
+  };
+  window.zahLiveOrderDeleted = function(order, source='firestore') {
+    return window.ZAH_EVENT_BUS.publish('order.deleted', {
+      source, order,
+      docId: order?.docId || '',
+      signature: 'deleted'
+    });
+  };
+
+  window.addEventListener('beforeunload', () => { state.active = false; });
+  state.active = true;
+  statusBox.textContent = 'CONNECTING · EVENT BUS READY';
+})();
+</script>
+
 </body>
 </html>
