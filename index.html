@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商務版營運與訂單管理總覽</title>
+    <title>商務版營運與訂單管理總覽 (太空戰艦警報與電玩賽車旗艦版)</title>
     <link rel="icon" type="image/png" href="my-logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -306,41 +306,6 @@
         @media (prefers-reduced-motion: reduce) { body#main-body-container::before,body#main-body-container::after { display:none; } }
 
     </style>
-
-<style id="zah-live-event-css">
-/* =========================================================
-   ZAH-OS LIVE EVENT SYSTEM // ENGINEERING LAYER
-   Firestore -> Event Bus -> HUD -> Visual/Audio Feedback
-   ========================================================= */
-:root{--live-accent:#22c55e;--live-blue:#38bdf8;--live-purple:#8b5cf6;--live-red:#fb7185}
-#zah-live-hud{position:fixed;right:22px;top:88px;width:min(390px,calc(100vw - 32px));z-index:120;pointer-events:none;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}
-.zah-live-shell{border:1px solid rgba(148,163,184,.25);background:linear-gradient(145deg,rgba(8,15,30,.94),rgba(15,23,42,.88));backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);border-radius:18px;box-shadow:0 20px 70px rgba(2,6,23,.34),inset 0 1px rgba(255,255,255,.08);overflow:hidden;transform:translateX(calc(100% + 32px));opacity:0;transition:transform .42s cubic-bezier(.2,.8,.2,1),opacity .3s ease}
-#zah-live-hud.active .zah-live-shell{transform:translateX(0);opacity:1}
-.zah-live-top{display:flex;align-items:center;justify-content:space-between;padding:11px 14px;border-bottom:1px solid rgba(148,163,184,.13);background:linear-gradient(90deg,rgba(34,197,94,.07),transparent 42%,rgba(56,189,248,.07))}
-.zah-live-title{display:flex;align-items:center;gap:8px;color:#e2e8f0;font-size:11px;font-weight:800;letter-spacing:.12em}
-.zah-live-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.65);animation:zahLivePulse 1.5s infinite}
-.zah-live-state{font-size:9px;color:#64748b;letter-spacing:.08em}
-.zah-live-body{padding:12px 14px 14px}.zah-live-event{position:relative;padding:11px 11px 11px 14px;border:1px solid rgba(148,163,184,.13);border-radius:12px;background:rgba(15,23,42,.58);overflow:hidden;animation:zahEventIn .5s cubic-bezier(.2,.8,.2,1) both}.zah-live-event:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--event-color,#22c55e);box-shadow:0 0 18px var(--event-color,#22c55e)}
-.zah-live-event+.zah-live-event{margin-top:8px}.zah-event-row{display:flex;align-items:center;justify-content:space-between;gap:8px}.zah-event-kind{font-size:9px;font-weight:900;letter-spacing:.1em;color:var(--event-color,#22c55e)}.zah-event-time{font-size:9px;color:#64748b}.zah-event-main{margin-top:5px;color:#f8fafc;font-family:ui-sans-serif,system-ui,sans-serif;font-size:13px;font-weight:800}.zah-event-meta{margin-top:4px;color:#94a3b8;font-family:ui-sans-serif,system-ui,sans-serif;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.zah-event-value{color:#86efac;font-weight:900}
-#zah-live-hud.new-order-alert .zah-live-shell{animation:zahHudShock .72s ease both;border-color:rgba(34,197,94,.5);box-shadow:0 0 0 1px rgba(34,197,94,.1),0 20px 90px rgba(34,197,94,.2),inset 0 1px rgba(255,255,255,.1)}
-#zah-live-hud.high-value .zah-live-shell{border-color:rgba(251,191,36,.58);box-shadow:0 0 0 1px rgba(251,191,36,.12),0 20px 100px rgba(245,158,11,.22)}
-.zah-live-counter{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:9px;border-top:1px solid rgba(148,163,184,.1);font-size:9px;color:#64748b}.zah-live-counter strong{color:#cbd5e1;font-size:11px}
-#zah-live-flash{position:fixed;inset:0;z-index:119;pointer-events:none;opacity:0;background:radial-gradient(circle at 92% 12%,rgba(34,197,94,.2),transparent 26%)}#zah-live-flash.fire{animation:zahFlash .7s ease-out both}
-.zah-live-scan{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 0%,rgba(255,255,255,.06) 50%,transparent 100%);transform:translateY(-100%);animation:zahScan 1.2s ease-out both}
-tr.zah-live-new-row{position:relative;animation:zahRowIn .9s cubic-bezier(.2,.8,.2,1) both!important;box-shadow:inset 3px 0 #22c55e,0 0 0 1px rgba(34,197,94,.18)!important;background:linear-gradient(90deg,rgba(34,197,94,.12),transparent 58%)!important}
-tr.zah-live-new-row td:first-child:before{content:"LIVE";display:inline-block;margin-right:6px;padding:2px 5px;border-radius:4px;background:#22c55e;color:#052e16;font:900 8px ui-monospace,SFMono-Regular,monospace;vertical-align:middle;animation:zahLivePulse 1s infinite}
-.zah-live-number-burst{animation:zahNumberBurst .65s cubic-bezier(.2,.8,.2,1) both}
-@keyframes zahLivePulse{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}50%{box-shadow:0 0 0 7px rgba(34,197,94,0)}}
-@keyframes zahEventIn{from{opacity:0;transform:translateX(24px) scale(.98);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
-@keyframes zahHudShock{0%{transform:translateX(0) scale(1)}20%{transform:translateX(-5px) scale(1.012)}40%{transform:translateX(3px)}60%{transform:translateX(-2px)}100%{transform:none}}
-@keyframes zahFlash{0%{opacity:0}18%{opacity:1}100%{opacity:0}}
-@keyframes zahScan{from{transform:translateY(-100%)}to{transform:translateY(100%)}}
-@keyframes zahRowIn{0%{opacity:0;transform:translateX(-18px);filter:brightness(1.8)}25%{opacity:1}100%{transform:none;filter:none}}
-@keyframes zahNumberBurst{0%{transform:scale(1);filter:none}45%{transform:scale(1.18);color:#22c55e;text-shadow:0 0 22px rgba(34,197,94,.55)}100%{transform:scale(1);filter:none}}
-@media(max-width:640px){#zah-live-hud{top:72px;right:10px;width:calc(100vw - 20px)}}
-@media(prefers-reduced-motion:reduce){.zah-live-shell,#zah-live-hud.new-order-alert .zah-live-shell,.zah-live-event,tr.zah-live-new-row,#zah-live-flash.fire{animation:none!important;transition:none!important}}
-</style>
-
 </head>
 <body id="main-body-container" class="bg-slate-50 text-slate-800 flex h-screen overflow-hidden transition-all duration-300">
     <!-- 🔐 密碼登入閘門 -->
@@ -1209,14 +1174,6 @@ tr.zah-live-new-row td:first-child:before{content:"LIVE";display:inline-block;ma
 
                 if (ordersRealtimeReady) {
                     querySnapshot.docChanges().forEach((change) => {
-                        const eventOrder = { docId: change.doc.id, ...change.doc.data() };
-                        if (change.type === 'added') {
-                            if (window.zahLiveOrderCreated) window.zahLiveOrderCreated(eventOrder, 'firestore');
-                        } else if (change.type === 'modified') {
-                            if (window.zahLiveOrderChanged) window.zahLiveOrderChanged(eventOrder, 'firestore');
-                        } else if (change.type === 'removed') {
-                            if (window.zahLiveOrderDeleted) window.zahLiveOrderDeleted(eventOrder, 'firestore');
-                        }
                         if (change.type !== 'added') return;
                         if (locallyCreatedOrderIds.has(change.doc.id)) {
                             locallyCreatedOrderIds.delete(change.doc.id);
@@ -1796,9 +1753,7 @@ tr.zah-live-new-row td:first-child:before{content:"LIVE";display:inline-block;ma
 
             try {
                 const docRef = await addDoc(collection(db, "orders"), newOrder);
-                newOrder.docId = docRef.id;
                 locallyCreatedOrderIds.add(docRef.id);
-                if (window.zahLiveOrderCreated) window.zahLiveOrderCreated(newOrder, 'admin');
                 closeModal();
                 e.target.reset();
                 
@@ -2326,142 +2281,6 @@ tr.zah-live-new-row td:first-child:before{content:"LIVE";display:inline-block;ma
         });
     })();
     </script>
-
-
-<div id="zah-live-flash"></div>
-<div id="zah-live-hud" aria-live="polite" aria-atomic="false">
-  <div class="zah-live-shell">
-    <div class="zah-live-scan"></div>
-    <div class="zah-live-top">
-      <div class="zah-live-title"><span class="zah-live-dot"></span> ZAH-OS / LIVE EVENT BUS</div>
-      <div class="zah-live-state" id="zah-live-state">FIRESTORE STREAM</div>
-    </div>
-    <div class="zah-live-body">
-      <div id="zah-live-events"></div>
-      <div class="zah-live-counter"><span>EVENT BUFFER</span><strong id="zah-live-count">0</strong></div>
-    </div>
-  </div>
-</div>
-
-
-<script id="zah-live-event-system">
-/* =========================================================
-   ZAH-OS LIVE EVENT SYSTEM
-   Architecture: Firestore Snapshot -> Normalizer -> Event Bus
-                  -> Event Queue -> Renderers -> Feedback
-   ========================================================= */
-(() => {
-  'use strict';
-  const state = {
-    startedAt: Date.now(),
-    seen: new Map(),
-    events: [],
-    sequence: 0,
-    maxEvents: 5,
-    active: false
-  };
-  const hud = document.getElementById('zah-live-hud');
-  const eventBox = document.getElementById('zah-live-events');
-  const countBox = document.getElementById('zah-live-count');
-  const statusBox = document.getElementById('zah-live-state');
-  const flash = document.getElementById('zah-live-flash');
-  if (!hud || !eventBox) return;
-
-  const esc = (v) => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const money = (v) => `NT$${Number(v || 0).toLocaleString()}`;
-  const time = () => new Date().toLocaleTimeString('zh-TW',{hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
-
-  window.ZAH_EVENT_BUS = {
-    version: '1.0.0',
-    publish(type, payload = {}) {
-      const id = `${type}:${payload.docId || payload.id || ''}:${payload.signature || ''}`;
-      const now = Date.now();
-      if (state.seen.has(id) && now - state.seen.get(id) < 2500) return false;
-      state.seen.set(id, now);
-      for (const [k,t] of state.seen) if (now-t > 15000) state.seen.delete(k);
-      const event = {seq: ++state.sequence, type, payload, at: now};
-      state.events.unshift(event);
-      state.events = state.events.slice(0, state.maxEvents);
-      render(event);
-      return true;
-    },
-    snapshot() { return [...state.events]; }
-  };
-
-  function render(event) {
-    const o = event.payload.order || event.payload;
-    const isNew = event.type === 'order.created';
-    const high = Number(o.price || 0) >= 2000;
-    const color = high ? '#fbbf24' : (isNew ? '#22c55e' : '#38bdf8');
-    const kind = isNew ? (high ? 'HIGH VALUE ORDER' : 'ORDER CREATED') : event.type.replace('order.','').toUpperCase();
-    const title = isNew ? `新訂單 ${esc(o.id || 'UNKNOWN')}` : `訂單 ${esc(o.id || 'UNKNOWN')} · ${esc(kind)}`;
-    const meta = `${esc(o.customer || '新客戶')} · ${esc(o.product || '未命名商品')}`;
-    const node = document.createElement('div');
-    node.className = 'zah-live-event';
-    node.style.setProperty('--event-color', color);
-    node.innerHTML = `<div class="zah-event-row"><span class="zah-event-kind">${kind}</span><span class="zah-event-time">${time()}</span></div><div class="zah-event-main">${title}</div><div class="zah-event-meta">${meta} · <span class="zah-event-value">${money(o.price)}</span></div>`;
-    eventBox.prepend(node);
-    while (eventBox.children.length > state.maxEvents) eventBox.lastElementChild.remove();
-    countBox.textContent = String(state.sequence).padStart(3,'0');
-    statusBox.textContent = `SEQ ${String(event.seq).padStart(4,'0')} · ${isNew ? 'INGESTED' : 'UPDATED'}`;
-    hud.classList.add('active');
-    if (isNew) {
-      hud.classList.toggle('high-value', high);
-      hud.classList.add('new-order-alert');
-      flash.classList.remove('fire'); void flash.offsetWidth; flash.classList.add('fire');
-      setTimeout(() => hud.classList.remove('new-order-alert'), 760);
-      if (high) setTimeout(() => hud.classList.remove('high-value'), 1800);
-      pulseDashboardNumbers();
-      highlightOrderRow(o);
-      if (typeof window.zahEngineerToast === 'function') window.zahEngineerToast(`LIVE EVENT #${event.seq} · 新訂單 ${o.id || ''} 已進入事件匯流排`);
-      try { if (typeof playSound === 'function') playSound(high ? 'alarm' : 'action'); } catch (_) {}
-    }
-  }
-
-  function pulseDashboardNumbers() {
-    ['card-total-orders','card-today-orders','card-total-revenue','card-total-profit','card-month-profit','card-today-revenue'].forEach(id => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      el.classList.remove('zah-live-number-burst'); void el.offsetWidth; el.classList.add('zah-live-number-burst');
-    });
-  }
-
-  function highlightOrderRow(order) {
-    const rows = [...document.querySelectorAll('#orders-table-body tr')];
-    const row = rows.find(tr => tr.textContent.includes(String(order.id || '')) || tr.textContent.includes(String(order.customer || '')));
-    if (!row) return;
-    row.classList.remove('zah-live-new-row'); void row.offsetWidth; row.classList.add('zah-live-new-row');
-    row.scrollIntoView({behavior:'smooth',block:'nearest'});
-    setTimeout(() => row.classList.remove('zah-live-new-row'), 6200);
-  }
-
-  window.zahLiveOrderCreated = function(order, source='firestore') {
-    return window.ZAH_EVENT_BUS.publish('order.created', {
-      source, order,
-      docId: order?.docId || '',
-      signature: `${order?.id || ''}|${order?.date || ''}|${order?.price || ''}`
-    });
-  };
-  window.zahLiveOrderChanged = function(order, source='firestore') {
-    return window.ZAH_EVENT_BUS.publish('order.updated', {
-      source, order,
-      docId: order?.docId || '',
-      signature: `${order?.status || ''}|${order?.price || ''}|${order?.rating || ''}|${order?.memo || ''}`
-    });
-  };
-  window.zahLiveOrderDeleted = function(order, source='firestore') {
-    return window.ZAH_EVENT_BUS.publish('order.deleted', {
-      source, order,
-      docId: order?.docId || '',
-      signature: 'deleted'
-    });
-  };
-
-  window.addEventListener('beforeunload', () => { state.active = false; });
-  state.active = true;
-  statusBox.textContent = 'CONNECTING · EVENT BUS READY';
-})();
-</script>
 
 </body>
 </html>
