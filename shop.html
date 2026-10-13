@@ -1289,9 +1289,11 @@
         appliedCoupon = chk.c;
       }
       const disc = memberDiscount(customer);
-      const afterMember = Math.round(qty * (selectedProduct
+      const baseAmt = qty * (selectedProduct
         ? Number(saleActive ? selectedProduct.salePrice : (selectedProduct.price || 0))
-        : 0) * (1 - disc));
+        : 0);
+      const afterMember = Math.round(baseAmt * (1 - disc));
+      const memberOff = Math.round(baseAmt) - afterMember;
       const cpOff = couponOff(afterMember);
       if (appliedCoupon && !cpOff && afterMember > 0) { toast(`未達優惠券最低消費 NT$${Number(appliedCoupon.minSpend).toLocaleString()}。`, "error"); return; }
       const productPrice = afterMember - cpOff;
@@ -1317,6 +1319,9 @@
         status: "未付款",
         coupon: cpOff ? appliedCoupon.id : "",
         couponOff: cpOff || 0,
+        memberLevel: disc ? memberLevel().name : "",
+        memberDisc: disc ? Math.round(disc * 100) : 0,
+        memberOff: disc ? memberOff : 0,
         memo: [`遊戲名稱：${gameName}`, `遊戲UID：${gameUid}`, disc ? `會員折扣：${memberLevel().name} −${Math.round(disc * 100)}%` : "", cpOff ? `優惠券：${appliedCoupon.id} −NT$${cpOff}` : "", memo].filter(Boolean).join("\n"),
         date: date
       });
