@@ -118,6 +118,14 @@
     #successModal.flex > div { animation:modalPop .45s cubic-bezier(.34,1.35,.64,1) both; }
     #successModal.closing { animation:overlayOut .22s ease both; }
     #successModal.closing > div { animation:modalOut .22s ease both; }
+    #welcomeModal { z-index:95; }
+    #welcomeModal.flex { animation:overlayFade .3s ease both; }
+    #welcomeModal.flex > div { animation:modalPop .5s cubic-bezier(.34,1.35,.64,1) both; }
+    #welcomeModal.closing { animation:overlayOut .22s ease both; }
+    #welcomeModal.closing > div { animation:modalOut .22s ease both; }
+    #welcomeModal .wm-emoji { display:inline-block; animation:wmWave 1.6s ease-in-out .5s 2; transform-origin:70% 70%; }
+    @keyframes wmWave { 0%,100%{transform:rotate(0)} 20%{transform:rotate(16deg)} 40%{transform:rotate(-10deg)} 60%{transform:rotate(14deg)} 80%{transform:rotate(-6deg)} }
+    @media (prefers-reduced-motion: reduce) { #welcomeModal .wm-emoji { animation:none; } }
     @keyframes overlayFade { from{opacity:0} to{opacity:1} }
     @keyframes overlayOut { to{opacity:0} }
     @keyframes modalPop { from{opacity:0; transform:scale(.9) translateY(14px)} to{opacity:1; transform:none} }
@@ -513,6 +521,29 @@
       <div id="tab-member" class="tab-panel" role="tabpanel" hidden><div id="memberRoot" class="max-w-2xl mx-auto space-y-4"></div></div>
     </section>
   </main>
+
+  <!-- 🎉 下單後歡迎畫面（顯示在會員分頁上） -->
+  <div id="welcomeModal" class="fixed inset-0 hidden items-center justify-center p-4 bg-slate-900/55 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="welcomeTitle">
+    <div class="w-full max-w-sm bg-white rounded-3xl shadow-2xl overflow-hidden text-center">
+      <div class="bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 text-white px-6 pt-8 pb-7">
+        <div class="wm-emoji text-5xl" aria-hidden="true">👋</div>
+        <h2 id="welcomeTitle" class="mt-3 text-xl font-black break-words">歡迎！</h2>
+        <p id="welcomeSub" class="mt-1.5 text-xs opacity-90"></p>
+      </div>
+      <div class="p-6">
+        <p class="text-xs font-bold text-emerald-600">✅ 訂單已建立成功，請保存訂單編號</p>
+        <div id="welcomeOrderId" class="mt-2 rounded-xl bg-slate-50 border border-slate-200 py-3 text-lg font-extrabold tracking-wider text-indigo-600 break-all"></div>
+        <div id="welcomeProduct" class="mt-3 text-sm font-bold text-slate-800 break-words"></div>
+        <div id="welcomePrice" class="text-xs text-slate-400 mt-0.5"></div>
+        <div id="welcomeNote" class="mt-4 rounded-xl bg-amber-50 border border-amber-100 px-3 py-2.5 text-[11px] leading-relaxed text-amber-700"></div>
+        <div class="grid grid-cols-2 gap-3 mt-5">
+          <button type="button" onclick="copyOrder()" class="rounded-xl bg-slate-100 hover:bg-slate-200 py-3 text-sm font-bold text-slate-700 transition">複製編號</button>
+          <a id="welcomeRateLink" href="rate.html" class="rounded-xl bg-slate-100 hover:bg-slate-200 py-3 text-sm font-bold text-slate-700 transition flex items-center justify-center">前往查單</a>
+        </div>
+        <button id="welcomeGo" type="button" onclick="closeWelcome()" class="premium-cta shine-sweep mt-3 w-full rounded-xl bg-indigo-600 hover:bg-indigo-700 py-3.5 text-sm font-bold text-white" style="--cta-shadow: rgba(79,70,229,.5);">進入會員中心 →</button>
+      </div>
+    </div>
+  </div>
 
   <!-- 成功視窗 -->
   <div id="successModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
@@ -1234,6 +1265,7 @@
     btn.textContent = "建立訂單中…";
 
     let orderId = "";
+    let welcomeInfo = null;
     try {
       const customer = document.getElementById("customer").value.trim();
       const gameName = document.getElementById("gameName").value.trim();
@@ -1288,10 +1320,11 @@
         date: date
       });
       try {
+        welcomeInfo = { name: customer, product: productLabel, price: productPrice, disc, isNew: memberName !== customer };
         saveProfile(customer, gameUid);
         lsSet("zahMyOrders", [{ id: orderId, product: productLabel, date }, ...lsGet("zahMyOrders", []).filter(o => o.id !== orderId)].slice(0, 10));
         watchMyOrders();
-        if (!memberName) setMemberName(customer);
+        if (memberName !== customer) setMemberName(customer);
         if (appliedCoupon) updateDoc(doc(db, "coupons", appliedCoupon.id), { used: increment(1) }).catch(() => {});
       } catch (_) {}
     } catch (error) {
@@ -1311,16 +1344,14 @@
       idEl.innerHTML = [...orderId].map((ch, i) => `<span class="id-char" style="animation-delay:${0.3 + i * 0.05}s">${esc(ch)}</span>`).join("");
       document.getElementById("rateLink").href = "rate.html?order=" + encodeURIComponent(orderId);
 
-      const modal = document.getElementById("successModal");
-      modal.classList.remove("hidden", "closing");
-      modal.classList.add("flex");
-
       document.getElementById("orderForm").reset();
       loadProfile();
       selectedProduct = null;
       resetProductLock();
       appliedCoupon = null; document.getElementById("couponMsg").classList.add("hidden");
       updateTotal();
+
+      window.showWelcome(orderId, welcomeInfo);
 
       try {
         const colors = ["#6366f1", "#a5b4fc", "#34d399", "#fbbf24", "#f472b6"];
@@ -1353,10 +1384,41 @@
     }, 220);
   };
 
+  // ---------- 下單後：直接跳到會員中心，並顯示歡迎畫面 ----------
+  window.showWelcome = (id, info) => {
+    const el = document.getElementById("welcomeModal");
+    if (!el || !info) {   // 沒有資料時退回原本的成功視窗，確保顧客一定看得到訂單編號
+      const m = document.getElementById("successModal");
+      m.classList.remove("hidden", "closing"); m.classList.add("flex");
+      return;
+    }
+    if (window.zahTab) window.zahTab("member");
+    const set = (k, v) => { document.getElementById(k).textContent = v; };
+    const xp = Math.floor(Number(info.price || 0) / XP_RATE);
+    set("welcomeTitle", (info.isNew ? "歡迎加入，" : "歡迎回來，") + info.name + "！");
+    set("welcomeSub", info.isNew ? "會員中心已為你準備好，可查看等級、折扣與消費紀錄" : "很高興再次見到你，會員資料已為你載入");
+    set("welcomeOrderId", id);
+    set("welcomeProduct", info.product);
+    set("welcomePrice", "應付金額 NT$" + Number(info.price || 0).toLocaleString() + (info.disc ? `（已套用會員折扣 −${Math.round(info.disc * 100)}%）` : ""));
+    set("welcomeNote", xp > 0 ? `⏳ 訂單目前為「未付款」，付款完成後即可獲得 +${xp} XP。` : "⏳ 訂單目前為「未付款」，付款完成後即可累積經驗值。");
+    document.getElementById("welcomeRateLink").href = "rate.html?order=" + encodeURIComponent(id);
+    el.classList.remove("hidden", "closing");
+    el.classList.add("flex");
+    setTimeout(() => { try { document.getElementById("welcomeGo").focus({ preventScroll: true }); } catch (_) {} }, 400);
+  };
+
+  window.closeWelcome = () => {
+    const el = document.getElementById("welcomeModal");
+    if (!el || el.classList.contains("hidden")) return;
+    el.classList.add("closing");
+    setTimeout(() => { el.classList.add("hidden"); el.classList.remove("flex", "closing"); }, 220);
+  };
+  document.getElementById("welcomeModal").addEventListener("click", e => { if (e.target.id === "welcomeModal") window.closeWelcome(); });
+
   document.getElementById("successModal").addEventListener("click", e => {
     if (e.target.id === "successModal") window.closeSuccess();
   });
-  document.addEventListener("keydown", e => { if (e.key === "Escape") window.closeSuccess(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") { window.closeSuccess(); window.closeWelcome(); } });
 
   // ---------- 收藏 ----------
   document.getElementById("productGrid").addEventListener("click", e => {
@@ -2028,7 +2090,7 @@
     setInterval(() => {
       const picked = !$('#selectedProductPrice').classList.contains('hidden') || !!$('#productName').value.trim();
       const filled = !!$('#formProgress.done');
-      const m = $('#successModal'), done = m && m.classList.contains('flex') && !m.classList.contains('hidden');
+      const shown = el => el && el.classList.contains('flex') && !el.classList.contains('hidden'), done = shown($('#successModal')) || shown($('#welcomeModal'));
       const n = done ? 3 : filled ? 2 : picked ? 1 : 0;
       if (n === last) return; last = n;
       st.forEach((el, i) => { el.classList.toggle('ok', i < n); el.classList.toggle('act', i === n); });
