@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商務版營運與訂單管理總覽 (太空戰艦警報與電玩賽車旗艦版)</title>
+    <title>商務</title>
     <link rel="icon" type="image/png" href="my-logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -387,6 +387,12 @@
                 <button id="tab-shop" onclick="switchAdminTab('shop')" class="admin-tab-btn" type="button">
                     <i data-lucide="store" class="w-3.5 h-3.5"></i> Shop 網站設定
                 </button>
+                <button id="tab-members" onclick="switchAdminTab('members')" class="admin-tab-btn" type="button">
+                    <i data-lucide="users" class="w-3.5 h-3.5"></i> 會員管理
+                </button>
+                <button id="tab-coupons" onclick="switchAdminTab('coupons')" class="admin-tab-btn" type="button">
+                    <i data-lucide="ticket" class="w-3.5 h-3.5"></i> 優惠券
+                </button>
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="copyRateLink()" class="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-xl transition shadow-xs">
@@ -640,6 +646,39 @@
                 </div>
             </div>
 
+            </section>
+
+            <!-- 👥 會員管理 -->
+            <section id="admin-tab-panel-members" class="admin-tab-panel hidden space-y-6">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                        <div><h2 class="text-base font-bold text-slate-900">👥 會員管理</h2><p class="text-xs text-slate-400 mt-1">會員由顧客名稱自動建立；可贈送／扣除經驗值、改名、刪除。</p></div>
+                        <input id="mb-search" placeholder="搜尋會員名稱…" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs text-slate-400 border-b border-slate-100"><th class="py-2">會員</th><th>等級／稱號</th><th class="text-right">XP</th><th class="text-right">消費</th><th class="text-right">贈送XP</th><th class="text-right">操作</th></tr></thead><tbody id="mb-rows"></tbody></table></div>
+                </div>
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6" id="mb-config"></div>
+            </section>
+
+            <!-- 🎟️ 優惠券 -->
+            <section id="admin-tab-panel-coupons" class="admin-tab-panel hidden space-y-6">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
+                    <h2 class="text-base font-bold text-slate-900">🎟️ <span id="cp-title">新增優惠券</span></h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+                        <label class="text-xs font-semibold text-slate-500">代碼<input id="cp-code" maxlength="30" placeholder="例如 WELCOME10" class="mt-1 w-full uppercase px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></label>
+                        <label class="text-xs font-semibold text-slate-500">折扣方式<select id="cp-type" class="mt-1 w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"><option value="percent">百分比折扣 (%)</option><option value="amount">固定折抵 (NT$)</option></select></label>
+                        <label class="text-xs font-semibold text-slate-500">折扣數值<input id="cp-value" type="number" min="1" placeholder="10 = 折 10%" class="mt-1 w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></label>
+                        <label class="text-xs font-semibold text-slate-500">最低消費 NT$<input id="cp-min" type="number" min="0" value="0" class="mt-1 w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></label>
+                        <label class="text-xs font-semibold text-slate-500">可使用次數 (0=不限)<input id="cp-max" type="number" min="0" value="0" class="mt-1 w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></label>
+                        <label class="text-xs font-semibold text-slate-500">到期日 (空白=不限)<input id="cp-exp" type="date" class="mt-1 w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></label>
+                        <label class="text-xs font-semibold text-slate-500 md:col-span-2">備註<input id="cp-note" maxlength="60" placeholder="例如：新客專屬" class="mt-1 w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></label>
+                    </div>
+                    <div class="flex gap-2 mt-4"><button id="cp-save" type="button" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold">儲存優惠券</button><button id="cp-reset" type="button" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-bold">清空／取消編輯</button></div>
+                </div>
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
+                    <h2 class="text-base font-bold text-slate-900 mb-3">優惠券列表</h2>
+                    <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs text-slate-400 border-b border-slate-100"><th class="py-2">代碼</th><th>折扣</th><th>門檻</th><th>使用</th><th>到期</th><th>狀態</th><th class="text-right">操作</th></tr></thead><tbody id="cp-rows"></tbody></table></div>
+                </div>
             </section>
 
         </main>
@@ -907,20 +946,11 @@
 
     <script>
         window.switchAdminTab = function(tab) {
-            const dashboardPanel = document.getElementById('admin-tab-panel-dashboard');
-            const shopPanel = document.getElementById('admin-tab-panel-shop');
-            const ordersPanel = document.getElementById('admin-orders-panel');
-            const dashboardBtn = document.getElementById('tab-dashboard');
-            const shopBtn = document.getElementById('tab-shop');
-
-            const isShop = tab === 'shop';
-            dashboardPanel?.classList.toggle('hidden', isShop);
-            shopPanel?.classList.toggle('hidden', !isShop);
-            ordersPanel?.classList.toggle('hidden', isShop);
-
-            dashboardBtn?.classList.toggle('active', !isShop);
-            shopBtn?.classList.toggle('active', isShop);
-
+            ['dashboard', 'shop', 'members', 'coupons'].forEach(n => {
+                document.getElementById('admin-tab-panel-' + n)?.classList.toggle('hidden', n !== tab);
+                document.getElementById('tab-' + n)?.classList.toggle('active', n === tab);
+            });
+            document.getElementById('admin-orders-panel')?.classList.toggle('hidden', tab !== 'dashboard');
             if (window.lucide) lucide.createIcons();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
@@ -2280,6 +2310,159 @@
             }
         });
     })();
+    </script>
+
+    <script type="module">
+        import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, increment, writeBatch, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        const app = getApps().length ? getApp() : initializeApp({ apiKey: "AIzaSyBjpZ8i-lsWHjrn9wHAOqTFlxKKUWkdZyQ", authDomain: "project-1584313366507677848.firebaseapp.com", projectId: "project-1584313366507677848", storageBucket: "project-1584313366507677848.firebasestorage.app", messagingSenderId: "486873849194", appId: "1:486873849194:web:3eb6181053f070bda05913" });
+        const db = getFirestore(app);
+        const $ = id => document.getElementById(id);
+        const E = v => String(v ?? '').replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
+        const mid = n => encodeURIComponent(n);
+        const clone = o => JSON.parse(JSON.stringify(o));
+        const fail = (m, e) => alert(m + (e && e.message ? '：' + e.message : ''));
+
+        // ===== 會員設定（與前台 shop.html 共用，預設值需與前台一致） =====
+        const DEF = { rate: 10,
+          levels: [{ name: '新手', icon: '🌱', min: 0, disc: 0, title: '展商新手' }, { name: '菁英', icon: '⚔️', min: 500, disc: .05, title: '展商菁英' }, { name: '傳奇', icon: '👑', min: 1500, disc: .08, title: '展商傳奇' }, { name: '至尊', icon: '💎', min: 4000, disc: .12, title: '至尊會員' }],
+          miles: [{ at: 1000, icon: '🎖️', name: '初試身手', reward: '專屬徽章' }, { at: 3000, icon: '🥉', name: '忠實熟客', reward: '徽章＋稱號「忠實熟客」' }, { at: 8000, icon: '🥈', name: '展商達人', reward: '徽章＋稱號「展商達人」' }, { at: 20000, icon: '🏆', name: '傳說顧客', reward: '徽章＋稱號「傳說顧客」' }] };
+        let cfg = clone(DEF), draft = clone(DEF), orders = [], mdocs = {}, coupons = {}, editingCode = null;
+        const lvOf = xp => [...cfg.levels].sort((a, b) => b.min - a.min).find(l => xp >= l.min) || cfg.levels[0];
+
+        onSnapshot(doc(db, 'siteSettings', 'membership'), s => {
+            if (s.exists()) { const d = s.data(); cfg = { rate: Number(d.rate) || 10, levels: (d.levels && d.levels.length === 4) ? d.levels : DEF.levels, miles: d.miles || DEF.miles }; }
+            draft = clone(cfg); renderCfg(); renderMembers();
+        }, e => console.warn(e));
+        onSnapshot(collection(db, 'members'), s => { mdocs = {}; s.forEach(d => mdocs[d.id] = { id: d.id, ...d.data() }); renderMembers(); });
+        onSnapshot(collection(db, 'orders'), s => { orders = s.docs.map(d => ({ docId: d.id, ...d.data() })); renderMembers(); });
+        onSnapshot(collection(db, 'coupons'), s => { coupons = {}; s.forEach(d => coupons[d.id] = { id: d.id, ...d.data() }); renderCoupons(); });
+
+        // ===== 會員列表 =====
+        function aggregate() {
+            const map = {};
+            const get = n => map[n] || (map[n] = { name: n, spend: 0, count: 0 });
+            orders.forEach(o => { const n = String(o.customer || '').trim(); if (!n) return; const m = get(n); if (/未付款|取消|退/.test(o.status || '')) return; m.spend += Number(o.price || 0); m.count++; });
+            Object.values(mdocs).forEach(d => { if (d.name) get(d.name); });
+            return Object.values(map).map(m => { const d = mdocs[mid(m.name)] || {}; m.bonus = Number(d.bonusXp || 0); m.deleted = !!d.deleted; m.xp = m.deleted ? 0 : Math.floor(m.spend / cfg.rate) + m.bonus; m.lv = lvOf(m.xp); return m; })
+                .sort((a, b) => b.xp - a.xp);
+        }
+        function renderMembers() {
+            const tb = $('mb-rows'); if (!tb) return;
+            const q = ($('mb-search').value || '').trim().toLowerCase();
+            const list = aggregate().filter(m => !q || m.name.toLowerCase().includes(q));
+            tb.innerHTML = list.length ? list.map(m => `<tr class="border-b border-slate-50 ${m.deleted ? 'opacity-50' : ''}">
+                <td class="py-3 font-bold text-slate-800">${E(m.name)}${m.deleted ? ' <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-rose-50 text-rose-500">已刪除</span>' : ''}<div class="text-[10px] font-normal text-slate-400">${m.count} 筆有效訂單</div></td>
+                <td>${m.deleted ? '—' : `${E(m.lv.icon)} ${E(m.lv.name)}<div class="text-[10px] text-slate-400">${E(m.lv.title)}</div>`}</td>
+                <td class="text-right font-bold text-indigo-600">${m.xp.toLocaleString()}</td><td class="text-right">NT$${m.spend.toLocaleString()}</td><td class="text-right text-slate-500">${m.bonus > 0 ? '+' : ''}${m.bonus}</td>
+                <td class="text-right whitespace-nowrap text-xs font-bold">
+                    <button data-xp="${E(m.name)}" class="px-2 py-1 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100">± XP</button>
+                    <button data-rn="${E(m.name)}" class="px-2 py-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">改名</button>
+                    ${m.deleted ? `<button data-rs="${E(m.name)}" class="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100">恢復</button>` : `<button data-del="${E(m.name)}" class="px-2 py-1 rounded-lg bg-rose-50 text-rose-500 hover:bg-rose-100">刪除</button>`}
+                </td></tr>`).join('') : '<tr><td colspan="6" class="py-8 text-center text-xs text-slate-400">還沒有會員（顧客下單後會自動出現）。</td></tr>';
+        }
+        $('mb-search').addEventListener('input', renderMembers);
+        $('mb-rows').addEventListener('click', async e => {
+            const b = e.target.closest('button'); if (!b) return;
+            try {
+                if (b.dataset.xp) {
+                    const n = Number(prompt(`為「${b.dataset.xp}」增減經驗值（負數＝扣除）：`, '100'));
+                    if (!Number.isFinite(n) || !n) return;
+                    await setDoc(doc(db, 'members', mid(b.dataset.xp)), { name: b.dataset.xp, bonusXp: increment(Math.round(n)) }, { merge: true });
+                } else if (b.dataset.rn) {
+                    const old = b.dataset.rn, nn = (prompt(`把「${old}」改名為：`, old) || '').trim();
+                    if (!nn || nn === old) return;
+                    if (aggregate().some(m => m.name === nn)) { alert('已有同名會員，請換一個名稱。'); return; }
+                    const snap = await getDocs(query(collection(db, 'orders'), where('customer', '==', old)));
+                    const refs = snap.docs.map(d => d.ref);
+                    for (let i = 0; i < refs.length; i += 400) { const wb = writeBatch(db); refs.slice(i, i + 400).forEach(r => wb.update(r, { customer: nn })); await wb.commit(); }
+                    const od = mdocs[mid(old)] || {}, wb = writeBatch(db);
+                    wb.set(doc(db, 'members', mid(nn)), { name: nn, bonusXp: Number(od.bonusXp || 0), deleted: !!od.deleted });
+                    if (mdocs[mid(old)]) wb.delete(doc(db, 'members', mid(old)));
+                    await wb.commit();
+                    alert(`已改名，並同步更新 ${refs.length} 筆訂單的顧客名稱。`);
+                } else if (b.dataset.del) {
+                    if (!confirm(`確定刪除會員「${b.dataset.del}」？\n訂單紀錄會保留，但經驗值、等級與折扣都會被取消（可隨時按「恢復」）。`)) return;
+                    await setDoc(doc(db, 'members', mid(b.dataset.del)), { name: b.dataset.del, bonusXp: 0, deleted: true }, { merge: true });
+                } else if (b.dataset.rs) {
+                    await setDoc(doc(db, 'members', mid(b.dataset.rs)), { name: b.dataset.rs, deleted: false }, { merge: true });
+                }
+            } catch (err) { fail('操作失敗', err); }
+        });
+
+        // ===== 等級／稱號／里程碑設定 =====
+        const IN = 'w-full px-2 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500';
+        function renderCfg() {
+            const box = $('mb-config'); if (!box) return;
+            const lv = draft.levels.map((l, i) => `<tr><td class="py-1.5 pr-2"><input data-k="levels" data-i="${i}" data-f="icon" value="${E(l.icon)}" class="${IN} w-14 text-center"></td>
+                <td class="pr-2"><input data-k="levels" data-i="${i}" data-f="name" value="${E(l.name)}" class="${IN}"></td><td class="pr-2"><input data-k="levels" data-i="${i}" data-f="min" type="number" min="0" value="${l.min}" class="${IN}"></td>
+                <td class="pr-2"><input data-k="levels" data-i="${i}" data-f="disc" type="number" min="0" max="90" value="${Math.round(l.disc * 100)}" class="${IN}"></td><td><input data-k="levels" data-i="${i}" data-f="title" value="${E(l.title)}" class="${IN}"></td></tr>`).join('');
+            const ms = draft.miles.map((m, i) => `<tr><td class="py-1.5 pr-2"><input data-k="miles" data-i="${i}" data-f="icon" value="${E(m.icon)}" class="${IN} w-14 text-center"></td>
+                <td class="pr-2"><input data-k="miles" data-i="${i}" data-f="at" type="number" min="1" value="${m.at}" class="${IN}"></td><td class="pr-2"><input data-k="miles" data-i="${i}" data-f="name" value="${E(m.name)}" class="${IN}"></td>
+                <td class="pr-2"><input data-k="miles" data-i="${i}" data-f="reward" value="${E(m.reward)}" class="${IN}"></td><td><button data-rmm="${i}" class="text-xs font-bold text-rose-500">刪除</button></td></tr>`).join('');
+            box.innerHTML = `<h2 class="text-base font-bold text-slate-900">🏅 等級・稱號・里程碑設定</h2>
+                <p class="text-xs text-slate-400 mt-1">改完按最下方「儲存設定」，前台會員中心會即時套用。</p>
+                <label class="block mt-4 text-xs font-semibold text-slate-500">每消費多少 NT$ = 1 XP <input data-k="rate" type="number" min="1" value="${draft.rate}" class="${IN} !w-24 ml-2"></label>
+                <table class="w-full mt-4"><thead><tr class="text-left text-[10px] text-slate-400"><th>圖示</th><th>等級名稱</th><th>所需 XP</th><th>折扣 %</th><th>會員稱號</th></tr></thead><tbody>${lv}</tbody></table>
+                <h3 class="text-sm font-bold text-slate-900 mt-6">🎁 消費里程碑（消費滿多少送…）</h3>
+                <table class="w-full mt-2"><thead><tr class="text-left text-[10px] text-slate-400"><th>圖示</th><th>累積消費 NT$</th><th>名稱</th><th>獎勵說明</th><th></th></tr></thead><tbody>${ms}</tbody></table>
+                <div class="flex gap-2 mt-4"><button id="mb-addm" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-bold text-slate-600">＋ 新增里程碑</button><button id="mb-savecfg" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold">儲存設定</button><button id="mb-defcfg" class="px-3 py-2 text-xs font-bold text-slate-400 hover:text-slate-600">還原預設</button></div>`;
+        }
+        $('mb-config').addEventListener('input', e => {
+            const t = e.target, k = t.dataset.k; if (!k) return;
+            if (k === 'rate') { draft.rate = Number(t.value) || 10; return; }
+            const f = t.dataset.f, o = draft[k][+t.dataset.i];
+            o[f] = (f === 'min' || f === 'at') ? Number(t.value) || 0 : f === 'disc' ? Math.min(.9, Math.max(0, (Number(t.value) || 0) / 100)) : t.value;
+        });
+        $('mb-config').addEventListener('click', async e => {
+            const b = e.target.closest('button'); if (!b) return;
+            if (b.dataset.rmm) { draft.miles.splice(+b.dataset.rmm, 1); renderCfg(); }
+            else if (b.id === 'mb-addm') { draft.miles.push({ at: 1000, icon: '🎁', name: '新里程碑', reward: '專屬獎勵' }); renderCfg(); }
+            else if (b.id === 'mb-defcfg') { if (confirm('還原成預設設定？（需再按儲存才會套用）')) { draft = clone(DEF); renderCfg(); } }
+            else if (b.id === 'mb-savecfg') {
+                const lv = [...draft.levels].sort((a, b) => a.min - b.min); lv[0].min = 0;
+                try { await setDoc(doc(db, 'siteSettings', 'membership'), { rate: draft.rate, levels: lv, miles: [...draft.miles].sort((a, b) => a.at - b.at) }); alert('會員設定已儲存。'); } catch (err) { fail('儲存失敗', err); }
+            }
+        });
+
+        // ===== 優惠券 =====
+        const cpv = id => $(id).value.trim();
+        function resetCp() { editingCode = null; $('cp-title').textContent = '新增優惠券'; $('cp-code').disabled = false; ['cp-code', 'cp-value', 'cp-exp', 'cp-note'].forEach(i => $(i).value = ''); $('cp-min').value = 0; $('cp-max').value = 0; $('cp-type').value = 'percent'; }
+        function renderCoupons() {
+            const tb = $('cp-rows'); if (!tb) return;
+            const list = Object.values(coupons).sort((a, b) => a.id.localeCompare(b.id));
+            tb.innerHTML = list.length ? list.map(c => {
+                const off = c.type === 'amount' ? `−NT$${Number(c.value).toLocaleString()}` : `−${c.value}%`;
+                const expired = c.expires && c.expires < new Date().toISOString().slice(0, 10), full = c.maxUses > 0 && (c.used || 0) >= c.maxUses;
+                const st = !c.active ? ['停用', 'bg-slate-100 text-slate-500'] : expired ? ['已過期', 'bg-rose-50 text-rose-500'] : full ? ['已用完', 'bg-amber-50 text-amber-600'] : ['啟用中', 'bg-emerald-50 text-emerald-600'];
+                return `<tr class="border-b border-slate-50"><td class="py-3 font-extrabold tracking-wider text-slate-800">${E(c.id)}<div class="text-[10px] font-normal text-slate-400">${E(c.note || '')}</div></td><td class="font-bold text-rose-500">${off}</td><td>${c.minSpend ? 'NT$' + c.minSpend : '無'}</td><td>${c.used || 0} / ${c.maxUses > 0 ? c.maxUses : '∞'}</td><td>${E(c.expires || '不限')}</td>
+                    <td><span class="text-[10px] px-2 py-1 rounded-full font-bold ${st[1]}">${st[0]}</span></td>
+                    <td class="text-right whitespace-nowrap text-xs font-bold"><button data-tg="${E(c.id)}" class="px-2 py-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">${c.active ? '停用' : '啟用'}</button> <button data-ed="${E(c.id)}" class="px-2 py-1 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100">編輯</button> <button data-dl="${E(c.id)}" class="px-2 py-1 rounded-lg bg-rose-50 text-rose-500 hover:bg-rose-100">刪除</button></td></tr>`;
+            }).join('') : '<tr><td colspan="7" class="py-8 text-center text-xs text-slate-400">還沒有優惠券，在上方新增一組代碼吧。</td></tr>';
+        }
+        $('cp-reset').addEventListener('click', resetCp);
+        $('cp-save').addEventListener('click', async () => {
+            const code = cpv('cp-code').toUpperCase().replace(/[^A-Z0-9_-]/g, ''), type = $('cp-type').value, value = Number(cpv('cp-value'));
+            if (!code) { alert('請輸入優惠券代碼（英文、數字、- 、_）。'); return; }
+            if (!Number.isFinite(value) || value <= 0 || (type === 'percent' && value > 99)) { alert(type === 'percent' ? '百分比折扣請輸入 1～99。' : '請輸入大於 0 的折抵金額。'); return; }
+            if (!editingCode && coupons[code]) { alert('這個代碼已存在，請按該券的「編輯」修改。'); return; }
+            const data = { code, type, value, minSpend: Number(cpv('cp-min')) || 0, maxUses: Number(cpv('cp-max')) || 0, expires: cpv('cp-exp'), note: cpv('cp-note') };
+            if (!editingCode) { data.used = 0; data.active = true; }
+            try { await setDoc(doc(db, 'coupons', code), data, { merge: true }); resetCp(); } catch (err) { fail('儲存失敗', err); }
+        });
+        $('cp-rows').addEventListener('click', async e => {
+            const b = e.target.closest('button'); if (!b) return;
+            try {
+                if (b.dataset.tg) { const c = coupons[b.dataset.tg]; await setDoc(doc(db, 'coupons', c.id), { active: !c.active }, { merge: true }); }
+                else if (b.dataset.dl) { if (confirm(`刪除優惠券「${b.dataset.dl}」？`)) await deleteDoc(doc(db, 'coupons', b.dataset.dl)); }
+                else if (b.dataset.ed) {
+                    const c = coupons[b.dataset.ed]; editingCode = c.id; $('cp-title').textContent = `編輯優惠券：${c.id}`;
+                    $('cp-code').value = c.id; $('cp-code').disabled = true; $('cp-type').value = c.type || 'percent'; $('cp-value').value = c.value; $('cp-min').value = c.minSpend || 0; $('cp-max').value = c.maxUses || 0; $('cp-exp').value = c.expires || ''; $('cp-note').value = c.note || '';
+                    $('cp-code').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            } catch (err) { fail('操作失敗', err); }
+        });
+        renderCfg(); renderMembers(); renderCoupons();
     </script>
 
 </body>
