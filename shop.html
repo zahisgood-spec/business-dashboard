@@ -445,6 +445,7 @@
             <input id="customer" required maxlength="40"
               placeholder="請輸入您的名稱或暱稱"
               class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm outline-none transition focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10">
+            <p id="memberDiscNote" class="hidden mt-2 text-xs font-bold"></p>
           </div>
 
           <div class="field">
@@ -1444,10 +1445,11 @@
   const getQty = () => Math.max(1, Math.min(99, parseInt(qtyEl.value, 10) || 1));
   function updateTotal() {
     const el = document.getElementById("orderTotal");
+    updateMemberNote();
     if (!selectedProduct) { el.classList.add("hidden"); return; }
     const q = getQty(), unit = displayPrice(selectedProduct), base = unit * q, d = memberDiscount($v("customer"));
     const afterM = Math.round(base * (1 - d)), cp = couponOff(afterM), fin = afterM - cp, parts = [];
-    if (d) parts.push(`${memberLevel().icon}${memberLevel().name}會員 −${Math.round(d * 100)}%`);
+    if (d) parts.push(`${memberLevel().icon}${memberLevel().name}會員 −${Math.round(d * 100)}%（−NT$${(base - afterM).toLocaleString()}）`);
     if (cp) parts.push(`優惠券 ${appliedCoupon.id} −NT$${cp.toLocaleString()}`);
     else if (appliedCoupon) parts.push(`優惠券需滿 NT$${Number(appliedCoupon.minSpend).toLocaleString()} 才可使用`);
     el.textContent = `合計：NT$${fin.toLocaleString()}（` + (parts.length ? parts.join("，") + `，原價 NT$${base.toLocaleString()}` : `NT$${unit.toLocaleString()} × ${q}`) + `）`;
@@ -1520,6 +1522,28 @@
   const levelOf = xp => [...LEVELS].reverse().find(l => xp >= l.min) || LEVELS[0];
   const memberLevel = () => levelOf(mcalc ? mcalc.xp : 0);
   const memberDiscount = name => (name && name === memberName && mcalc && !mcalc.deleted) ? memberLevel().disc : 0;
+
+  // 下單區顧客名稱下方：說明會員折扣有沒有套用到這筆訂單（名稱必須與登入的會員相同）
+  function updateMemberNote() {
+    const el = document.getElementById("memberDiscNote"); if (!el) return;
+    const c = $v("customer");
+    const hide = () => { el.classList.add("hidden"); el.innerHTML = ""; };
+    if (!memberName || (mcalc && mcalc.deleted)) return hide();
+    const show = (cls, html) => { el.className = "mt-2 text-xs font-bold " + cls; el.innerHTML = html; };
+    if (c === memberName) {
+      if (!mcalc) return hide();
+      const L = memberLevel(), i = LEVELS.indexOf(L), N = LEVELS[i + 1];
+      if (L.disc) return show("text-emerald-600", `${esc(L.icon)} ${esc(L.name)}會員折扣 −${Math.round(L.disc * 100)}% 已自動套用到本次訂單`);
+      return show("text-slate-500", N ? `目前「${esc(L.name)}」等級暫無折扣，再 ${N.min - mcalc.xp} XP 升級「${esc(N.name)}」即享 ${Math.round(N.disc * 100)}% 折扣` : "目前等級暫無折扣");
+    }
+    show("text-amber-600", (c ? `名稱與目前登入的會員「${esc(memberName)}」不同，不會套用會員折扣。` : `你目前登入的會員是「${esc(memberName)}」，名稱要與會員相同才會套用折扣。`)
+      + ` <button type="button" data-use="1" class="underline">改用「${esc(memberName)}」</button>`);
+  }
+  document.getElementById("memberDiscNote").addEventListener("click", e => {
+    if (!e.target.closest("[data-use]")) return;
+    const inp = document.getElementById("customer");
+    inp.value = memberName; inp.dispatchEvent(new Event("input", { bubbles: true }));
+  });
 
   function calcMember() {
     const ok = memberOrders.filter(o => okStatus(o.status));
