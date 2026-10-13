@@ -455,12 +455,13 @@
 
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between transition hover:shadow-md">
                     <div>
-                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">總營業額 (已完成發貨)</p>
+                        <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">實收營業額 (已完成發貨)</p>
                         <h3 id="card-revenue" class="text-3xl font-extrabold text-slate-900 mt-2 transition-all duration-300">NT$0</h3>
                     </div>
                     <div class="w-full bg-slate-100 h-1.5 rounded-full mt-4 overflow-hidden">
                         <div id="revenue-bar" class="bg-amber-500 h-full rounded-full transition-all duration-700" style="width: 0%"></div>
                     </div>
+                    <p id="card-coupon-total" class="text-[11px] text-slate-400 mt-2">營業額為折後實收</p>
                 </div>
 
                 <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between transition hover:shadow-md">
@@ -628,8 +629,8 @@
                                 <th class="py-3.5 px-4">訂單編號</th>
                                 <th class="py-3.5 px-6">買家名稱</th>
                                 <th class="py-3.5 px-6">購買商品</th>
-                                <th class="py-3.5 px-6">售價 / 成本</th>
-                                <th class="py-3.5 px-6">毛利 (淨利)</th>
+                                <th class="py-3.5 px-6">實收價 / 成本</th>
+                                <th class="py-3.5 px-6">最終淨利</th>
                                 <th class="py-3.5 px-6">買家評分</th>
                                 <th class="py-3.5 px-6">訂單狀態</th>
                                 <th class="py-3.5 px-6">內部備忘錄</th>
@@ -677,7 +678,7 @@
                 </div>
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
                     <h2 class="text-base font-bold text-slate-900 mb-3">優惠券列表</h2>
-                    <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs text-slate-400 border-b border-slate-100"><th class="py-2">代碼</th><th>折扣</th><th>門檻</th><th>使用</th><th>到期</th><th>狀態</th><th class="text-right">操作</th></tr></thead><tbody id="cp-rows"></tbody></table></div>
+                    <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs text-slate-400 border-b border-slate-100"><th class="py-2">代碼</th><th>折扣</th><th>門檻</th><th>使用</th><th>實際折抵</th><th>到期</th><th>狀態</th><th class="text-right">操作</th></tr></thead><tbody id="cp-rows"></tbody></table></div>
                 </div>
             </section>
 
@@ -1323,6 +1324,16 @@
             });
         };
 
+        // 從訂單取出使用的優惠券：優先讀 coupon / couponOff 欄位，舊訂單則解析備忘錄裡的「優惠券：代碼 −NT$金額」
+        window.zahCouponOf = function(o) {
+            if (!o) return null;
+            const code = String(o.coupon || '').trim();
+            if (code) return { code, off: Number(o.couponOff) || 0 };
+            const m = String(o.memo || '').match(/優惠券[：:]\s*([A-Za-z0-9_-]+)\s*[−\-–]\s*NT\$\s*([\d,]+)/);
+            return m ? { code: m[1], off: Number(m[2].replace(/,/g, '')) || 0 } : null;
+        };
+        window.zahEsc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
         window.updateUI = function() {
             const totalOrders = orders.length;
             const todayStr = new Date().toISOString().split('T')[0];
@@ -1330,6 +1341,8 @@
             let totalRevenue = 0;
             let totalCost = 0;
             let totalNetProfit = 0;
+            let couponTotal = 0;
+            let couponCount = 0;
             let todayRevenue = 0;
             let todayProfit = 0;
             let totalRatingSum = 0;
@@ -1352,6 +1365,8 @@
                     totalRevenue += price;
                     totalCost += cost;
                     totalNetProfit += profit;
+                    const cp = zahCouponOf(o);
+                    if (cp) { couponTotal += cp.off; couponCount++; }
                     if (dateOnly === todayStr) {
                         todayRevenue += price;
                         todayProfit += profit;
@@ -1391,6 +1406,7 @@
             animateValue('card-total-orders', 0, totalOrders, 600);
             animateValue('card-today-orders', 0, todayOrdersCount, 600);
             animateValue('card-revenue', 0, totalRevenue, 800, 'NT$');
+            document.getElementById('card-coupon-total').innerText = couponCount > 0 ? `已折抵優惠券 NT$${couponTotal.toLocaleString()}（${couponCount} 筆）・營業額為折後實收` : '營業額為折後實收（尚無優惠券訂單）';
             document.getElementById('revenue-bar').style.width = `${Math.min(100, (totalRevenue / 50000) * 100)}%`;
             
             animateValue('card-net-income', 0, totalNetProfit, 800, 'NT$');
@@ -1628,10 +1644,11 @@
                         <td class="py-3.5 px-6">
                             <div class="font-bold text-slate-900">NT$${price.toLocaleString()}</div>
                             <div class="text-xs text-slate-400">成本: NT$${cost.toLocaleString()}</div>
+                            ${(() => { const cp = zahCouponOf(o); return cp ? `<div class="mt-1"><span class="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 border border-rose-100">🎟️ ${zahEsc(cp.code)}${cp.off ? ` −NT$${cp.off.toLocaleString()}` : ''}</span></div>${cp.off ? `<div class="text-[10px] text-slate-400">券前 NT$${(price + cp.off).toLocaleString()}</div>` : ''}` : ''; })()}
                         </td>
                         <td class="py-3.5 px-6">
                             <div class="font-bold text-emerald-600">NT$${profit.toLocaleString()}</div>
-                            <div class="text-[10px] text-slate-400">淨利</div>
+                            <div class="text-[10px] text-slate-400">實收 − 成本</div>
                         </td>
                         <td class="py-3.5 px-6">${(o.rating && o.rating > 0) ? `<span class="text-amber-400 text-xs">${'★'.repeat(o.rating)}</span>` : `<span class="text-xs text-slate-400">未評分</span>`}</td>
                         <td class="py-3.5 px-6"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeClass}">${o.status}</span></td>
@@ -2335,7 +2352,7 @@
             draft = clone(cfg); renderCfg(); renderMembers();
         }, e => console.warn(e));
         onSnapshot(collection(db, 'members'), s => { mdocs = {}; s.forEach(d => mdocs[d.id] = { id: d.id, ...d.data() }); renderMembers(); });
-        onSnapshot(collection(db, 'orders'), s => { orders = s.docs.map(d => ({ docId: d.id, ...d.data() })); renderMembers(); });
+        onSnapshot(collection(db, 'orders'), s => { orders = s.docs.map(d => ({ docId: d.id, ...d.data() })); renderMembers(); renderCoupons(); });
         onSnapshot(collection(db, 'coupons'), s => { coupons = {}; s.forEach(d => coupons[d.id] = { id: d.id, ...d.data() }); renderCoupons(); });
 
         // ===== 會員列表 =====
@@ -2431,14 +2448,16 @@
         function renderCoupons() {
             const tb = $('cp-rows'); if (!tb) return;
             const list = Object.values(coupons).sort((a, b) => a.id.localeCompare(b.id));
+            const cpUse = {};
+            orders.forEach(o => { if (/未付款|取消|退/.test(o.status || '')) return; const cp = window.zahCouponOf && window.zahCouponOf(o); if (!cp) return; const u = cpUse[cp.code] || (cpUse[cp.code] = { n: 0, off: 0 }); u.n++; u.off += cp.off; });
             tb.innerHTML = list.length ? list.map(c => {
                 const off = c.type === 'amount' ? `−NT$${Number(c.value).toLocaleString()}` : `−${c.value}%`;
                 const expired = c.expires && c.expires < new Date().toISOString().slice(0, 10), full = c.maxUses > 0 && (c.used || 0) >= c.maxUses;
                 const st = !c.active ? ['停用', 'bg-slate-100 text-slate-500'] : expired ? ['已過期', 'bg-rose-50 text-rose-500'] : full ? ['已用完', 'bg-amber-50 text-amber-600'] : ['啟用中', 'bg-emerald-50 text-emerald-600'];
-                return `<tr class="border-b border-slate-50"><td class="py-3 font-extrabold tracking-wider text-slate-800">${E(c.id)}<div class="text-[10px] font-normal text-slate-400">${E(c.note || '')}</div></td><td class="font-bold text-rose-500">${off}</td><td>${c.minSpend ? 'NT$' + c.minSpend : '無'}</td><td>${c.used || 0} / ${c.maxUses > 0 ? c.maxUses : '∞'}</td><td>${E(c.expires || '不限')}</td>
+                return `<tr class="border-b border-slate-50"><td class="py-3 font-extrabold tracking-wider text-slate-800">${E(c.id)}<div class="text-[10px] font-normal text-slate-400">${E(c.note || '')}</div></td><td class="font-bold text-rose-500">${off}</td><td>${c.minSpend ? 'NT$' + c.minSpend : '無'}</td><td>${c.used || 0} / ${c.maxUses > 0 ? c.maxUses : '∞'}</td><td class="font-bold text-slate-700">${cpUse[c.id] ? 'NT$' + cpUse[c.id].off.toLocaleString() + '<div class="text-[10px] font-normal text-slate-400">' + cpUse[c.id].n + ' 筆已付款訂單</div>' : '<span class="text-xs font-normal text-slate-400">—</span>'}</td><td>${E(c.expires || '不限')}</td>
                     <td><span class="text-[10px] px-2 py-1 rounded-full font-bold ${st[1]}">${st[0]}</span></td>
                     <td class="text-right whitespace-nowrap text-xs font-bold"><button data-tg="${E(c.id)}" class="px-2 py-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">${c.active ? '停用' : '啟用'}</button> <button data-ed="${E(c.id)}" class="px-2 py-1 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100">編輯</button> <button data-dl="${E(c.id)}" class="px-2 py-1 rounded-lg bg-rose-50 text-rose-500 hover:bg-rose-100">刪除</button></td></tr>`;
-            }).join('') : '<tr><td colspan="7" class="py-8 text-center text-xs text-slate-400">還沒有優惠券，在上方新增一組代碼吧。</td></tr>';
+            }).join('') : '<tr><td colspan="8" class="py-8 text-center text-xs text-slate-400">還沒有優惠券，在上方新增一組代碼吧。</td></tr>';
         }
         $('cp-reset').addEventListener('click', resetCp);
         $('cp-save').addEventListener('click', async () => {
