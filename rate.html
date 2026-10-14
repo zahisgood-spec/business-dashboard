@@ -505,9 +505,51 @@
 .zad.fresh .zad-ctrl{display:none}
 .zad-video{background:#fff}
 </style>
-
+<style id="mg-css">
+html.mg-locked, html.mg-locked body { overflow:hidden; }
+html.mg-has #mgGate { display:none; }
+#mgGate { position:fixed; inset:0; z-index:100000; display:flex; align-items:flex-start; justify-content:center; padding:1.2rem; overflow-y:auto; background:radial-gradient(circle at 20% 8%,#33230a 0%,#0b0804 62%); }
+.mg-card { width:100%; max-width:24rem; margin:auto; text-align:center; padding:1.8rem 1.4rem 1.4rem; border-radius:1.7rem; color:#f7e9bf; background:linear-gradient(160deg,#1c1407,#0e0a04); border:1.5px solid rgba(212,169,53,.55); box-shadow:0 30px 80px -20px rgba(0,0,0,.9),0 0 50px -10px rgba(232,197,100,.35); }
+.mg-brand { font-size:.7rem; font-weight:900; letter-spacing:.3em; color:#e8c564; }
+.mg-title { margin-top:.6rem; font-size:1.45rem; font-weight:900; background:linear-gradient(135deg,#f4dc8e,#c99a35 55%,#e8c564); -webkit-background-clip:text; background-clip:text; color:transparent; }
+.mg-sub { margin-top:.4rem; font-size:.78rem; color:rgba(247,233,191,.72); line-height:1.6; }
+.mg-seg { display:grid; grid-template-columns:1fr 1fr; gap:.3rem; margin-top:1.1rem; padding:.25rem; border-radius:9999px; background:rgba(255,236,170,.07); border:1px solid rgba(212,169,53,.35); }
+.mg-seg button { border:0; cursor:pointer; padding:.5rem 0; border-radius:9999px; font-size:.8rem; font-weight:800; letter-spacing:.1em; color:rgba(247,233,191,.7); background:transparent; }
+.mg-seg button.on { background:linear-gradient(135deg,#f4dc8e,#c99a35 55%,#a8751c); color:#2a1a04; }
+#mgForm { display:flex; flex-direction:column; gap:.65rem; margin-top:1rem; text-align:left; }
+.mg-input { width:100%; border-radius:.9rem; border:1px solid rgba(212,169,53,.45); background:rgba(255,236,170,.07); color:#fff3c4; padding:.8rem 1rem; font-size:.9rem; outline:none; }
+.mg-input::placeholder { color:rgba(247,233,191,.4); }
+.mg-input:focus { border-color:#f4dc8e; box-shadow:0 0 0 4px rgba(232,197,100,.18); }
+.mg-err { min-height:1.1rem; font-size:.74rem; font-weight:700; color:#ff9b8a; }
+.mg-btn { border:0; cursor:pointer; font-weight:900; letter-spacing:.08em; color:#2a1a04; background:linear-gradient(135deg,#f4dc8e,#c99a35 55%,#a8751c); padding:.8rem 1.4rem; border-radius:.95rem; width:100%; }
+.mg-btn:disabled { opacity:.6; cursor:wait; }
+.mg-foot { margin-top:.9rem; font-size:.66rem; line-height:1.6; color:rgba(247,233,191,.5); }
+.mg-order { width:100%; text-align:left; cursor:pointer; display:flex; align-items:center; gap:.75rem; padding:.7rem .8rem; border-radius:.9rem; background:rgba(2,6,23,.6); border:1px solid rgba(51,65,85,.9); color:inherit; transition:border-color .2s, background .2s; }
+.mg-order:hover { border-color:#6366f1; background:rgba(30,27,75,.5); }
+.mg-order.sel { border-color:#818cf8; background:rgba(49,46,129,.45); box-shadow:0 0 0 2px rgba(129,140,248,.25); }
+.mg-badge { display:inline-block; font-size:10px; font-weight:800; padding:.18rem .55rem; border-radius:9999px; border:1px solid transparent; white-space:nowrap; }
+</style>
+<script>try{var __m=JSON.parse(localStorage.getItem('zahSession'));document.documentElement.classList.add(__m&&__m.name?'mg-has':'mg-locked');}catch(e){document.documentElement.classList.add('mg-locked');}</script>
 </head>
 <body id="bodyRoot" class="theme-cyberpunk text-slate-100 min-h-screen flex flex-col items-center justify-between p-4 py-8">
+
+    <!-- 🔐 會員登入閘門：未登入時蓋住整個網站（與 shop.html 共用同一份會員帳號） -->
+    <div id="mgGate" role="dialog" aria-modal="true" aria-labelledby="mgTitle">
+        <div class="mg-card">
+            <div class="mg-brand">ZAH·SHOP　MEMBERS</div>
+            <div style="font-size:2.2rem;margin-top:.4rem">👑</div>
+            <h2 id="mgTitle" class="mg-title">會員登入</h2>
+            <p id="mgSub" class="mg-sub">請先登入展商城會員，才能查看你的訂單與進行評價。</p>
+            <form id="mgForm" novalidate>
+                <input id="mgName" maxlength="40" placeholder="帳號名稱（與 shop.html 相同）" autocomplete="username" class="mg-input">
+                <input id="mgPw" type="password" maxlength="64" placeholder="密碼" autocomplete="current-password" class="mg-input">
+                <input id="mgPw2" type="password" maxlength="64" placeholder="再輸入一次密碼" autocomplete="new-password" class="mg-input" hidden>
+                <p id="mgErr" class="mg-err" role="alert"></p>
+                <button id="mgSubmit" type="submit" class="mg-btn">登入</button>
+            </form>
+            <p class="mg-foot">此頁只能登入，不提供註冊。請先到 shop.html 註冊會員，帳號與密碼共用。<br>忘記密碼請聯絡店家，由店家為你重設。</p>
+        </div>
+    </div>
 
     <!-- 背景粒子畫布 -->
     <canvas id="bgCanvas"></canvas>
@@ -723,8 +765,22 @@
                         <i data-lucide="star" class="w-6 h-6 fill-indigo-400"></i>
                     </div>
                     <h1 class="title-glow text-xl font-black text-white">展商城-顧客訂單查詢與評價</h1>
-                    <p class="text-xs text-slate-400">請輸入您的「訂單編號」(例如 OD-001) 來查看訂單進度</p>
+                    <p class="text-xs text-slate-400">下方會顯示你帳號的所有訂單，點選即可查看進度；也可以搜尋或輸入訂單編號</p>
                     <a href="shop.html" class="premium-btn inline-flex items-center gap-2 mt-3 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-medium transition"><i data-lucide="shopping-cart" class="w-4 h-4"></i>立即下單</a>
+                </div>
+
+                <!-- 👤 會員訂單：登入後直接顯示此帳號的所有訂單，可搜尋 -->
+                <div id="mgPanel" class="space-y-3 rounded-2xl border border-slate-700/80 bg-slate-950/50 p-4">
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="text-xs text-slate-300">👤 <strong id="mgWho" class="text-white"></strong>　的所有訂單</div>
+                        <button type="button" onclick="mgLogout()" class="text-[11px] font-bold px-3 py-1 rounded-full border border-slate-600 text-slate-300 hover:text-white hover:border-slate-400 transition">登出</button>
+                    </div>
+                    <div class="flex gap-2">
+                        <input id="mgFilter" type="text" placeholder="搜尋我的訂單（編號、商品、狀態）" autocomplete="off" class="flex-1 min-w-0 px-3 py-2 bg-slate-950/80 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-slate-500">
+                        <select id="mgStatus" class="px-2 py-2 bg-slate-950/80 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"><option value="">全部狀態</option></select>
+                    </div>
+                    <div id="mgCount" class="text-[11px] text-slate-500"></div>
+                    <div id="mgList" class="space-y-2 max-h-80 overflow-y-auto no-scrollbar pr-1"></div>
                 </div>
 
                 <!-- 查詢表單 -->
@@ -1031,7 +1087,7 @@
     <!-- Firebase SDKs -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, getDocs, doc, updateDoc, getDoc, query, where, onSnapshot, runTransaction } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBjpZ8i-lsWHjrn9wHAOqTFlxKKUWkdZyQ",
@@ -1610,9 +1666,10 @@
                     }
                 });
 
+                if (found && window.__mgName && found.customer !== window.__mgName) found = null; // 只能查自己帳號的訂單
                 if (!found) {
                     if (searchBtn) searchBtn.classList.remove('btn-loading');
-                    alert('找不到此訂單編號！');
+                    alert('找不到此訂單編號（只能查詢你登入帳號的訂單）！');
                     speakSweetVoice("找不到這個訂單編號哦！");
                     document.getElementById('resultContainer').classList.add('hidden');
                     return;
@@ -2292,6 +2349,208 @@
             link.href = canvas.toDataURL('image/png');
             link.click();
         };
+
+        // ================= 🔐 會員登入 + 我的訂單 =================
+        // 與 shop.html 共用：Firestore accounts 帳號、PBKDF2 密碼雜湊、localStorage 的 zahSession
+        const MG_ITER = 120000;
+        const $m = id => document.getElementById(id);
+        const mgEsc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+        const mgAccId = n => encodeURIComponent(n);
+        const mgHex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+        const mgUnhex = h => new Uint8Array((String(h).match(/../g) || []).map(x => parseInt(x, 16)));
+        const mgSalt = () => mgHex(crypto.getRandomValues(new Uint8Array(16)));
+        async function mgHash(pw, saltHex, iter) {
+            if (!(window.crypto && crypto.subtle)) throw new Error('NO_CRYPTO');
+            const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveBits']);
+            return mgHex(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: mgUnhex(saltHex), iterations: iter }, key, 256));
+        }
+        const mgSame = (a, b) => { a = String(a); b = String(b); if (a.length !== b.length) return false; let r = 0; for (let i = 0; i < a.length; i++) r |= a.charCodeAt(i) ^ b.charCodeAt(i); return r === 0; };
+        const mgSession = () => { try { return JSON.parse(localStorage.getItem('zahSession')); } catch (_) { return null; } };
+        const mgSetSession = v => { try { localStorage.setItem('zahSession', JSON.stringify(v)); } catch (_) {} };
+        const mgErrMsg = ex => ex && ex.message === 'NO_CRYPTO' ? '此瀏覽器無法加密，請改用 https 網址開啟網站'
+            : ex && ex.code === 'permission-denied' ? '資料庫尚未開放帳號功能（請管理員檢查 Firestore 規則）'
+            : '連線失敗，請稍後再試';
+
+        const root = document.documentElement;
+        let mgMode = 'login', mgPending = null, mgFails = 0, mgLockUntil = 0;
+        let mgName = '', mgUnsub = null, mgOrders = [], mgSelected = '';
+        window.__mgName = '';
+
+        function mgSetMode(mode, msg) {
+            mgMode = mode;
+            const reg = mode === 'register', setpw = mode === 'setpw';
+            $m('mgName').hidden = setpw;
+            $m('mgPw2').hidden = !(reg || setpw);
+            $m('mgPw').autocomplete = mode === 'login' ? 'current-password' : 'new-password';
+            $m('mgPw').placeholder = setpw ? '新密碼（至少 6 個字元）' : reg ? '密碼（至少 6 個字元）' : '密碼';
+                        $m('mgTitle').textContent = setpw ? '請設定新密碼' : reg ? '加入展商城會員' : '會員登入';
+            $m('mgSub').textContent = setpw ? '店家已為你重設密碼，請自己設定一組新密碼後再進入。' : reg ? '建立帳號後，就能查看自己的所有訂單。' : '請先登入展商城會員（需先在 shop.html 註冊），才能查看你的訂單與進行評價。';
+            $m('mgSubmit').textContent = setpw ? '設定新密碼並進入' : reg ? '註冊並進入' : '登入';
+            $m('mgErr').textContent = msg || '';
+            $m('mgPw').value = ''; $m('mgPw2').value = '';
+        }
+        function mgOpenGate(mode, msg) { root.classList.remove('mg-has'); root.classList.add('mg-locked'); mgSetMode(mode || 'login', msg); }
+        function mgCloseGate() { root.classList.add('mg-has'); root.classList.remove('mg-locked'); }
+
+        function mgResetResult() {
+            $m('resultContainer').classList.add('hidden');
+            currentSelectedDocId = null; currentOrderData = null; mgSelected = '';
+            $m('searchOrderId').value = '';
+        }
+
+        function mgApply(name) {
+            if (mgName !== name) { mgName = name; window.__mgName = name; mgResetResult(); mgWatch(); }
+            $m('mgWho').textContent = name;
+        }
+        function mgEnter(acc) {
+            mgSetSession({ name: acc.name, v: acc.pwUpdatedAt || '' });
+            mgPending = null;
+            mgApply(acc.name);
+            mgCloseGate();
+            $m('mgForm').reset();
+            mgSetMode('login');
+            mgOpenFromUrl();
+        }
+        window.mgLogout = function(msg) {
+            try { localStorage.removeItem('zahSession'); } catch (_) {}
+            if (mgUnsub) { mgUnsub(); mgUnsub = null; }
+            mgName = ''; window.__mgName = ''; mgOrders = [];
+            mgResetResult(); mgRender();
+            mgOpenGate('login', typeof msg === 'string' ? msg : '');
+        };
+
+        $m('mgForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            const err = m => { $m('mgErr').textContent = m; };
+            err('');
+            if (Date.now() < mgLockUntil) return err(`嘗試次數過多，請 ${Math.ceil((mgLockUntil - Date.now()) / 1000)} 秒後再試`);
+            const name = $m('mgName').value.trim(), pw = $m('mgPw').value, pw2 = $m('mgPw2').value;
+            const btn = $m('mgSubmit'); btn.disabled = true;
+            try {
+                const now = new Date().toISOString();
+                if (mgMode === 'register') { return mgSetMode('login'); } // 評價網站不提供註冊
+                if (false) {
+                    if (!name) return err('請輸入帳號名稱');
+                    if (pw.length < 6) return err('密碼至少 6 個字元');
+                    if (pw !== pw2) return err('兩次輸入的密碼不一致');
+                    const salt = mgSalt();
+                    const rec = { name, salt, hash: await mgHash(pw, salt, MG_ITER), iter: MG_ITER, createdAt: now, lastLogin: now, pwUpdatedAt: now, mustChange: false };
+                    const ref = doc(db, 'accounts', mgAccId(name));
+                    await runTransaction(db, async tx => { if ((await tx.get(ref)).exists()) throw new Error('EXISTS'); tx.set(ref, rec); });
+                    mgEnter(rec);
+                } else if (mgMode === 'login') {
+                    if (!name || !pw) return err('請輸入帳號名稱與密碼');
+                    const ref = doc(db, 'accounts', mgAccId(name));
+                    const sn = await getDoc(ref), acc = sn.exists() ? sn.data() : null;
+                    const ok = acc && mgSame(await mgHash(pw, acc.salt, acc.iter || MG_ITER), acc.hash);
+                    if (!ok) { if (++mgFails >= 5) { mgFails = 0; mgLockUntil = Date.now() + 30000; } return err('帳號或密碼錯誤'); }
+                    mgFails = 0;
+                    if (acc.mustChange) { mgPending = acc; mgSetMode('setpw'); return; }
+                    updateDoc(ref, { lastLogin: now }).catch(() => {});
+                    mgEnter(acc);
+                } else if (mgMode === 'setpw') {
+                    if (!mgPending) return mgSetMode('login');
+                    if (pw.length < 6) return err('密碼至少 6 個字元');
+                    if (pw !== pw2) return err('兩次輸入的密碼不一致');
+                    const salt = mgSalt();
+                    const upd = { salt, hash: await mgHash(pw, salt, MG_ITER), iter: MG_ITER, pwUpdatedAt: now, lastLogin: now, mustChange: false };
+                    await updateDoc(doc(db, 'accounts', mgAccId(mgPending.name)), upd);
+                    mgEnter({ ...mgPending, ...upd });
+                }
+            } catch (ex) {
+                err(ex && ex.message === 'EXISTS' ? '這個名稱已被註冊，請換一個名稱，或直接登入。' : mgErrMsg(ex));
+            } finally { btn.disabled = false; }
+        });
+
+        // ---------- 我的訂單（即時同步，可搜尋／依狀態篩選） ----------
+        const mgStatusText = o => o.quoteState === 'pending' ? '待老闆報價' : (o.status || '處理中');
+        const mgBadgeCls = st => /報價/.test(st) ? 'bg-violet-500/20 text-violet-300 border-violet-500/40'
+            : /完成/.test(st) ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+            : /取消|退/.test(st) ? 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+            : /未付款/.test(st) ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+            : 'bg-indigo-500/20 text-indigo-300 border-indigo-500/40';
+        const mgNum = o => { const m = String(o.id || '').match(/(\d+)\s*$/); return m ? Number(m[1]) : 0; };
+
+        function mgRender() {
+            const list = $m('mgList'); if (!list) return;
+            const kw = $m('mgFilter').value.trim().toLowerCase();
+            const stSel = $m('mgStatus');
+            const statuses = [...new Set(mgOrders.map(mgStatusText))];
+            const curSt = stSel.value;
+            stSel.innerHTML = '<option value="">全部狀態</option>' + statuses.map(s => `<option value="${mgEsc(s)}"${s === curSt ? ' selected' : ''}>${mgEsc(s)}</option>`).join('');
+            const rows = mgOrders.filter(o => {
+                if (curSt && mgStatusText(o) !== curSt) return false;
+                if (!kw) return true;
+                return [o.id, o.product, mgStatusText(o), o.date, o.memo].some(v => String(v || '').toLowerCase().includes(kw));
+            });
+            $m('mgCount').textContent = mgOrders.length ? `共 ${mgOrders.length} 筆訂單${rows.length !== mgOrders.length ? `，符合條件 ${rows.length} 筆` : ''}` : '';
+            if (!mgOrders.length) { list.innerHTML = '<div class="text-center text-xs text-slate-500 py-6">這個帳號目前還沒有訂單，快去下單吧！</div>'; return; }
+            if (!rows.length) { list.innerHTML = '<div class="text-center text-xs text-slate-500 py-6">找不到符合的訂單</div>'; return; }
+            list.innerHTML = rows.map(o => {
+                const st = mgStatusText(o);
+                const price = o.quoteState === 'pending' ? '待報價' : `NT$${Number(o.price || 0).toLocaleString()}`;
+                const stars = o.rating > 0 ? `<span class="text-amber-400">${'★'.repeat(Math.min(5, o.rating))}</span>` : '';
+                return `<button type="button" class="mg-order ${o.id === mgSelected ? 'sel' : ''}" data-id="${mgEsc(o.id)}">
+                    <div class="min-w-0 flex-1">
+                        <div class="font-extrabold text-sm text-white">${mgEsc(o.id)} ${stars}</div>
+                        <div class="text-[11px] text-slate-400 truncate">${mgEsc(o.product)}</div>
+                    </div>
+                    <div class="text-right shrink-0">
+                        <div class="text-xs font-bold text-indigo-300">${mgEsc(price)}</div>
+                        <span class="mg-badge ${mgBadgeCls(st)}">${mgEsc(st)}</span>
+                        <div class="text-[10px] text-slate-500 mt-0.5">${mgEsc(o.date || '')}</div>
+                    </div>
+                </button>`;
+            }).join('');
+        }
+
+        function mgWatch() {
+            if (mgUnsub) { mgUnsub(); mgUnsub = null; }
+            mgOrders = []; mgRender();
+            if (!mgName) return;
+            $m('mgList').innerHTML = '<div class="text-center text-xs text-slate-500 py-6">載入訂單中…</div>';
+            mgUnsub = onSnapshot(query(collection(db, 'orders'), where('customer', '==', mgName)), snap => {
+                mgOrders = snap.docs.map(d => d.data()).sort((a, b) => mgNum(b) - mgNum(a));
+                mgRender();
+            }, err => {
+                console.warn('訂單同步失敗', err);
+                $m('mgList').innerHTML = '<div class="text-center text-xs text-rose-400 py-6">訂單載入失敗，請重新整理再試</div>';
+            });
+        }
+
+        function mgOpenOrder(id) {
+            mgSelected = id;
+            $m('searchOrderId').value = id;
+            mgRender();
+            window.searchOrder().then(() => {
+                const box = $m('resultContainer');
+                if (!box.classList.contains('hidden')) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        }
+        $m('mgList').addEventListener('click', e => { const b = e.target.closest('.mg-order'); if (b) mgOpenOrder(b.dataset.id); });
+        $m('mgFilter').addEventListener('input', mgRender);
+        $m('mgStatus').addEventListener('change', mgRender);
+
+        // 從 shop.html 的「我的最近訂單」點進來（rate.html?order=OD-001）會自動展開該訂單
+        function mgOpenFromUrl() {
+            try {
+                const id = new URLSearchParams(location.search).get('order');
+                if (id && mgName) setTimeout(() => mgOpenOrder(id.toUpperCase()), 400);
+            } catch (_) {}
+        }
+
+        // 開站時：沒登入就顯示閘門；有登入就核對帳號仍存在、密碼沒被店家重設
+        (async function mgInit() {
+            const ss = mgSession();
+            if (!ss || !ss.name) { mgOpenGate('login'); return; }
+            mgApply(ss.name);
+            mgOpenFromUrl();
+            try {
+                const sn = await getDoc(doc(db, 'accounts', mgAccId(ss.name)));
+                if (!sn.exists()) return window.mgLogout('這個帳號已不存在，請重新登入或註冊。');
+                if ((sn.data().pwUpdatedAt || '') !== (ss.v || '')) return window.mgLogout('你的密碼已被更新，請重新登入。');
+            } catch (_) { /* 離線：先沿用登入狀態 */ }
+        })();
 
         lucide.createIcons();
     </script>
