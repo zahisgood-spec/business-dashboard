@@ -712,6 +712,11 @@
                     <div class="flex items-center justify-between"><h2 class="text-base font-bold text-slate-900">員工名單</h2><a href="employee.html" target="_blank" class="text-xs font-bold text-indigo-600">開啟員工接單站 ↗</a></div>
                     <div id="st-list" class="mt-4 divide-y divide-slate-100 text-sm"></div>
                 </div>
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
+                    <h2 class="text-base font-bold text-slate-900">💰 薪水發放</h2>
+                    <p class="text-xs text-slate-400 mt-1">員工完成的訂單會列在這裡。確認每張的薪水金額、勾選後按「發薪」，員工端會移到「已付薪水」並計入他的薪水報表。可在員工名單用「設定抽成」自動預填金額。</p>
+                    <div id="pay-list" class="mt-4 space-y-4"></div>
+                </div>
             </section>
 
         </main>
@@ -2748,7 +2753,7 @@
 
     <script type="module">
         import { getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot, updateDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
         const db = getFirestore(getApp());
         const $ = id => document.getElementById(id);
         const E = v => String(v ?? '').replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
@@ -2760,18 +2765,48 @@
             return { salt, hash: h, iter: 120000 };
         }
         let staff = [], orders = [];
+        const fmtT = v => { const d = new Date(v); if (isNaN(d)) return ''; const p = n => String(n).padStart(2, '0'); return `${d.getMonth() + 1}/${d.getDate()} ${p(d.getHours())}:${p(d.getMinutes())}`; };
+        const renderPay = () => {
+            const box = $('pay-list'); if (!box || (box.contains(document.activeElement) && document.activeElement.tagName === 'INPUT')) return;
+            box.innerHTML = staff.map(s => {
+                const done = orders.filter(o => o.assignee === s.id && o.status === '已完成發貨'), un = done.filter(o => !o.salaryPaid), pd = done.filter(o => o.salaryPaid), r = Number(s.payRate || 0);
+                if (!done.length) return '';
+                return `<div class="border border-slate-200 rounded-2xl p-4" data-staff="${s.id}">
+                <div class="flex flex-wrap items-center justify-between gap-2"><div class="font-bold">${E(s.displayName)} <span class="text-xs font-normal text-slate-400">未付 ${un.length} 張 · 已付 NT$${pd.reduce((a, o) => a + Number(o.salary || 0), 0).toLocaleString()}</span></div>${un.length ? `<button data-payall="${s.id}" class="text-xs px-3 py-1.5 rounded-lg bg-emerald-600 text-white font-bold">💰 發薪（勾選的）</button>` : ''}</div>
+                ${un.map(o => `<div class="pay-row flex items-center gap-3 py-2 border-t border-slate-100 text-xs" data-doc="${o.docId}"><input type="checkbox" class="pay-ck" checked><span class="font-mono text-slate-500">#${E(o.id)}</span><span class="flex-1 min-w-0 truncate">${E(o.product)}</span><span class="text-slate-400">訂單 NT$${Number(o.price || 0).toLocaleString()}</span><span>薪水 NT$</span><input type="number" min="0" class="pay-amt w-24 px-2 py-1 border border-slate-200 rounded-lg" value="${r ? Math.round(Number(o.price || 0) * r / 100) : ''}" placeholder="金額"></div>`).join('')}
+                ${pd.length ? `<details class="mt-2 text-xs"><summary class="cursor-pointer text-slate-500 font-bold">已付薪水 ${pd.length} 張</summary>${pd.map(o => `<div class="flex items-center gap-3 py-1.5 border-t border-slate-100"><span class="font-mono text-slate-500">#${E(o.id)}</span><span class="flex-1 truncate">${E(o.product)}</span><span class="font-bold text-emerald-600">NT$${Number(o.salary || 0).toLocaleString()}</span><span class="text-slate-400">${fmtT(o.paidAt)}</span><button data-unpay="${o.docId}" class="px-2 py-1 rounded bg-rose-50 text-rose-600 font-bold">撤銷</button></div>`).join('')}</details>` : ''}
+                </div>`;
+            }).join('') || '<div class="text-center text-slate-400 py-6 text-sm">目前沒有員工完成的訂單</div>';
+        };
+        $('pay-list').onclick = async e => {
+            const b = e.target.closest('button'); if (!b) return; const d = b.dataset;
+            try {
+                if (d.payall) {
+                    const ls = [...b.closest('[data-staff]').querySelectorAll('.pay-row')].filter(r => r.querySelector('.pay-ck').checked).map(r => ({ id: r.dataset.doc, amt: Number(r.querySelector('.pay-amt').value) }));
+                    if (!ls.length) return alert('請先勾選要發薪的訂單');
+                    if (ls.some(r => !(r.amt > 0))) return alert('請填寫每張訂單的薪水金額（大於 0）');
+                    if (!confirm(`確定發放 ${ls.length} 張訂單，共 NT$${ls.reduce((a, r) => a + r.amt, 0).toLocaleString()}？`)) return;
+                    const bt = writeBatch(db), at = new Date().toISOString();
+                    ls.forEach(r => bt.update(doc(db, 'orders', r.id), { salary: r.amt, salaryPaid: true, paidAt: at, paidBy: '老闆' }));
+                    await bt.commit(); alert('已發薪');
+                }
+                if (d.unpay && confirm('撤銷這筆薪水？')) await updateDoc(doc(db, 'orders', d.unpay), { salary: null, salaryPaid: false, paidAt: null });
+            } catch (err) { alert('操作失敗：' + err.message); }
+        };
         const rows = () => {
             $('st-list').innerHTML = staff.length ? staff.map(s => {
                 const n = orders.filter(o => o.assignee === s.id && o.status !== '已完成發貨').length, d = orders.filter(o => o.assignee === s.id && o.status === '已完成發貨').length;
-                return `<div class="py-3 flex flex-wrap items-center gap-3"><div class="flex-1 min-w-[160px]"><div class="font-bold">${E(s.displayName)} <span class="font-mono text-xs text-slate-400">${E(decodeURIComponent(s.id))}</span></div><div class="text-xs text-slate-400">處理中 ${n} 張 · 已完成 ${d} 張</div></div>
+                return `<div class="py-3 flex flex-wrap items-center gap-3"><div class="flex-1 min-w-[160px]"><div class="font-bold">${E(s.displayName)} <span class="font-mono text-xs text-slate-400">${E(decodeURIComponent(s.id))}</span></div><div class="text-xs text-slate-400">處理中 ${n} 張 · 已完成 ${d} 張 · 抽成 ${s.payRate || 0}%</div></div>
                 <span class="text-xs font-bold ${s.active === false ? 'text-rose-500' : 'text-emerald-600'}">${s.active === false ? '已停用' : '啟用中'}</span>
                 <button data-tg="${s.id}" class="text-xs px-3 py-1.5 rounded-lg bg-slate-100 font-bold">${s.active === false ? '啟用' : '停用'}</button>
+                <button data-rate="${s.id}" class="text-xs px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 font-bold">設定抽成</button>
                 <button data-pw="${s.id}" class="text-xs px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 font-bold">重設密碼</button>
                 <button data-dl="${s.id}" class="text-xs px-3 py-1.5 rounded-lg bg-rose-50 text-rose-600 font-bold">刪除</button></div>`;
             }).join('') : '<div class="py-8 text-center text-slate-400">還沒有員工帳號</div>';
+            renderPay();
         };
         onSnapshot(collection(db, 'staff'), s => { staff = s.docs.map(d => ({ id: d.id, ...d.data() })); rows(); });
-        onSnapshot(collection(db, 'orders'), s => { orders = s.docs.map(d => d.data()); rows(); });
+        onSnapshot(collection(db, 'orders'), s => { orders = s.docs.map(d => ({ docId: d.id, ...d.data() })); rows(); });
         $('st-add').onclick = async () => {
             const u = $('st-user').value.trim().toLowerCase(), n = $('st-name').value.trim() || u, p = $('st-pw').value;
             if (!/^[a-z0-9_.-]+$/.test(u)) return alert('帳號請用英數字（可含 _ . -）');
@@ -2784,6 +2819,7 @@
             try {
                 if (d.tg) { const s = staff.find(x => x.id === d.tg); await setDoc(doc(db, 'staff', d.tg), { active: s.active === false }, { merge: true }); }
                 if (d.pw) { const p = prompt('輸入新密碼（至少 6 碼）'); if (p && p.length >= 6) { await setDoc(doc(db, 'staff', d.pw), await mk(p), { merge: true }); alert('密碼已重設'); } }
+                if (d.rate) { const v = prompt('抽成比例 %（例：10 = 訂單金額的 10%；0 = 不預填，發薪時手動輸入）'); if (v !== null && v.trim() !== '' && !isNaN(v) && +v >= 0 && +v <= 100) await setDoc(doc(db, 'staff', d.rate), { payRate: +v }, { merge: true }); }
                 if (d.dl && confirm('刪除這位員工帳號？（他接的訂單不會被刪）')) await deleteDoc(doc(db, 'staff', d.dl));
             } catch (err) { alert('操作失敗：' + err.message); }
         };

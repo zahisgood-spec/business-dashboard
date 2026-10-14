@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#1a1a5e">
 <title>展商城 員工接單站</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
@@ -139,6 +139,42 @@ header.hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3
 @media(max-width:640px){.banner{padding:1.4rem}.bw{height:150px}}
 @media(prefers-reduced-motion:reduce){*,::before,::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
 </style>
+<style id="polish">
+/* ===== 質感再升級 ===== */
+::selection{background:#26c6b9;color:#fff}
+html{scrollbar-color:#b8bfe0 transparent;scrollbar-width:thin}
+body{font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+:focus-visible{outline:3px solid rgba(38,198,185,.55);outline-offset:2px;border-radius:.75rem}
+.glass{background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.95);box-shadow:0 1px 0 #fff inset,0 18px 40px -24px rgba(26,26,94,.45)}
+/* 橫幅：統計卡片依序彈入 */
+.banner{box-shadow:0 40px 70px -34px rgba(26,26,94,.85),0 0 0 1px rgba(255,255,255,.06) inset}
+.bst{animation:up .6s cubic-bezier(.16,1,.3,1) backwards;box-shadow:0 14px 28px -18px rgba(0,0,0,.6),0 1px 0 rgba(255,255,255,.18) inset}
+.bst:nth-child(2){animation-delay:.08s}.bst:nth-child(3){animation-delay:.16s}.bst:nth-child(4){animation-delay:.24s}
+.bst:last-child{background:linear-gradient(135deg,rgba(245,158,11,.28),rgba(255,255,255,.08));border-color:rgba(253,224,71,.45)}
+/* 分頁：可橫向滑動、不換行 */
+.tab{white-space:nowrap;flex:none;display:inline-flex;align-items:center;gap:.25rem}
+.tab:not(.on):hover{background:rgba(26,26,94,.06)}
+/* 狀態標籤加小圓點 */
+.pill{display:inline-flex;align-items:center;gap:.3rem;letter-spacing:.02em}
+.pill::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor}
+/* 票券卡片 */
+.ticket{box-shadow:0 0 0 1px rgba(26,26,94,.06) inset}
+.ptitle{letter-spacing:.01em}
+.tk .bt{border-top-color:#cfd6ee}
+.go{letter-spacing:.06em}
+select,input{font-family:inherit}
+/* 載入骨架 */
+.sk{height:250px;border-radius:1.5rem;background:linear-gradient(100deg,#e7eaf6 30%,#f6f7fd 50%,#e7eaf6 70%) 0 0/200% 100%;animation:skl 1.3s linear infinite}
+@keyframes skl{to{background-position:-200% 0}}
+/* 薪水報表：重點卡 */
+.hi{background:linear-gradient(135deg,#047857,#26c6b9 70%,#5eead4);border-color:transparent;color:#fff}
+.hi .text-slate-500{color:rgba(255,255,255,.8)}
+.hi .price{background:none;-webkit-text-fill-color:#fff;color:#fff;text-shadow:0 4px 14px rgba(0,0,0,.2)}
+/* 通知 */
+#toast{margin-bottom:-14px;transition:opacity .3s,margin .3s;box-shadow:0 18px 40px -12px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.12)}
+#toast[style*="opacity: 1"]{margin-bottom:0}
+@media(max-width:640px){main{padding:1rem}.bst{flex:1;min-width:0;padding:.7rem .8rem}.bst b{font-size:1.7rem}.banner{padding:1.2rem}#hello{font-size:1.4rem}.ptitle{font-size:1.05rem}.price{font-size:1.45rem}}
+</style>
 </head>
 <body>
 <!-- 登入 -->
@@ -166,14 +202,19 @@ header.hero::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3
         <div class="bst"><span class="text-xs font-bold text-white/70">📥 待接訂單</span><b id="s-pool" class="text-orange-300">0</b></div>
         <div class="bst"><span class="text-xs font-bold text-white/70">⚙️ 我處理中</span><b id="s-mine" class="text-sky-300">0</b></div>
         <div class="bst"><span class="text-xs font-bold text-white/70">🏆 我已完成</span><b id="s-done" class="text-emerald-300">0</b></div>
+        <div class="bst"><span class="text-xs font-bold text-white/70">💰 賺到的薪水 NT$</span><b id="s-earn" class="text-yellow-300">0</b></div>
       </div>
     </div>
-    <div class="glass rounded-2xl p-2 inline-flex gap-2 mb-6">
+    <div class="glass rounded-2xl p-2 inline-flex max-w-full overflow-x-auto gap-2 mb-6">
       <button class="tab on" id="t-pool">📥 接單大廳 <span id="n-pool" class="ml-1 px-2 rounded-full bg-orange-500 text-white text-xs">0</span></button>
-      <button class="tab" id="t-mine">📦 我的訂單 <span id="n-mine" class="ml-1 px-2 rounded-full bg-indigo-500 text-white text-xs">0</span></button>
+      <button class="tab" id="t-mine">⚙️ 處理中 <span id="n-mine" class="ml-1 px-2 rounded-full bg-indigo-500 text-white text-xs">0</span></button>
+      <button class="tab" id="t-hist">🗂️ 完成訂單 <span id="n-hist" class="ml-1 px-2 rounded-full bg-emerald-500 text-white text-xs">0</span></button>
+      <button class="tab" id="t-rep">💵 薪水報表</button>
     </div>
     <section id="pool"></section>
     <section id="mine" class="hidden"></section>
+    <section id="hist" class="hidden"></section>
+    <section id="rep" class="hidden"></section>
   </main>
   <footer class="ft"><img data-logo alt="展商城 ZAH-SHOP"><p>謝謝光臨 !!! · © 2026 展商城 ZAH-SHOP</p></footer>
 </div>
@@ -198,7 +239,7 @@ const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(
 async function pwHash(pw,salt,iter){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);return hex(await crypto.subtle.deriveBits({name:'PBKDF2',hash:'SHA-256',salt:unhex(salt),iterations:iter},k,256))}
 const half=v=>v.replace(/[\uFF01-\uFF5E]/g,x=>String.fromCharCode(x.charCodeAt(0)-0xFEE0)).replace(/\u3000/g,' ');
 const toast=m=>{const t=$('toast');t.textContent=m;t.style.opacity=1;setTimeout(()=>t.style.opacity=0,2200)};
-let me=null,orders=[],unsub=null,ready=false,sound=true;
+let me=null,orders=[],unsub=null,ready=false,sound=true,histSub='unpaid';
 
 let AC;const ac=()=>{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC};
 document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(!b.dataset.claim&&!b.id.startsWith('t-')&&b.id!=='go')sfx('tick');if(b.matches('.go,.tab,#go')){const r=b.getBoundingClientRect(),z=Math.max(r.width,r.height),sp=document.createElement('span');sp.className='ripple';sp.style.cssText=`width:${z}px;height:${z}px;left:${e.clientX-r.left-z/2}px;top:${e.clientY-r.top-z/2}px`;b.appendChild(sp);setTimeout(()=>sp.remove(),650)}},true);
@@ -237,7 +278,7 @@ async function login(){
 async function enter(){
   splash(me.name);
   $('gate').classList.add('hidden');$('app').classList.remove('hidden');$('who').textContent='👤 '+me.name;
-  unsub&&unsub();ready=false;
+  unsub&&unsub();ready=false;$('pool').innerHTML=`<div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">${'<div class="sk"></div>'.repeat(3)}</div>`;onSnapshot(doc(db,'staff',me.id),x=>{me.rate=Number(x.data()?.payRate||0);render()});
   unsub=onSnapshot(collection(db,'orders'),snap=>{
     orders=snap.docs.map(d=>({docId:d.id,...d.data()})).sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
     if(ready)snap.docChanges().forEach(c=>{if(c.type==='added'){beep();toast('🔔 新訂單 '+(c.doc.data().id||''))}});
@@ -265,8 +306,8 @@ $('go').onclick=login;
 $('p').onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing&&e.keyCode!==229)login()};
 $('out').onclick=()=>{sessionStorage.removeItem('zahStaff');location.reload()};
 $('snd').onclick=()=>{sound=!sound;$('snd').textContent=sound?'🔔 提示音開':'🔕 提示音關'};
-const tab=t=>{sfx('tab');['pool','mine'].forEach(n=>{$(n).classList.toggle('hidden',n!==t);$('t-'+n).classList.toggle('on',n===t)});const e=$(t);e.classList.remove('swap');void e.offsetWidth;e.classList.add('swap')};
-$('t-pool').onclick=()=>tab('pool');$('t-mine').onclick=()=>tab('mine');
+const tab=t=>{sfx('tab');['pool','mine','hist','rep'].forEach(n=>{$(n).classList.toggle('hidden',n!==t);$('t-'+n).classList.toggle('on',n===t)});const e=$(t);e.classList.remove('swap');void e.offsetWidth;e.classList.add('swap')};
+$('t-pool').onclick=()=>tab('pool');$('t-mine').onclick=()=>tab('mine');$('t-hist').onclick=()=>tab('hist');$('t-rep').onclick=()=>tab('rep');
 
 // ---- 畫面 ----
 function countTo(id,v){const el=$(id),from=+el.textContent||0;if(from===v)return;el.classList.remove('bump');void el.offsetWidth;el.classList.add('bump');const t0=performance.now();(function f(t){const k=Math.min(1,(t-t0)/500);el.textContent=Math.round(from+(v-from)*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)})(t0)}
@@ -277,8 +318,10 @@ document.addEventListener('mousemove',e=>{const t=e.target.closest&&e.target.clo
 const tick=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');const c=$('clk');if(c)c.textContent=`${d.getMonth()+1}/${d.getDate()} ${p(d.getHours())}:${p(d.getMinutes())}`};tick();setInterval(tick,20000);
 function render(){
   const pool=orders.filter(o=>!o.assignee&&o.status!=='已完成發貨'&&o.quoteState!=='pending');
-  const mine=orders.filter(o=>o.assignee===me.id);
-  $('n-pool').textContent=pool.length;countTo('s-pool',pool.length);countTo('s-mine',mine.filter(o=>o.status!=='已完成發貨').length);countTo('s-done',mine.filter(o=>o.status==='已完成發貨').length);$('n-mine').textContent=mine.filter(o=>o.status!=='已完成發貨').length;
+  const DONE='已完成發貨';
+  const mine=orders.filter(o=>o.assignee===me.id&&o.status!==DONE);
+  const hist=orders.filter(o=>o.assignee===me.id&&o.status===DONE).sort((a,b)=>new Date(b.completedAt||b.date||0)-new Date(a.completedAt||a.date||0));
+  $('n-pool').textContent=pool.length;countTo('s-pool',pool.length);countTo('s-mine',mine.length);countTo('s-done',hist.length);$('n-mine').textContent=mine.length;$('n-hist').textContent=hist.length;
   const h=new Date().getHours();
   $('hello').textContent=(h<6?'夜深了':h<12?'早安':h<18?'午安':'晚安')+'，'+me.name+' 👋';
   $('hello2').textContent=pool.length?`大廳有 ${pool.length} 張訂單等你接，手腳快的先搶先贏！`:'目前沒有待接訂單，喝口水休息一下吧 ☕';
@@ -302,8 +345,26 @@ function render(){
     ${o.memo?`<div class="note"><span>📌</span><span>管理員備註：${E(o.memo)}</span></div>`:''}
     <div class="mt-3 space-y-1.5">${(o.staffNotes||[]).map(n=>`<div><span class="bub"><b>${E(n.by)}</b>：${E(n.text)}<small>${E(n.at)}</small></span></div>`).join('')}</div>
     <div class="flex gap-2 mt-3"><input id="nt-${o.docId}" placeholder="寫下處理備註…" class="flex-1 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:ring-2 focus:ring-indigo-400"><button data-note="${o.docId}" class="px-4 rounded-xl hero text-white text-sm font-bold hover:brightness-125 active:scale-95 transition">送出</button>${o.status!=='已完成發貨'?`<button data-rel="${o.docId}" class="px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 text-xs font-bold transition">放回</button>`:''}</div>
-   </div></div></div>`}).join('')}</div>`:`<div class="text-center py-24"><div class="text-7xl mb-4 float">📦</div><div class="font-black text-xl text-slate-700">你還沒有接任何訂單</div><div class="text-sm text-slate-400 mt-1">到接單大廳挑一張吧</div></div>`;
+   </div></div></div>`}).join('')}</div>`:`<div class="text-center py-24"><div class="text-7xl mb-4 float">📦</div><div class="font-black text-xl text-slate-700">目前沒有處理中的訂單</div><div class="text-sm text-slate-400 mt-1">到接單大廳挑一張吧，完成的訂單會自動收進「歷史訂單」</div></div>`;
+  const paid=hist.filter(o=>o.salaryPaid),unpaid=hist.filter(o=>!o.salaryPaid),list=histSub==='paid'?paid:unpaid,rate=me.rate||0,M=n=>'NT$'+Number(n||0).toLocaleString();
+  const sb=(k,t,n)=>`<button data-sub="${k}" class="px-4 py-2 rounded-xl text-sm font-black transition ${histSub===k?'bg-[#1a1a5e] text-white shadow':'bg-white text-slate-500 hover:text-[#1a1a5e]'}">${t} <span class="opacity-70">${n}</span></button>`;
+  $('hist').innerHTML=`<div class="flex flex-wrap gap-2 mb-5">${sb('unpaid','⏳ 完成訂單（未付薪水）',unpaid.length)}${sb('paid','✅ 完成訂單（已付薪水）',paid.length)}</div>`+(list.length?`<div class="grid lg:grid-cols-2 gap-6">${list.map((o,i)=>`
+   <div class="tk" style="animation-delay:${Math.min(i,8)*70}ms"><div class="ticket"><div class="tb">
+    <div class="flex items-start justify-between gap-3"><div class="flex items-center gap-3 min-w-0"><div class="pav" style="background:${hue(o.product)}">${E([...String(o.product||'?')][0])}</div><div class="min-w-0"><div class="flex items-center gap-2 flex-wrap"><span class="idc">#${E(o.id)}</span><span class="pill s3">${E(o.status)}</span></div><div class="ptitle mt-1 break-words">${E(o.product)}</div><div class="text-xs font-bold text-slate-500 mt-1">👤 ${E(o.customer)} · 下單 ${E(o.date)}</div></div></div><div class="price shrink-0">${M(o.price)}</div></div>
+    <div class="mt-3 text-xs font-black text-emerald-600">✅ ${o.completedAt?'完成於 '+fmt(o.completedAt):'已完成'}</div>
+    ${o.salaryPaid?`<div class="mt-2 text-sm font-black text-emerald-600">💰 已領薪水 ${M(o.salary)} <span class="text-xs font-bold text-slate-400">${fmt(o.paidAt)} 發放</span></div>`:`<div class="mt-2 text-xs font-black text-amber-600">⏳ 等待老闆發薪水${rate?` · 預估 ${M(Math.round(Number(o.price||0)*rate/100))}`:''}</div>`}
+    ${o.memo?`<div class="note"><span>📌</span><span>管理員備註：${E(o.memo)}</span></div>`:''}
+    <div class="mt-3 space-y-1.5">${(o.staffNotes||[]).map(n=>`<div><span class="bub"><b>${E(n.by)}</b>：${E(n.text)}<small>${E(n.at)}</small></span></div>`).join('')}</div>
+    ${o.salaryPaid?'':`<div class="flex justify-end mt-3"><button data-reopen="${o.docId}" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 text-xs font-bold transition">↩ 退回處理中</button></div>`}
+   </div></div></div>`).join('')}</div>`:`<div class="text-center py-24"><div class="text-7xl mb-4 float">🗂️</div><div class="font-black text-xl text-slate-700">${histSub==='paid'?'還沒有已付薪水的訂單':'沒有等待發薪的訂單'}</div><div class="text-sm text-slate-400 mt-1">訂單狀態改成「已完成發貨」後會自動出現在這裡</div></div>`);
+  const sum=a=>a.reduce((t,o)=>t+Number(o.salary||0),0),est=rate?unpaid.reduce((t,o)=>t+Math.round(Number(o.price||0)*rate/100),0):null,mo={};
+  countTo('s-earn',sum(paid));
+  paid.forEach(o=>{const k=(o.paidAt||'').slice(0,7)||'—';(mo[k]=mo[k]||{n:0,s:0}).n++;mo[k].s+=Number(o.salary||0)});
+  const ks=Object.keys(mo).sort().reverse(),mx=Math.max(1,...ks.map(k=>mo[k].s)),c=(l,v,h)=>`<div class="glass rounded-2xl p-5${h?' hi':''}"><div class="text-xs font-bold text-slate-500">${l}</div><div class="price mt-2">${v}</div></div>`;
+  $('rep').innerHTML=`<div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">${c('💰 你累計賺到（已領薪水）',M(sum(paid)),1)}${c('⏳ 待發薪水（'+unpaid.length+' 張）',est!==null?'約 '+M(est):'等老闆發放')}${c('🏆 完成訂單',hist.length+' 張')}${c('📦 經手訂單總額',M(hist.reduce((t,o)=>t+Number(o.price||0),0)))}</div>
+   <div class="glass rounded-2xl p-5"><div class="font-black mb-3">📅 每月薪水</div>${ks.length?ks.map(k=>`<div class="flex items-center gap-3 py-1.5 text-sm"><span class="w-20 font-mono text-slate-500">${k}</span><div class="flex-1 h-3 rounded-full bg-slate-100 overflow-hidden"><i class="block h-full rounded-full" style="width:${mo[k].s/mx*100}%;background:linear-gradient(90deg,#26c6b9,#047857)"></i></div><span class="w-14 text-xs text-slate-400">${mo[k].n} 張</span><b class="w-28 text-right">${M(mo[k].s)}</b></div>`).join(''):'<div class="text-sm text-slate-400 py-4 text-center">還沒領過薪水，老闆發放後會顯示在這裡</div>'}</div>`;
 }
+const fmt=v=>{const d=new Date(v);if(isNaN(d))return'';const p=n=>String(n).padStart(2,'0');return `${d.getMonth()+1}/${d.getDate()} ${p(d.getHours())}:${p(d.getMinutes())}`};
 const now=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return `${d.getMonth()+1}/${d.getDate()} ${p(d.getHours())}:${p(d.getMinutes())}`};
 
 document.addEventListener('click',async e=>{
@@ -318,13 +379,15 @@ document.addEventListener('click',async e=>{
         tx.update(r,{assignee:me.id,assigneeName:me.name,claimedAt:new Date().toISOString()})});
       toast('✅ 接單成功！到「我的訂單」處理');party();sfx('fanfare');
     }
+    if(d.sub){histSub=d.sub;render()}
     if(d.rel&&confirm('確定放回接單大廳？')){await updateDoc(doc(db,'orders',d.rel),{assignee:null,assigneeName:null,claimedAt:null});sfx('whoosh');toast('已放回大廳')}
+    if(d.reopen&&confirm('要把這張訂單退回「處理中」嗎？')){await updateDoc(doc(db,'orders',d.reopen),{status:'待發貨',completedAt:null,lastStaff:me.name});sfx('whoosh');toast('已退回處理中')}
     if(d.note){const i=$('nt-'+d.note),t=i.value.trim();if(!t)return;await updateDoc(doc(db,'orders',d.note),{staffNotes:arrayUnion({by:me.name,text:t,at:now()})});sfx('pop');toast('備註已加入')}
   }catch(err){document.querySelectorAll('.tk.fly').forEach(x=>x.classList.remove('fly'));sfx('error');toast('⚠️ '+err.message)}
 });
 document.addEventListener('change',async e=>{
   const s=e.target.dataset.st;if(!s)return;
-  try{await updateDoc(doc(db,'orders',s),{status:e.target.value,lastStaff:me.name});sfx(e.target.value==='已完成發貨'?'fanfare':'pop');toast('狀態已更新：'+e.target.value);if(e.target.value==='已完成發貨')party()}catch(err){toast('⚠️ '+err.message)}
+  try{const v=e.target.value,fin=v==='已完成發貨';await updateDoc(doc(db,'orders',s),{status:v,lastStaff:me.name,completedAt:fin?new Date().toISOString():null});sfx(fin?'fanfare':'pop');toast(fin?'🎉 訂單完成！已自動移到「歷史訂單」':'狀態已更新：'+v);if(fin)party()}catch(err){toast('⚠️ '+err.message)}
 });
 
 // 自動恢復登入（仍驗證帳號是否存在且未停用）
