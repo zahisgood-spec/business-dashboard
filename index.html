@@ -653,10 +653,10 @@
             <section id="admin-tab-panel-members" class="admin-tab-panel hidden space-y-6">
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
                     <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-                        <div><h2 class="text-base font-bold text-slate-900">👥 會員管理</h2><p class="text-xs text-slate-400 mt-1">會員由顧客名稱自動建立；可贈送／扣除經驗值、改名、刪除。</p></div>
+                        <div><h2 class="text-base font-bold text-slate-900">👥 會員管理</h2><p class="text-xs text-slate-400 mt-1">會員由顧客名稱自動建立；顧客註冊的登入帳號也會列在這裡。可贈送／扣除經驗值、改名、刪除、重設密碼，並可調整每位會員的每日下單上限（預設 3 單）。</p></div>
                         <input id="mb-search" placeholder="搜尋會員名稱…" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
                     </div>
-                    <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs text-slate-400 border-b border-slate-100"><th class="py-2">會員</th><th>等級／稱號</th><th class="text-right">XP</th><th class="text-right">消費</th><th class="text-right">贈送XP</th><th class="text-right">操作</th></tr></thead><tbody id="mb-rows"></tbody></table></div>
+                    <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs text-slate-400 border-b border-slate-100"><th class="py-2">會員</th><th>登入帳號</th><th>等級／稱號</th><th class="text-right">XP</th><th class="text-right">消費</th><th class="text-right">贈送XP</th><th class="text-right">操作</th></tr></thead><tbody id="mb-rows"></tbody></table></div>
                 </div>
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6" id="mb-config"></div>
             </section>
@@ -2410,7 +2410,7 @@
         const DEF = { rate: 10,
           levels: [{ name: '新手', icon: '🌱', min: 0, disc: 0, title: '展商新手' }, { name: '菁英', icon: '⚔️', min: 500, disc: .05, title: '展商菁英' }, { name: '傳奇', icon: '👑', min: 1500, disc: .08, title: '展商傳奇' }, { name: '至尊', icon: '💎', min: 4000, disc: .12, title: '至尊會員' }],
           miles: [{ at: 1000, icon: '🎖️', name: '初試身手', reward: '專屬徽章' }, { at: 3000, icon: '🥉', name: '忠實熟客', reward: '徽章＋稱號「忠實熟客」' }, { at: 8000, icon: '🥈', name: '展商達人', reward: '徽章＋稱號「展商達人」' }, { at: 20000, icon: '🏆', name: '傳說顧客', reward: '徽章＋稱號「傳說顧客」' }] };
-        let cfg = clone(DEF), draft = clone(DEF), orders = [], mdocs = {}, coupons = {}, editingCode = null;
+        let cfg = clone(DEF), draft = clone(DEF), orders = [], mdocs = {}, coupons = {}, accts = {}, editingCode = null;
         const lvOf = xp => [...cfg.levels].sort((a, b) => b.min - a.min).find(l => xp >= l.min) || cfg.levels[0];
 
         onSnapshot(doc(db, 'siteSettings', 'membership'), s => {
@@ -2419,6 +2419,15 @@
         }, e => console.warn(e));
         onSnapshot(collection(db, 'members'), s => { mdocs = {}; s.forEach(d => mdocs[d.id] = { id: d.id, ...d.data() }); renderMembers(); });
         onSnapshot(collection(db, 'orders'), s => { orders = s.docs.map(d => ({ docId: d.id, ...d.data() })); renderMembers(); renderCoupons(); });
+        onSnapshot(collection(db, 'accounts'), s => { accts = {}; s.forEach(d => accts[d.id] = { id: d.id, ...d.data() }); renderMembers(); }, e => console.warn('帳號資料讀取失敗', e));
+        // 密碼只存「加鹽雜湊」（PBKDF2-SHA256），與前台 shop.html 相同參數；後台只能重設，無法查看原密碼
+        const ACC_ITER = 120000;
+        const hexOf = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+        const unhexOf = h => new Uint8Array((String(h).match(/../g) || []).map(x => parseInt(x, 16)));
+        async function pwHash(pw, saltHex, iter) {
+            const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveBits']);
+            return hexOf(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: unhexOf(saltHex), iterations: iter }, key, 256));
+        }
         onSnapshot(collection(db, 'coupons'), s => { coupons = {}; s.forEach(d => coupons[d.id] = { id: d.id, ...d.data() }); renderCoupons(); });
 
         window.zahMemberDiscFor = name => { const m = aggregate().find(x => x.name === name); if (!m || m.deleted || !m.lv || !(m.lv.disc > 0)) return null; return { level: m.lv.name, disc: Number(m.lv.disc) }; };
@@ -2429,22 +2438,33 @@
             const get = n => map[n] || (map[n] = { name: n, spend: 0, count: 0 });
             orders.forEach(o => { const n = String(o.customer || '').trim(); if (!n) return; const m = get(n); if (/未付款|取消|退/.test(o.status || '')) return; m.spend += Number(o.price || 0); m.count++; });
             Object.values(mdocs).forEach(d => { if (d.name) get(d.name); });
+            Object.values(accts).forEach(a => { if (a.name) get(a.name); });
             return Object.values(map).map(m => { const d = mdocs[mid(m.name)] || {}; m.bonus = Number(d.bonusXp || 0); m.deleted = !!d.deleted; m.xp = m.deleted ? 0 : Math.floor(m.spend / cfg.rate) + m.bonus; m.lv = lvOf(m.xp); return m; })
                 .sort((a, b) => b.xp - a.xp);
         }
+        // 每日下單上限標籤（預設 3；dailyOrderLimit：數字＝上限、-1＝不限、空＝預設）
+        const DEFAULT_DAILY = 3;
+        const qlTag = m => {
+            const v = (mdocs[mid(m.name)] || {}).dailyOrderLimit;
+            if (v === null || v === undefined || v === '' || !Number.isFinite(Number(v))) return `<div class="text-[10px] font-bold text-slate-400">📅 每日下單 ${DEFAULT_DAILY} 單（預設）</div>`;
+            return Number(v) < 0 ? '<div class="text-[10px] font-bold text-indigo-500">📅 每日下單：不限單量（已調整）</div>' : `<div class="text-[10px] font-bold text-indigo-500">📅 每日下單 ${Math.floor(Number(v))} 單（已調整）</div>`;
+        };
         function renderMembers() {
             const tb = $('mb-rows'); if (!tb) return;
             const q = ($('mb-search').value || '').trim().toLowerCase();
             const list = aggregate().filter(m => !q || m.name.toLowerCase().includes(q));
             tb.innerHTML = list.length ? list.map(m => `<tr class="border-b border-slate-50 ${m.deleted ? 'opacity-50' : ''}">
-                <td class="py-3 font-bold text-slate-800">${E(m.name)}${m.deleted ? ' <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-rose-50 text-rose-500">已刪除</span>' : ''}<div class="text-[10px] font-normal text-slate-400">${m.count} 筆有效訂單</div></td>
+                <td class="py-3 font-bold text-slate-800">${E(m.name)}${m.deleted ? ' <span class="text-[10px] px-1.5 py-0.5 rounded-full bg-rose-50 text-rose-500">已刪除</span>' : ''}<div class="text-[10px] font-normal text-slate-400">${m.count} 筆有效訂單</div>${qlTag(m)}</td>
+                ${(() => { const a = accts[mid(m.name)]; if (!a) return '<td><span class="text-[10px] text-slate-400">尚未註冊帳號</span></td>'; const f = t => t ? new Date(t).toLocaleString('zh-TW', { hour12: false }) : '—'; return `<td class="text-xs"><div class="font-mono font-bold text-slate-700">${E(a.name)}</div><div class="text-[10px] font-bold text-emerald-600">🔒 密碼已加密儲存${a.mustChange ? '・待顧客改密碼' : ''}</div><div class="text-[10px] text-slate-400">註冊 ${f(a.createdAt)}<br>最近登入 ${f(a.lastLogin)}</div></td>`; })()}
                 <td>${m.deleted ? '—' : `${E(m.lv.icon)} ${E(m.lv.name)}<div class="text-[10px] text-slate-400">${E(m.lv.title)}</div>`}</td>
                 <td class="text-right font-bold text-indigo-600">${m.xp.toLocaleString()}</td><td class="text-right">NT$${m.spend.toLocaleString()}</td><td class="text-right text-slate-500">${m.bonus > 0 ? '+' : ''}${m.bonus}</td>
                 <td class="text-right whitespace-nowrap text-xs font-bold">
                     <button data-xp="${E(m.name)}" class="px-2 py-1 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100">± XP</button>
                     <button data-rn="${E(m.name)}" class="px-2 py-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200">改名</button>
+                    <button data-ql="${E(m.name)}" class="px-2 py-1 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100">下單額度</button>
+                    ${accts[mid(m.name)] ? `<button data-pw="${E(m.name)}" class="px-2 py-1 rounded-lg bg-amber-50 text-amber-700 hover:bg-amber-100">重設密碼</button><button data-acdel="${E(m.name)}" class="px-2 py-1 rounded-lg bg-rose-50 text-rose-500 hover:bg-rose-100">刪帳號</button>` : ''}
                     ${m.deleted ? `<button data-rs="${E(m.name)}" class="px-2 py-1 rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-100">恢復</button>` : `<button data-del="${E(m.name)}" class="px-2 py-1 rounded-lg bg-rose-50 text-rose-500 hover:bg-rose-100">刪除</button>`}
-                </td></tr>`).join('') : '<tr><td colspan="6" class="py-8 text-center text-xs text-slate-400">還沒有會員（顧客下單後會自動出現）。</td></tr>';
+                </td></tr>`).join('') : '<tr><td colspan="7" class="py-8 text-center text-xs text-slate-400">還沒有會員（顧客下單後會自動出現）。</td></tr>';
         }
         $('mb-search').addEventListener('input', renderMembers);
         $('mb-rows').addEventListener('click', async e => {
@@ -2462,10 +2482,35 @@
                     const refs = snap.docs.map(d => d.ref);
                     for (let i = 0; i < refs.length; i += 400) { const wb = writeBatch(db); refs.slice(i, i + 400).forEach(r => wb.update(r, { customer: nn })); await wb.commit(); }
                     const od = mdocs[mid(old)] || {}, wb = writeBatch(db);
-                    wb.set(doc(db, 'members', mid(nn)), { name: nn, bonusXp: Number(od.bonusXp || 0), deleted: !!od.deleted });
+                    wb.set(doc(db, 'members', mid(nn)), { name: nn, bonusXp: Number(od.bonusXp || 0), deleted: !!od.deleted, dailyOrderLimit: od.dailyOrderLimit ?? null });
                     if (mdocs[mid(old)]) wb.delete(doc(db, 'members', mid(old)));
+                    const ac = accts[mid(old)];
+                    if (ac) { const { id: _id, ...rest } = ac; wb.set(doc(db, 'accounts', mid(nn)), { ...rest, name: nn }); wb.delete(doc(db, 'accounts', mid(old))); }
                     await wb.commit();
                     alert(`已改名，並同步更新 ${refs.length} 筆訂單的顧客名稱。`);
+                } else if (b.dataset.ql) {
+                    const nm = b.dataset.ql, cur = (mdocs[mid(nm)] || {}).dailyOrderLimit;
+                    const ans = prompt(`設定「${nm}」每天最多可下幾單？（預設 ${DEFAULT_DAILY} 單）\n\n・輸入數字：每日上限\n・輸入「無限」（或 -1）：不限單量\n・留空：恢復預設`, cur === -1 ? '無限' : (cur === null || cur === undefined ? '' : String(cur)));
+                    if (ans === null) return;
+                    const t = ans.trim();
+                    let v;
+                    if (t === '') v = null;
+                    else if (/^(無限|不限|unlimited|inf|-1)$/i.test(t)) v = -1;
+                    else { v = Math.floor(Number(t)); if (!Number.isFinite(v) || v < 0) { alert('請輸入 0 以上的整數，或「無限」。'); return; } }
+                    await setDoc(doc(db, 'members', mid(nm)), { name: nm, dailyOrderLimit: v }, { merge: true });
+                } else if (b.dataset.pw) {
+                    const nm = b.dataset.pw;
+                    const typed = prompt(`為「${nm}」設定新的臨時密碼（至少 6 個字元；留空＝自動產生）：`, '');
+                    if (typed === null) return;
+                    let pw = typed.trim();
+                    if (!pw) { const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789'; pw = Array.from(crypto.getRandomValues(new Uint8Array(10)), v => abc[v % abc.length]).join(''); }
+                    if (pw.length < 6) { alert('密碼至少 6 個字元。'); return; }
+                    const salt = hexOf(crypto.getRandomValues(new Uint8Array(16)));
+                    await setDoc(doc(db, 'accounts', mid(nm)), { salt, hash: await pwHash(pw, salt, ACC_ITER), iter: ACC_ITER, pwUpdatedAt: new Date().toISOString(), mustChange: true }, { merge: true });
+                    alert(`已重設「${nm}」的密碼。\n\n臨時密碼：${pw}\n\n請私下告知顧客；對方登入時會被要求自己設定新密碼。\n關閉這個視窗後就無法再查看這組密碼。`);
+                } else if (b.dataset.acdel) {
+                    if (!confirm(`確定刪除「${b.dataset.acdel}」的登入帳號？\n訂單紀錄、會員等級與經驗值都會保留；對方需要重新註冊才能再登入。`)) return;
+                    await deleteDoc(doc(db, 'accounts', mid(b.dataset.acdel)));
                 } else if (b.dataset.del) {
                     if (!confirm(`確定刪除會員「${b.dataset.del}」？\n訂單紀錄會保留，但經驗值、等級與折扣都會被取消（可隨時按「恢復」）。`)) return;
                     await setDoc(doc(db, 'members', mid(b.dataset.del)), { name: b.dataset.del, bonusXp: 0, deleted: true }, { merge: true });
