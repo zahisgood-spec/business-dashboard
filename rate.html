@@ -1632,10 +1632,10 @@
 
                 document.getElementById('resCustomer').innerText = found.customer;
                 document.getElementById('resProduct').innerText = found.product;
-                document.getElementById('resPrice').innerText = `NT$${Number(found.price).toLocaleString()}`;
+                document.getElementById('resPrice').innerText = found.quoteState === 'pending' ? '待老闆報價' : `NT$${Number(found.price).toLocaleString()}`;
                 
                 const statusBadge = document.getElementById('resStatusBadge');
-                statusBadge.innerText = found.status;
+                statusBadge.innerText = found.quoteState === 'pending' ? '待老闆報價（尚未付款）' : found.status;
                 statusBadge.className = "px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/25 text-indigo-300 border border-indigo-500/30";
 
                 const isCompleted = updateOrderStatusProgress(found.status);

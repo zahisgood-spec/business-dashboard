@@ -393,6 +393,9 @@
                 <button id="tab-coupons" onclick="switchAdminTab('coupons')" class="admin-tab-btn" type="button">
                     <i data-lucide="ticket" class="w-3.5 h-3.5"></i> 優惠券
                 </button>
+                <button id="tab-staff" onclick="switchAdminTab('staff')" class="admin-tab-btn" type="button">
+                    <i data-lucide="user-cog" class="w-3.5 h-3.5"></i> 員工管理
+                </button>
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="copyRateLink()" class="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 rounded-xl transition shadow-xs">
@@ -587,6 +590,15 @@
             </section>
 
             <section id="admin-orders-panel" class="admin-tab-panel dashboard-only-panel">
+            <!-- 💬 待報價訂單：顧客手動輸入商品、價格未知 → 老闆先報價，再選擇自己接或發放給員工 -->
+            <div id="quotePanel" class="hidden mb-6 rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 to-white shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-violet-100">
+                    <h3 class="font-bold text-violet-900 flex items-center gap-2">💬 待報價訂單 <span id="quotePanelCount" class="px-2 py-0.5 rounded-full bg-violet-600 text-white text-[11px] font-bold">0</span></h3>
+                    <p class="text-xs text-violet-500 mt-1">這些訂單是顧客手動輸入商品、價格未知。先填好金額，才能選擇「自己接單」或「發放到員工網站」；報價前員工看不到這些訂單。</p>
+                </div>
+                <div id="quotePanelList" class="divide-y divide-violet-100"></div>
+            </div>
+
             <!-- 訂單表格區 -->
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="p-4 border-b border-slate-200 flex flex-wrap gap-3 justify-between items-center">
@@ -594,6 +606,9 @@
                     
                     <div class="flex flex-wrap gap-1.5 bg-slate-100 p-1 rounded-xl text-xs font-medium">
                         <button onclick="setFilter('all')" id="filter-all" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white transition shadow-sm">全部訂單</button>
+                        <button onclick="setFilter('待報價')" id="filter-待報價" class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-white transition flex items-center gap-1.5">
+                            待報價 <span id="quote-filter-count" class="hidden px-1.5 py-0.5 rounded-full bg-violet-600 text-white text-[10px] font-bold">0</span>
+                        </button>
                         <button onclick="setFilter('未付款')" id="filter-未付款" class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-white transition">未付款</button>
                         <button onclick="setFilter('已付款(未出貨)')" id="filter-已付款(未出貨)" class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-white transition">已付款(未出貨)</button>
                         <button onclick="setFilter('待發貨')" id="filter-待發貨" class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-white transition flex items-center gap-1.5">
@@ -628,6 +643,7 @@
                                 </th>
                                 <th class="py-3.5 px-4">訂單編號</th>
                                 <th class="py-3.5 px-6">買家名稱</th>
+                                <th class="py-3.5 px-6">負責員工</th>
                                 <th class="py-3.5 px-6">購買商品</th>
                                 <th class="py-3.5 px-6">實收價 / 成本</th>
                                 <th class="py-3.5 px-6">最終淨利</th>
@@ -679,6 +695,22 @@
                 <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
                     <h2 class="text-base font-bold text-slate-900 mb-3">優惠券列表</h2>
                     <div class="overflow-x-auto"><table class="w-full text-sm"><thead><tr class="text-left text-xs text-slate-400 border-b border-slate-100"><th class="py-2">代碼</th><th>折扣</th><th>門檻</th><th>使用</th><th>實際折抵</th><th>到期</th><th>狀態</th><th class="text-right">操作</th></tr></thead><tbody id="cp-rows"></tbody></table></div>
+                </div>
+            </section>
+            <section id="admin-tab-panel-staff" class="admin-tab-panel hidden space-y-6">
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
+                    <h2 class="text-base font-bold text-slate-900">👷 新增員工帳號</h2>
+                    <p class="text-xs text-slate-400 mt-1">員工用這組帳號密碼登入 employee.html 接單。密碼只存加鹽雜湊，之後只能重設、無法查看。</p>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mt-4">
+                        <input id="st-user" placeholder="登入帳號（英數字）" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+                        <input id="st-name" placeholder="顯示名稱（例：小明）" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+                        <input id="st-pw" placeholder="初始密碼（至少 6 碼）" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+                        <button id="st-add" class="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold">建立員工</button>
+                    </div>
+                </div>
+                <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6">
+                    <div class="flex items-center justify-between"><h2 class="text-base font-bold text-slate-900">員工名單</h2><a href="employee.html" target="_blank" class="text-xs font-bold text-indigo-600">開啟員工接單站 ↗</a></div>
+                    <div id="st-list" class="mt-4 divide-y divide-slate-100 text-sm"></div>
                 </div>
             </section>
 
@@ -776,6 +808,31 @@
                     <button type="submit" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-medium shadow-md shadow-indigo-200 transition active:scale-95">確認建立</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- 報價並派單彈窗 -->
+    <div id="quoteModal" class="fixed inset-0 bg-slate-900/50 hidden items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 space-y-5 max-h-[92vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <div><h3 class="font-bold text-slate-900 text-lg">💬 報價並派單</h3><p id="quoteOrderTitle" class="text-xs text-slate-400 mt-1">OD-001</p></div>
+                <button onclick="closeQuoteModal()" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="rounded-xl bg-slate-50 border border-slate-200 p-3 space-y-1.5">
+                <div class="text-[10px] font-bold text-slate-400">顧客想買的商品</div>
+                <div id="quoteProduct" class="text-sm font-bold text-slate-900 break-words"></div>
+                <pre id="quoteMemo" class="text-xs text-slate-500 whitespace-pre-wrap break-words font-sans"></pre>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div><label class="block text-xs font-semibold text-slate-600 mb-1">成交金額 / 售價 (NT$)</label><input type="number" min="0" id="quotePrice" oninput="updateQuoteButtons()" placeholder="必填" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"></div>
+                <div><label class="block text-xs font-semibold text-slate-600 mb-1">成本 (NT$)</label><input type="number" min="0" id="quoteCost" placeholder="可留 0" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"></div>
+            </div>
+            <p id="quoteHintText" class="text-xs font-bold text-rose-500">請先輸入大於 0 的金額，才能選擇下面的接單方式。</p>
+            <div class="grid grid-cols-1 gap-2">
+                <button type="button" id="quoteSelfBtn" onclick="confirmQuote('self')" disabled class="px-4 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-sm font-bold shadow-sm transition disabled:opacity-40 disabled:cursor-not-allowed">👑 自己接單</button>
+                <button type="button" id="quoteStaffBtn" onclick="confirmQuote('staff')" disabled class="px-4 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold shadow-sm transition disabled:opacity-40 disabled:cursor-not-allowed">📤 發放到員工網站</button>
+                <button type="button" onclick="closeQuoteModal()" class="px-4 py-2.5 border border-slate-200 hover:bg-slate-50 rounded-xl text-sm font-medium text-slate-600">稍後再處理</button>
+            </div>
         </div>
     </div>
 
@@ -948,7 +1005,7 @@
 
     <script>
         window.switchAdminTab = function(tab) {
-            ['dashboard', 'shop', 'members', 'coupons'].forEach(n => {
+            ['dashboard', 'shop', 'members', 'coupons', 'staff'].forEach(n => {
                 document.getElementById('admin-tab-panel-' + n)?.classList.toggle('hidden', n !== tab);
                 document.getElementById('tab-' + n)?.classList.toggle('active', n === tab);
             });
@@ -1213,7 +1270,9 @@
                         }
                         const newOrder = { docId: change.doc.id, ...change.doc.data() };
                         playSound('action');
-                        showLiveTicker(`✨ 新訂單 ${newOrder.id || ''}（${newOrder.customer || '新客戶'}）已自動同步！`, 'info');
+                        showLiveTicker(newOrder.quoteState === 'pending'
+                            ? `💬 新訂單 ${newOrder.id || ''}（${newOrder.customer || '新客戶'}）需要報價，請到「待報價訂單」處理！`
+                            : `✨ 新訂單 ${newOrder.id || ''}（${newOrder.customer || '新客戶'}）已自動同步！`, 'info');
                     });
                 }
 
@@ -1501,6 +1560,7 @@
             generateAIInsight(totalOrders, totalRevenue, totalNetProfit, pendingShipmentCount, unpaidCount, avgRating);
 
             renderChart();
+            renderQuotePanel();
             renderTable();
             updateBatchBar();
             lucide.createIcons();
@@ -1509,7 +1569,7 @@
         window.setFilter = function(status) {
             playSound('action');
             currentFilter = status;
-            ['all', '未付款', '已付款(未出貨)', '待發貨', '已完成發貨'].forEach(s => {
+            ['all', '待報價', '未付款', '已付款(未出貨)', '待發貨', '已完成發貨'].forEach(s => {
                 const btn = document.getElementById(`filter-${s}`);
                 if (btn) btn.className = (s === status) ? "px-3 py-1.5 rounded-lg bg-slate-900 text-white transition shadow-sm" : "px-3 py-1.5 rounded-lg text-slate-600 hover:bg-white transition";
             });
@@ -1522,7 +1582,7 @@
                 const matchSearch = (o.customer && o.customer.toLowerCase().includes(search)) || 
                                     (o.product && o.product.toLowerCase().includes(search)) || 
                                     (o.id && o.id.toLowerCase().includes(search));
-                const matchStatus = currentFilter === 'all' || o.status === currentFilter;
+                const matchStatus = currentFilter === 'all' || (currentFilter === '待報價' ? o.quoteState === 'pending' : o.status === currentFilter);
                 return matchSearch && matchStatus;
             });
         };
@@ -1571,14 +1631,17 @@
             }
         };
 
+        // 👑 老闆在後台動過、且還沒有員工接的訂單 → 標記為「老闆接的」
+        const bossTag = (docId, force) => { const o = orders.find(x => x.docId === docId); return (o && (force || !o.assignee) && o.assignee !== '__boss__') ? { assignee: '__boss__', assigneeName: '老闆', claimedAt: new Date().toISOString() } : {}; };
         window.batchUpdateStatus = async function(newStatus) {
             if (selectedOrderIds.size === 0) return;
+            if (orders.some(o => selectedOrderIds.has(o.docId) && o.quoteState === 'pending')) { alert('選取的訂單裡有「待報價」訂單，請先完成報價，再批次更新狀態。'); return; }
             if (!confirm(`確定要將選取的 ${selectedOrderIds.size} 筆訂單狀態更新為「${newStatus}」嗎？`)) return;
 
             try {
                 const promises = Array.from(selectedOrderIds).map(docId => {
                     const orderRef = doc(db, "orders", docId);
-                    return updateDoc(orderRef, { status: newStatus });
+                    return updateDoc(orderRef, { status: newStatus, ...bossTag(docId, true) });
                 });
                 await Promise.all(promises);
 
@@ -1646,7 +1709,7 @@
 
             try {
                 const orderRef = doc(db, "orders", currentEditingMemoDocId);
-                await updateDoc(orderRef, { memo: memoContent });
+                await updateDoc(orderRef, { memo: memoContent, ...bossTag(currentEditingMemoDocId) });
                 
                 playSound('action');
                 closeMemoModal();
@@ -1663,7 +1726,7 @@
             const filtered = getFilteredOrders();
 
             if (filtered.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" class="text-center py-12 text-slate-400">目前雲端沒有符合的訂單記錄！</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="11" class="text-center py-12 text-slate-400">目前雲端沒有符合的訂單記錄！</td></tr>`;
                 document.getElementById('table-count-info').innerText = `顯示 0 筆訂單`;
                 updateBatchBar();
                 return;
@@ -1694,6 +1757,7 @@
                 else if (o.status === '待發貨') actionBtn = `<button onclick="changeStatus('${o.docId}', '已完成發貨')" class="text-xs bg-emerald-50 text-emerald-600 hover:bg-emerald-100 px-2.5 py-1 rounded-lg transition font-medium">完成發貨</button>`;
                 else if (o.status === '已完成發貨') actionBtn = `<button onclick="openInvoice('${o.id}', '${encodeURIComponent(o.customer)}', '${encodeURIComponent(o.product)}', ${price}, '${o.date}')" class="text-xs bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-2.5 py-1 rounded-lg transition font-medium flex items-center gap-1"><i data-lucide="receipt" class="w-3 h-3"></i> 發票</button>`;
 
+                if (o.quoteState === 'pending') actionBtn = `<button onclick="openQuoteModal('${o.docId}')" class="text-xs bg-violet-600 text-white hover:bg-violet-700 px-2.5 py-1 rounded-lg transition font-bold">💬 報價 / 派單</button>`;
                 tbody.innerHTML += `
                     <tr class="hover:bg-slate-50/80 transition">
                         <td class="py-3.5 pl-6 pr-2">
@@ -1701,9 +1765,10 @@
                         </td>
                         <td class="py-3.5 px-4 font-mono text-xs text-slate-500 font-medium">${o.id}</td>
                         <td class="py-3.5 px-6 font-semibold text-slate-900">${o.customer}</td>
+                        <td class="py-3.5 px-6">${(o.assignee || o.status === '已完成發貨') ? `<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full ${(o.assignee === '__boss__' || !o.assignee) ? 'bg-amber-100 text-amber-700' : 'bg-indigo-50 text-indigo-700'} text-xs font-bold">${(o.assignee === '__boss__' || !o.assignee) ? '👑' : '👷'} ${String(o.assigneeName || '老闆').replace(/[<>&]/g, '')}</div><div class="text-[10px] text-slate-400 mt-1">${o.claimedAt ? new Date(o.claimedAt).toLocaleString('zh-TW', { hour12: false, month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}${(o.staffNotes || []).length ? ' · 💬' + o.staffNotes.length + ' 則備註' : ''}</div>` : (o.quoteState === 'pending' ? '<span class="text-[11px] text-violet-500 font-bold">💬 待報價</span>' : (o.dispatched ? '<span class="text-[11px] text-indigo-500 font-bold">📤 已發放・待接單</span>' : '<span class="text-[11px] text-amber-500 font-bold">⏳ 待接單</span>'))}</td>
                         <td class="py-3.5 px-6 text-slate-600">${o.product}</td>
                         <td class="py-3.5 px-6">
-                            <div class="font-bold text-slate-900">NT$${price.toLocaleString()}</div>
+                            ${o.quoteState === 'pending' ? '<div class="font-bold text-violet-600">💬 待報價</div>' : `<div class="font-bold text-slate-900">NT$${price.toLocaleString()}</div>`}
                             <div class="text-xs text-slate-400">成本: NT$${cost.toLocaleString()}</div>
                             ${zahDiscHtml(o, price)}
                         </td>
@@ -1712,10 +1777,10 @@
                             <div class="text-[10px] text-slate-400">實收 − 成本</div>
                         </td>
                         <td class="py-3.5 px-6">${(o.rating && o.rating > 0) ? `<span class="text-amber-400 text-xs">${'★'.repeat(o.rating)}</span>` : `<span class="text-xs text-slate-400">未評分</span>`}</td>
-                        <td class="py-3.5 px-6"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeClass}">${o.status}</span></td>
+                        <td class="py-3.5 px-6"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeClass}">${o.status}</span>${o.quoteState === 'pending' ? '<div class="mt-1 text-[10px] font-bold text-violet-600">💬 等待老闆報價</div>' : ''}</td>
                         <td class="py-3.5 px-6">${memoBtnHtml}</td>
                         <td class="py-3.5 px-6 text-right space-x-1">
-                            <button onclick="openEditAmountModal('${o.docId}')" class="text-xs bg-slate-100 text-slate-700 hover:bg-slate-200 px-2.5 py-1 rounded-lg transition font-medium">編輯金額</button>
+                            ${o.quoteState === 'pending' ? '' : `<button onclick="openEditAmountModal('${o.docId}')" class="text-xs bg-slate-100 text-slate-700 hover:bg-slate-200 px-2.5 py-1 rounded-lg transition font-medium">編輯金額</button>`}
                             ${actionBtn}
                             <button onclick="deleteOrder('${o.docId}')" class="text-xs text-rose-500 hover:bg-rose-50 px-2 py-1 rounded-lg transition">刪除</button>
                         </td>
@@ -1781,6 +1846,87 @@
                 closeEditAmountModal();
                 await fetchOrdersFromFirebase();
             } catch (err) { alert('儲存金額失敗：' + err.message); }
+        };
+
+        window.zahQEsc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+        // 💬 待報價訂單面板（有資料才顯示）
+        window.renderQuotePanel = function() {
+            const pending = orders.filter(o => o.quoteState === 'pending');
+            const badge = document.getElementById('quote-filter-count');
+            if (badge) { badge.textContent = pending.length; badge.classList.toggle('hidden', !pending.length); }
+            const panel = document.getElementById('quotePanel');
+            if (!panel) return;
+            panel.classList.toggle('hidden', !pending.length);
+            if (!pending.length) return;
+            document.getElementById('quotePanelCount').textContent = pending.length;
+            document.getElementById('quotePanelList').innerHTML = pending.map(o => {
+                const memo = String(o.memo || '').split('\n').slice(0, 3).join(' ｜ ');
+                return `<div class="px-5 py-3.5 flex flex-wrap items-center gap-3 justify-between">
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center gap-2 flex-wrap"><span class="font-mono text-xs font-bold text-violet-600">${zahQEsc(o.id)}</span><span class="font-bold text-slate-900 text-sm">${zahQEsc(o.customer)}</span><span class="text-[10px] text-slate-400">${zahQEsc(o.date)}</span></div>
+                        <div class="text-sm text-slate-700 mt-0.5 truncate">🛒 ${zahQEsc(o.product)}</div>
+                        <div class="text-[11px] text-slate-400 mt-0.5 truncate">${zahQEsc(memo)}</div>
+                    </div>
+                    <button onclick="openQuoteModal('${o.docId}')" class="shrink-0 px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-xs font-bold shadow-sm transition active:scale-95">報價 / 派單</button>
+                </div>`;
+            }).join('');
+        };
+
+        // 💬 報價並派單：金額填好之後，才能選「自己接單」或「發放到員工網站」
+        let currentQuoteDocId = null;
+        window.updateQuoteButtons = function() {
+            const p = Number(document.getElementById('quotePrice').value);
+            const ok = document.getElementById('quotePrice').value !== '' && Number.isFinite(p) && p > 0;
+            document.getElementById('quoteSelfBtn').disabled = !ok;
+            document.getElementById('quoteStaffBtn').disabled = !ok;
+            document.getElementById('quoteHintText').classList.toggle('hidden', ok);
+        };
+        window.openQuoteModal = function(docId) {
+            const order = orders.find(o => o.docId === docId);
+            if (!order) return;
+            currentQuoteDocId = docId;
+            document.getElementById('quoteOrderTitle').innerText = `${order.id || ''} · ${order.customer || ''}`;
+            document.getElementById('quoteProduct').innerText = order.product || '';
+            document.getElementById('quoteMemo').innerText = order.memo || '';
+            document.getElementById('quotePrice').value = Number(order.price) > 0 ? Number(order.price) : '';
+            document.getElementById('quoteCost').value = Number(order.cost) > 0 ? Number(order.cost) : '';
+            updateQuoteButtons();
+            const modal = document.getElementById('quoteModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+            setTimeout(() => document.getElementById('quotePrice').focus(), 50);
+        };
+        window.closeQuoteModal = function() {
+            const modal = document.getElementById('quoteModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            currentQuoteDocId = null;
+        };
+        window.confirmQuote = async function(mode) {
+            if (!currentQuoteDocId) return;
+            const order = orders.find(o => o.docId === currentQuoteDocId);
+            if (!order) return;
+            const price = Number(document.getElementById('quotePrice').value);
+            const costRaw = document.getElementById('quoteCost').value;
+            const cost = costRaw === '' ? 0 : Number(costRaw);
+            if (!Number.isFinite(price) || price <= 0) { alert('請先輸入大於 0 的成交金額。'); return; }
+            if (!Number.isFinite(cost) || cost < 0) { alert('成本請輸入 0 或以上的數字。'); return; }
+            const nowIso = new Date().toISOString();
+            const base = { price, cost, quoteState: 'quoted', quotedAt: nowIso };
+            const patch = mode === 'self'
+                ? { ...base, dispatched: false, assignee: '__boss__', assigneeName: '老闆', claimedAt: nowIso }
+                : { ...base, dispatched: true, dispatchedAt: nowIso, assignee: null, assigneeName: null, claimedAt: null };
+            try {
+                await updateDoc(doc(db, 'orders', currentQuoteDocId), patch);
+                playSound('success');
+                showLiveTicker(mode === 'self'
+                    ? `👑 已報價 NT$${price.toLocaleString()}，${order.id || ''} 由老闆自己接單！`
+                    : `📤 已報價 NT$${price.toLocaleString()}，${order.id || ''} 已發放到員工接單大廳！`, 'success');
+                closeQuoteModal();
+                await fetchOrdersFromFirebase();
+            } catch (err) { alert('報價失敗：' + err.message); }
         };
 
         window.openInvoice = function(id, customerEnc, productEnc, price, date) {
@@ -1856,7 +2002,8 @@
                 rating: 0,
                 status: statusVal,
                 memo: '',
-                date: dateStr
+                date: dateStr,
+                assignee: '__boss__', assigneeName: '老闆', claimedAt: now.toISOString()
             };
             const am = window.zahAdminMember;
             if (am && am.forName === customerName.trim() && am.finalPrice === priceVal) {
@@ -1892,8 +2039,9 @@
         window.changeStatus = async function(docId, newStatus) {
             try {
                 const targetOrder = orders.find(o => o.docId === docId);
+                if (targetOrder && targetOrder.quoteState === 'pending') { alert('這張訂單還沒報價，請先填好金額，再選擇自己接單或發放到員工網站。'); openQuoteModal(docId); return; }
                 const orderRef = doc(db, "orders", docId);
-                await updateDoc(orderRef, { status: newStatus });
+                await updateDoc(orderRef, { status: newStatus, ...bossTag(docId, true), lastStaff: '老闆' });
                 
                 const price = targetOrder ? Number(targetOrder.price) : 0;
                 if (newStatus === '已完成發貨' && price >= 2000) {
@@ -2597,5 +2745,48 @@
         renderCfg(); renderMembers(); renderCoupons();
     </script>
 
+
+    <script type="module">
+        import { getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        const db = getFirestore(getApp());
+        const $ = id => document.getElementById(id);
+        const E = v => String(v ?? '').replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
+        const hex = b => [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
+        async function mk(pw) {
+            const salt = hex(crypto.getRandomValues(new Uint8Array(16)));
+            const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveBits']);
+            const h = hex(await crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: new Uint8Array(salt.match(/../g).map(x => parseInt(x, 16))), iterations: 120000 }, key, 256));
+            return { salt, hash: h, iter: 120000 };
+        }
+        let staff = [], orders = [];
+        const rows = () => {
+            $('st-list').innerHTML = staff.length ? staff.map(s => {
+                const n = orders.filter(o => o.assignee === s.id && o.status !== '已完成發貨').length, d = orders.filter(o => o.assignee === s.id && o.status === '已完成發貨').length;
+                return `<div class="py-3 flex flex-wrap items-center gap-3"><div class="flex-1 min-w-[160px]"><div class="font-bold">${E(s.displayName)} <span class="font-mono text-xs text-slate-400">${E(decodeURIComponent(s.id))}</span></div><div class="text-xs text-slate-400">處理中 ${n} 張 · 已完成 ${d} 張</div></div>
+                <span class="text-xs font-bold ${s.active === false ? 'text-rose-500' : 'text-emerald-600'}">${s.active === false ? '已停用' : '啟用中'}</span>
+                <button data-tg="${s.id}" class="text-xs px-3 py-1.5 rounded-lg bg-slate-100 font-bold">${s.active === false ? '啟用' : '停用'}</button>
+                <button data-pw="${s.id}" class="text-xs px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-600 font-bold">重設密碼</button>
+                <button data-dl="${s.id}" class="text-xs px-3 py-1.5 rounded-lg bg-rose-50 text-rose-600 font-bold">刪除</button></div>`;
+            }).join('') : '<div class="py-8 text-center text-slate-400">還沒有員工帳號</div>';
+        };
+        onSnapshot(collection(db, 'staff'), s => { staff = s.docs.map(d => ({ id: d.id, ...d.data() })); rows(); });
+        onSnapshot(collection(db, 'orders'), s => { orders = s.docs.map(d => d.data()); rows(); });
+        $('st-add').onclick = async () => {
+            const u = $('st-user').value.trim().toLowerCase(), n = $('st-name').value.trim() || u, p = $('st-pw').value;
+            if (!/^[a-z0-9_.-]+$/.test(u)) return alert('帳號請用英數字（可含 _ . -）');
+            if (p.length < 6) return alert('密碼至少 6 碼');
+            if (staff.some(s => s.id === encodeURIComponent(u))) return alert('這個帳號已存在');
+            try { await setDoc(doc(db, 'staff', encodeURIComponent(u)), { displayName: n, active: true, createdAt: new Date().toISOString(), ...(await mk(p)) }); ['st-user', 'st-name', 'st-pw'].forEach(i => $(i).value = ''); alert('已建立員工：' + n); } catch (e) { alert('建立失敗：' + e.message); }
+        };
+        $('st-list').onclick = async e => {
+            const b = e.target.closest('button'); if (!b) return; const d = b.dataset;
+            try {
+                if (d.tg) { const s = staff.find(x => x.id === d.tg); await setDoc(doc(db, 'staff', d.tg), { active: s.active === false }, { merge: true }); }
+                if (d.pw) { const p = prompt('輸入新密碼（至少 6 碼）'); if (p && p.length >= 6) { await setDoc(doc(db, 'staff', d.pw), await mk(p), { merge: true }); alert('密碼已重設'); } }
+                if (d.dl && confirm('刪除這位員工帳號？（他接的訂單不會被刪）')) await deleteDoc(doc(db, 'staff', d.dl));
+            } catch (err) { alert('操作失敗：' + err.message); }
+        };
+    </script>
 </body>
 </html>
