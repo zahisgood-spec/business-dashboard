@@ -599,6 +599,15 @@
                 <div id="quotePanelList" class="divide-y divide-violet-100"></div>
             </div>
 
+            <!-- 💰 待發薪水：員工完成的訂單還沒付薪水 → 一鍵跳到發薪區 -->
+            <div id="salaryPanel" class="hidden mb-6 rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-amber-100">
+                    <h3 class="font-bold text-amber-900 flex items-center gap-2">💰 待發薪水 <span id="salaryPanelCount" class="px-2 py-0.5 rounded-full bg-amber-500 text-white text-[11px] font-bold">0</span></h3>
+                    <p class="text-xs text-amber-600 mt-1">這些員工已完成訂單，薪水還沒發。按「前往發薪」會跳到「員工管理」的薪水發放區，確認金額、勾選後即可發薪。</p>
+                </div>
+                <div id="salaryPanelList" class="divide-y divide-amber-100"></div>
+            </div>
+
             <!-- 💰 待確認收款：員工回報「已付款」→ 老闆確認有收到錢，才會放回給員工 -->
             <div id="payPanel" class="hidden mb-6 rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white shadow-sm overflow-hidden">
                 <div class="px-5 py-4 border-b border-emerald-100">
@@ -2844,7 +2853,24 @@
         }
         let staff = [], orders = [];
         const fmtT = v => { const d = new Date(v); if (isNaN(d)) return ''; const p = n => String(n).padStart(2, '0'); return `${d.getMonth() + 1}/${d.getDate()} ${p(d.getHours())}:${p(d.getMinutes())}`; };
+        const renderSalaryPanel = () => {
+            const panel = $('salaryPanel'); if (!panel) return;
+            const rows = staff.map(s => {
+                const un = orders.filter(o => o.assignee === s.id && o.status === '已完成發貨' && !o.salaryPaid), r = Number(s.payRate || 0);
+                return { s, n: un.length, est: r ? un.reduce((a, o) => a + Math.round(Number(o.price || 0) * r / 100), 0) : null };
+            }).filter(x => x.n);
+            panel.classList.toggle('hidden', !rows.length);
+            if (!rows.length) return;
+            $('salaryPanelCount').textContent = rows.reduce((a, x) => a + x.n, 0);
+            $('salaryPanelList').innerHTML = rows.map(x => `<div class="px-5 py-3.5 flex flex-wrap items-center gap-3 justify-between"><div class="min-w-0 flex-1"><div class="font-bold text-slate-900 text-sm">👷 ${E(x.s.displayName)}</div><div class="text-xs text-slate-500 mt-0.5">已完成未付薪水 ${x.n} 張${x.est !== null ? ' · 依抽成預估 NT$' + x.est.toLocaleString() : ''}</div></div><button data-gopay="${x.s.id}" class="shrink-0 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold shadow-sm transition active:scale-95">前往發薪 →</button></div>`).join('');
+        };
+        document.addEventListener('click', e => {
+            const g = e.target.closest('[data-gopay]'); if (!g) return;
+            window.switchAdminTab('staff');
+            setTimeout(() => { const t = document.querySelector(`#pay-list [data-staff="${g.dataset.gopay}"]`) || $('pay-list'); t.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 120);
+        });
         const renderPay = () => {
+            renderSalaryPanel();
             const box = $('pay-list'); if (!box || (box.contains(document.activeElement) && document.activeElement.tagName === 'INPUT')) return;
             box.innerHTML = staff.map(s => {
                 const done = orders.filter(o => o.assignee === s.id && o.status === '已完成發貨'), un = done.filter(o => !o.salaryPaid), pd = done.filter(o => o.salaryPaid), r = Number(s.payRate || 0);
