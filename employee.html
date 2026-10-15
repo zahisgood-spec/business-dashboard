@@ -175,8 +175,221 @@ select,input{font-family:inherit}
 #toast[style*="opacity: 1"]{margin-bottom:0}
 @media(max-width:640px){main{padding:1rem}.bst{flex:1;min-width:0;padding:.7rem .8rem}.bst b{font-size:1.7rem}.banner{padding:1.2rem}#hello{font-size:1.4rem}.ptitle{font-size:1.05rem}.price{font-size:1.45rem}}
 </style>
+<style id="lgcss">
+.lg{position:fixed;left:14px;bottom:14px;z-index:40;width:190px;padding:10px 12px;border-radius:16px;background:rgba(15,23,42,.88);color:#fff;font-size:12px;font-weight:700;backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.lg .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.lg .trk{height:6px;border-radius:99px;background:rgba(255,255,255,.18);margin-top:8px;overflow:hidden}
+.lg .bar{height:100%;border-radius:99px;background:#34d399;transition:width .6s,background .3s}
+.lg.warn .bar{background:#fbbf24}
+.lg.bad .bar{background:#f87171}
+.lg.bad{animation:lgp 1.6s ease-in-out infinite}
+.lg button{background:rgba(255,255,255,.16);border:0;color:#fff;border-radius:99px;padding:2px 8px;font-size:11px;font-weight:700;cursor:pointer}
+.lg button:hover{background:rgba(255,255,255,.3)}
+@keyframes lgp{50%{box-shadow:0 0 0 4px rgba(248,113,113,.45)}}
+@media(max-width:640px){.lg{width:160px;left:8px;bottom:8px}}
+</style>
+<style id="hubcss">
+/* ===== NEXUS ORDER HUB：白底版（紫金品牌色）===== */
+:root{--pg:linear-gradient(90deg,#1c1250,#5b2bb8 55%,#b23a9e)}
+body{background:#fff;background-image:radial-gradient(rgba(91,43,184,.07) 1px,transparent 1px);background-size:22px 22px;color:#0f172a}
+body::before{background:rgba(139,92,246,.16)}body::after{background:rgba(245,166,35,.14)}
+header.hero{background:linear-gradient(180deg,#1c1250,#120c3a)}
+header.hero::after{background:linear-gradient(90deg,transparent,#f5c542,transparent)}
+.live{align-items:center;gap:.5rem;padding:.35rem 1rem;border-radius:.8rem;background:rgba(232,57,43,.14);border:1px solid rgba(255,120,100,.55);font-size:.8rem;font-weight:900;color:#ff9a8b}
+.live i{width:8px;height:8px;border-radius:50%;background:#ff4d3a;animation:lgp 1.4s infinite}.live span{color:#ffc2b8;font-weight:700}.live b{font:400 1.5rem var(--slab);color:#ff7a66;margin-left:.2rem}
+.tkr{background:var(--pg);color:#fff;overflow:hidden;white-space:nowrap;font-size:.8rem;font-weight:700;padding:.5rem 0}
+.tkr .mv{display:inline-block;padding-left:100%;animation:mq 38s linear infinite}.tkr b{color:#ffd75e}
+@keyframes mq{to{transform:translateX(-100%)}}
+.hub{display:grid;grid-template-columns:190px minmax(0,1fr) 290px;gap:1.1rem;max-width:1560px;margin:0 auto;padding:1.1rem}
+.side{position:sticky;top:76px;align-self:start;display:flex;flex-direction:column;gap:1rem}
+.sidet{font:400 11px var(--slab);letter-spacing:.3em;color:#7a3fd1;padding:.2rem .4rem}
+.nav{display:flex;flex-direction:column;gap:.45rem}
+.nav .tab{justify-content:space-between;width:100%;border-radius:.9rem;padding:.8rem 1rem;color:#475569;background:#fff;border:1px solid #e9e5f5;box-shadow:0 8px 18px -14px rgba(91,43,184,.5)}
+.nav .tab:hover{color:#5b2bb8;background:#faf7ff}
+.nav .tab.on{background:var(--pg);color:#fff;border-color:transparent;box-shadow:0 12px 26px -10px rgba(91,43,184,.8)}
+.nbd{margin-left:auto;padding:0 .5rem;border-radius:99px;background:#e8392b;color:#fff;font-size:.72rem}.nbd.b{background:#3b6fe0}.nbd.g{background:#10a37f}
+.gifb{border-radius:1.2rem;overflow:hidden;background:var(--pg);box-shadow:0 24px 50px -28px rgba(91,43,184,.8);margin-bottom:.9rem;border:1px solid #e9e5f5}
+.gifb img{display:block;width:100%;height:auto}
+.greet{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.4rem 1rem;padding:.8rem 1.1rem;margin-bottom:1rem;border-radius:1rem;background:#fff;border:1px solid #ece7f7;border-left:5px solid #f5c542;box-shadow:0 12px 26px -20px rgba(26,26,94,.4)}
+#hello{color:#1a1a5e}#hello::before{color:#7a3fd1}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.9rem;margin-bottom:1.1rem}
+.stats .bst{min-width:0;border-radius:1rem;background:#fff;border:1px solid #ece7f7;border-top:4px solid var(--c,#f59e0b);box-shadow:0 14px 28px -20px rgba(26,26,94,.45)}
+.stats .c1{--c:#f59e0b}.stats .c2{--c:#0ea5e9}.stats .c3{--c:#10b981}.stats .c4{--c:#f5c542;background:linear-gradient(135deg,#fff8e1,#fff)}
+.fbar{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-bottom:1.1rem}
+.chip{padding:.55rem 1rem;border-radius:.9rem;background:#fff;border:1px solid #e3e6f3;color:#64748b;font-weight:800;font-size:.85rem;transition:.2s}
+.chip em{font-style:normal;margin-left:.3rem;opacity:.7}.chip:hover{color:#5b2bb8}
+.chip.on{border-color:#f5c542;color:#92600a;background:#fff8e1;box-shadow:0 0 16px -6px rgba(245,197,66,.8)}
+.fbar select,.fbar input{background:#fff;color:#0f172a;border:1px solid #e3e6f3;border-radius:.9rem;padding:.55rem .9rem;font-weight:700;font-size:.85rem;outline:none}
+.fbar input{flex:1;min-width:180px}.fbar input:focus,.fbar select:focus{border-color:#7a3fd1;box-shadow:0 0 0 4px rgba(122,63,209,.12)}
+.rail{display:flex;flex-direction:column;gap:1rem;align-self:start;position:sticky;top:76px}
+.bn{position:relative;height:120px;border-radius:1.1rem;overflow:hidden;background:var(--pg);color:#fff;box-shadow:0 18px 34px -18px rgba(91,43,184,.8)}
+.bn::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,.6) 1.5px,transparent 2px);background-size:38px 31px;opacity:.35;animation:bnd 12s linear infinite;pointer-events:none}
+@keyframes bnd{to{background-position:38px 31px}}
+.bn .sl{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:0 .8rem 10px;opacity:0;transform:translateX(18px);transition:.5s}
+.bn .sl.on{opacity:1;transform:none}
+.bn .sl b{font-size:1.3rem;font-weight:900;text-shadow:2px 2px 0 #14093a}
+.bn .sl span{font-size:.75rem;color:#ffe9c9;margin-top:.35rem}.bn .sl u{text-decoration:none;font-weight:900;color:#ffd75e}
+.bnd{position:absolute;left:0;right:0;bottom:7px;display:flex;justify-content:center;gap:5px}.bnd i{width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,.4);cursor:pointer;transition:.3s}.bnd i.on{width:16px;border-radius:99px;background:#ffd75e}
+.pn{background:#fff;border:1px solid #ece7f7;border-radius:1.1rem;padding:1rem;box-shadow:0 16px 32px -24px rgba(26,26,94,.45)}
+.pnh{display:flex;justify-content:space-between;align-items:center;margin-bottom:.7rem;font-size:.9rem}
+.seg{padding:.15rem .7rem;border-radius:.6rem;font-size:.72rem;font-weight:800;color:#94a3b8}.seg.on{background:#fff3cf;color:#92600a}
+.lbr{display:flex;align-items:center;gap:.6rem;padding:.5rem .6rem;border-radius:.8rem;font-size:.85rem;border:1px solid transparent}
+.lbr.me{background:#fff8e1;border-color:#f5c542}.lbr b{color:#b45309}
+.rk{display:grid;place-items:center;width:22px;height:22px;border-radius:.5rem;background:#eef0f8;font-size:.75rem;font-weight:900;color:#64748b}
+.lbr:nth-child(1) .rk{background:linear-gradient(135deg,#ffd75e,#d98f10);color:#2a1a00}
+.nrow{display:flex;align-items:center;gap:.5rem;padding:.55rem 0;border-bottom:1px solid #eef0f8;font-size:.78rem}.nrow:last-child{border:0}.nrow small{color:#94a3b8;white-space:nowrap}
+.nk{padding:.1rem .5rem;border-radius:99px;font-size:.68rem;font-weight:900}.k-新單{background:#fee2e2;color:#b91c1c}.k-接單{background:#dbeafe;color:#1d4ed8}.k-完成{background:#d1fae5;color:#047857}
+.tk.hot{filter:drop-shadow(0 0 12px rgba(245,197,66,.5))}.tk.fresh{filter:drop-shadow(0 0 10px rgba(38,198,185,.35))}
+.tk.hot .ticket{box-shadow:0 0 0 2px #f5c542 inset}.tk.fresh .ticket{box-shadow:0 0 0 2px #26c6b9 inset}
+.go{background:linear-gradient(135deg,#ffd75e,#e69a14);color:#2a1a00;box-shadow:0 10px 22px -10px rgba(245,166,35,.9)}
+#mine>.grid,#hist>.grid{grid-template-columns:repeat(auto-fill,minmax(380px,1fr))!important}
+.conn{position:fixed;right:14px;bottom:14px;z-index:40;display:flex;align-items:center;gap:.5rem;padding:.5rem .9rem;border-radius:99px;background:#fff;border:1px solid #d7f0e3;color:#047857;font-size:.75rem;font-weight:800;box-shadow:0 10px 26px -12px rgba(26,26,94,.5)}
+.conn i{width:9px;height:9px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981}.conn small{color:#94a3b8;font-weight:700}
+.conn.bad{border-color:#fecaca;color:#b91c1c}.conn.bad i{background:#ef4444;box-shadow:0 0 8px #ef4444;animation:lgp 1.2s infinite}
+@media(max-width:1180px){.hub{grid-template-columns:170px minmax(0,1fr)}.rail{grid-column:1/-1;position:static;display:grid;grid-template-columns:1fr 1fr}.bn{grid-column:1/-1}}
+@media(max-width:800px){.hub{grid-template-columns:1fr;padding:.7rem}.side{position:static}.nav{flex-direction:row;overflow-x:auto}.nav .tab{width:auto}.sidet{display:none}.rail{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}#mine>.grid,#hist>.grid{grid-template-columns:1fr!important}.conn small{display:none}}
+</style>
+<style id="h3css">
+/* ===== 太空站橫幅 ===== */
+.h3w{filter:drop-shadow(0 26px 30px rgba(26,26,94,.38));margin-bottom:1.1rem}
+.h3{padding:2px;background:linear-gradient(135deg,#ffd75e,#6a4a10 38%,#3b6fe0 68%,#ffd75e);clip-path:polygon(22px 0,calc(100% - 22px) 0,100% 22px,100% calc(100% - 22px),calc(100% - 22px) 100%,22px 100%,0 calc(100% - 22px),0 22px)}
+.h3i{position:relative;height:300px;overflow:hidden;background:radial-gradient(60% 90% at 66% 50%,#16328f 0%,#0a1650 45%,#040824 100%);clip-path:polygon(20px 0,calc(100% - 20px) 0,100% 20px,100% calc(100% - 20px),calc(100% - 20px) 100%,20px 100%,0 calc(100% - 20px),0 20px)}
+.h3i::after{content:'';position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.09) 50%,transparent 60%);transform:translateX(-130%);animation:sheen 7s 1s infinite;pointer-events:none;z-index:4}
+#sky{position:absolute;inset:0;width:100%;height:100%;z-index:0}
+.gl{position:absolute;right:0;top:0;width:74%;height:100%;z-index:1}
+.tg{position:absolute;z-index:2;padding:.35rem .8rem;border-radius:.6rem;background:rgba(8,20,60,.78);border:1px solid rgba(110,200,255,.75);color:#d9f2ff;font-size:.75rem;font-weight:800;white-space:nowrap;box-shadow:0 0 14px rgba(80,170,255,.45);animation:tgf 4s ease-in-out infinite}
+.t1{left:46%;top:67%}.t2{left:57%;top:81%;animation-delay:-1s}.t3{left:69%;top:81%;animation-delay:-2s}.t4{left:79%;top:64%;animation-delay:-3s}
+@keyframes tgf{50%{transform:translateY(-7px)}}
+.hp{position:absolute;z-index:3;left:22px;top:50%;transform:translateY(-50%);max-width:46%;padding:1rem 1.3rem;background:linear-gradient(135deg,rgba(5,10,38,.82),rgba(5,10,38,.42));border:1px solid rgba(245,197,66,.55);backdrop-filter:blur(6px);clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px)}
+.hp #hello{font-size:clamp(1.3rem,2.6vw,2rem);background:linear-gradient(180deg,#fff,#ffd75e 70%,#e69a14);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hp #hello::before{color:#7fd0ff}
+.hp #hello2{font-size:.8rem;color:#b8cdf5;margin-top:.35rem;font-weight:600}
+.hpn{display:flex;flex-wrap:wrap;gap:.6rem 1.6rem;margin-top:.9rem}
+.hpn small{display:block;font-size:.7rem;font-weight:800;color:#8fb0ee}
+.hpn b{font:400 2rem/1.1 var(--slab);background:linear-gradient(180deg,#fff2c2,#f5a623);-webkit-background-clip:text;background-clip:text;color:transparent}
+.rd{position:absolute;z-index:3;right:22px;bottom:18px;width:122px;height:122px;border-radius:50%;background:radial-gradient(circle,rgba(10,30,80,.88),rgba(5,12,40,.92));border:2px solid rgba(110,200,255,.85);box-shadow:0 0 22px rgba(80,170,255,.6),inset 0 0 18px rgba(80,170,255,.4);color:#e6f6ff;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;transition:transform .2s}
+.rd:hover{transform:scale(1.07)}
+.rd i{position:absolute;inset:0;background:conic-gradient(from 0deg,rgba(80,200,255,.6),transparent 30%);animation:rsw 3s linear infinite}
+@keyframes rsw{to{transform:rotate(360deg)}}
+.rd b,.rd small,.rd u{position:relative}.rd b{font-size:.9rem;font-weight:900}.rd small{font-size:.62rem;color:#a9d8ff}
+.rd u{text-decoration:none;margin-top:.35rem;padding:.12rem .7rem;border-radius:99px;background:linear-gradient(135deg,#ffd75e,#e69a14);color:#2a1a00;font-size:.68rem;font-weight:900}
+@media(max-width:1100px){.hp{max-width:56%}.t1,.t4{display:none}}
+@media(max-width:800px){.h3i{height:380px}.hp{left:12px;right:12px;top:14px;transform:none;max-width:none}.gl{width:100%;top:70px;height:calc(100% - 70px);opacity:.75}.tg,.rd{display:none}}
+</style>
+<style id="h3css2">
+/* ===== 橫幅 · 更帥 ===== */
+@property --a{syntax:'<angle>';initial-value:0deg;inherits:false}
+@keyframes ang{to{--a:360deg}}
+.h3{background:conic-gradient(from var(--a),#ffd75e,#3b6fe0 25%,#6a4a10 50%,#3b6fe0 75%,#ffd75e);animation:ang 7s linear infinite}
+.h3i{--mx:0;--my:0}
+.nb{position:absolute;border-radius:50%;filter:blur(60px);z-index:0;pointer-events:none}
+.nb1{width:340px;height:340px;left:28%;top:-25%;background:rgba(140,60,255,.5);animation:blob 16s ease-in-out infinite}
+.nb2{width:300px;height:300px;right:4%;bottom:-30%;background:rgba(245,166,35,.32);animation:blob 20s ease-in-out infinite reverse}
+.flr{position:absolute;left:-25%;right:-25%;bottom:-8%;height:48%;z-index:0;opacity:.5;
+ background:linear-gradient(rgba(245,197,66,.7) 1px,transparent 1px) 0 0/100% 34px,linear-gradient(90deg,rgba(245,197,66,.5) 1px,transparent 1px) 0 0/50px 100%;
+ transform:perspective(240px) rotateX(62deg);transform-origin:50% 100%;animation:flr 2.2s linear infinite;
+ -webkit-mask:linear-gradient(to top,#000 5%,transparent 80%);mask:linear-gradient(to top,#000 5%,transparent 80%)}
+@keyframes flr{to{background-position:0 34px,0 0}}
+#sky{transform:translate(calc(var(--mx)*6px),calc(var(--my)*4px)) scale(1.05);transition:transform .25s ease-out}
+.gl{transform:translate(calc(var(--mx)*-16px),calc(var(--my)*-10px));transition:transform .25s ease-out;filter:drop-shadow(0 0 22px rgba(70,150,255,.55))}
+.cn{position:absolute;z-index:3;width:20px;height:20px;border:2px solid #ffd75e;opacity:.9;pointer-events:none;filter:drop-shadow(0 0 6px rgba(255,215,94,.8))}
+.c1{left:24px;top:24px;border-right:0;border-bottom:0}.c2{right:24px;top:24px;border-left:0;border-bottom:0}.c3{left:24px;bottom:24px;border-right:0;border-top:0}.c4{right:24px;bottom:24px;border-left:0;border-top:0}
+.hudt{position:absolute;z-index:3;right:54px;top:30px;font:700 10px ui-monospace,monospace;letter-spacing:.25em;color:#7fd0ff;display:flex;align-items:center;gap:.5rem}
+.hudt u{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;animation:lgp 1.2s infinite}
+.hp #hello{background:linear-gradient(100deg,#fff 0%,#ffd75e 28%,#fff 48%,#ffd75e 68%,#e69a14 100%);background-size:240% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:tt 5s linear infinite;filter:drop-shadow(0 0 10px rgba(255,200,80,.35))}
+@keyframes tt{to{background-position:-240% 0}}
+.hp{box-shadow:0 0 30px -8px rgba(245,197,66,.35)}
+.hpn b{filter:drop-shadow(0 0 10px rgba(245,166,35,.5))}
+@media(min-width:801px){.hp{transform:translateY(-50%) translate(calc(var(--mx)*8px),calc(var(--my)*5px));transition:transform .25s ease-out}}
+.pg{position:absolute;right:190px;top:50%;width:20px;height:20px;margin:-10px -10px 0 0;border-radius:50%;border:2px solid #ffd75e;box-shadow:0 0 14px #ffd75e;z-index:2;opacity:.9;animation:pg 1.6s ease-out forwards;pointer-events:none}
+@keyframes pg{to{transform:scale(15);opacity:0}}
+@media(max-width:800px){.pg{display:none}.cn{display:none}.hudt{display:none}}
+</style>
+<style id="neocss">
+/* ---- 版面保險：統計卡固定排列、不位移 ---- */
+.mainc{min-width:0}
+.side,.rail{position:static}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.9rem;align-items:stretch}
+.stats .bst{animation:none!important;transform:none!important;position:static;margin:0;width:auto;min-width:0;z-index:auto}
+.stats .bst:hover{box-shadow:0 0 22px -6px var(--c,#f5c542)}
+@media(max-width:800px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* ---- 新元件（亮色預設）---- */
+.pf{display:flex;flex-wrap:wrap;align-items:center;gap:.7rem;padding:.85rem;border-radius:1rem;background:#fff;border:1px solid #ece7f7}
+.pfa{display:grid;place-items:center;width:46px;height:46px;border-radius:50%;font-weight:900;color:#fff;font-size:1.2rem;flex:none;box-shadow:0 0 0 2px #f5c542}
+.pf small{font-size:.7rem;color:#94a3b8;font-weight:700}
+.pfs{display:flex;gap:1.2rem;width:100%;border-top:1px solid rgba(128,128,160,.2);padding-top:.6rem}.pfs b{display:block;font:400 1.5rem var(--slab);color:#b45309}
+.promo{position:relative;overflow:hidden;border-radius:1rem;padding:1rem;min-height:170px;background:linear-gradient(160deg,#1c1250,#5b2bb8 60%,#b23a9e);color:#fff;border:1px solid rgba(245,197,66,.55)}
+.promo::after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 40%,rgba(255,215,94,.25) 50%,transparent 60%);transform:translateX(-130%);animation:sheen 5s 1s infinite}
+.promo img{width:104px;background:#fff;border-radius:.8rem;padding:.4rem .6rem;margin-bottom:.6rem}
+.promo .pt{font:400 1.25rem/1.1 var(--slab);color:#ffd75e}.promo .ps{font-weight:900;margin-top:.4rem}.promo .pi{font:italic 600 .85rem Georgia,serif;color:#ffe9b0;margin-top:.3rem}
+.ann{padding:.8rem 1rem;border-radius:1rem;background:#fff;border:1px solid #ece7f7;font-size:.78rem}.annh{font-weight:900;margin-bottom:.4rem}
+.annr{padding:.35rem 0;border-top:1px solid rgba(128,128,160,.15);color:#64748b;font-weight:600}
+.tkr{margin:.4rem 1.1rem 0;border-radius:.9rem}
+.dow{font:400 .8rem var(--slab);letter-spacing:.4em;color:#b08a2e;margin-bottom:.8rem}
+/* ===== 暗色霓虹主題（body.neo）===== */
+body.neo{background:#050814;background-image:radial-gradient(1200px 600px at 70% -10%,rgba(40,70,160,.35),transparent 60%),radial-gradient(900px 500px at 0% 100%,rgba(245,166,35,.12),transparent 60%),radial-gradient(rgba(255,255,255,.06) 1px,transparent 1px);background-size:auto,auto,26px 26px;color:#e5ecff}
+.neo::before{background:rgba(245,166,35,.16)}.neo::after{background:rgba(40,90,220,.22)}
+.neo header.hero{background:linear-gradient(180deg,#0b1228,#070b1c)}
+.neo .h3w{filter:drop-shadow(0 20px 30px rgba(0,0,0,.6))}
+.neo .sidet{color:#f5c542}
+.neo .nav .tab{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.07);color:#b6c1dc;box-shadow:none}
+.neo .nav .tab:hover{color:#ffd75e;background:rgba(245,197,66,.08)}
+.neo .nav .tab.on{background:linear-gradient(135deg,#ffd75e,#d98f10);color:#2a1a00;border-color:#ffe9a8;box-shadow:0 10px 26px -10px rgba(245,166,35,.8)}
+.neo .pf,.neo .ann,.neo .pn{background:rgba(10,17,40,.85);border-color:rgba(245,197,66,.28);box-shadow:0 20px 40px -28px #000}
+.neo .pf small{color:#8b97b8}.neo .pfs b{color:#ffd75e}.neo .annr{color:#b6c1dc;border-color:rgba(255,255,255,.07)}.neo .dow{color:#f5c542}
+.neo .stats .bst{background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.1);border-top:3px solid var(--c,#f5c542);box-shadow:none}
+.neo .stats .c4{background:linear-gradient(135deg,rgba(245,158,11,.25),rgba(255,255,255,.03))}
+.neo .chip{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);color:#aab6d6}
+.neo .chip.on{border-color:#f5c542;color:#ffd75e;background:rgba(245,197,66,.12)}
+.neo .fbar select,.neo .fbar input{background:#0b1430;color:#e5ecff;border-color:rgba(255,255,255,.12)}
+.neo select option{background:#0b1430;color:#fff}
+.neo .seg{color:#8b97b8}.neo .seg.on{background:rgba(245,197,66,.18);color:#ffd75e}
+.neo .lbr.me{background:rgba(245,197,66,.12)}.neo .lbr b{color:#ffd75e}.neo .rk{background:rgba(255,255,255,.08);color:#cbd5e1}
+.neo .nrow{border-color:rgba(255,255,255,.06)}.neo .nrow small{color:#8b97b8}
+.neo .k-新單{background:rgba(248,113,113,.2);color:#fca5a5}.neo .k-接單{background:rgba(96,165,250,.2);color:#93c5fd}.neo .k-完成{background:rgba(52,211,153,.2);color:#6ee7b7}
+.neo .bn{background:linear-gradient(135deg,#2a1a05,#7a4e0c 52%,#1a1104);border:1px solid rgba(245,197,66,.55)}
+.neo .tkr{background:rgba(10,17,40,.9);border:1px solid rgba(245,197,66,.35);color:#cfe3ff}
+/* 訂單卡：霓虹邊框，依類型變色 */
+.neo .tk{filter:drop-shadow(0 0 10px rgba(59,130,246,.3))}
+.neo .tk:hover{filter:drop-shadow(0 0 22px rgba(120,180,255,.55))}
+.neo .ticket{-webkit-mask:none;mask:none;border-radius:1.1rem;background:linear-gradient(180deg,#101c40,#0a1130);box-shadow:0 0 0 1.5px rgba(80,140,255,.6) inset}
+.neo .ticket::before{height:3px;background:linear-gradient(90deg,#3b82f6,#22d3ee)}
+.neo .ticket::after{background:linear-gradient(115deg,transparent 35%,rgba(120,180,255,.22) 50%,transparent 65%)}
+.neo .tk.hot{filter:drop-shadow(0 0 14px rgba(245,197,66,.45))}.neo .tk.hot .ticket{box-shadow:0 0 0 1.5px #f5c542 inset}.neo .tk.hot .ticket::before{background:linear-gradient(90deg,#f5c542,#e8392b)}
+.neo .tk.fresh{filter:drop-shadow(0 0 14px rgba(168,85,247,.45))}.neo .tk.fresh .ticket{box-shadow:0 0 0 1.5px #a855f7 inset}.neo .tk.fresh .ticket::before{background:linear-gradient(90deg,#a855f7,#ec4899)}
+.neo .tk.memo{filter:drop-shadow(0 0 14px rgba(34,197,94,.4))}.neo .tk.memo .ticket{box-shadow:0 0 0 1.5px #22c55e inset}.neo .tk.memo .ticket::before{background:linear-gradient(90deg,#22c55e,#84cc16)}
+.neo .tk .bt{background:linear-gradient(180deg,#0e1838,#0a1128);border-top:1px solid rgba(255,255,255,.1)}
+.neo .ptitle{color:#fff}.neo .idc{background:rgba(245,197,66,.12);color:#f5c542}
+.neo .price{background:linear-gradient(135deg,#ffe08a,#f5a623);-webkit-background-clip:text;background-clip:text;color:transparent}.neo .hi .price{background:none;-webkit-text-fill-color:#fff}
+.neo .note{background:rgba(245,158,11,.12);color:#fcd34d}.neo .bub{background:rgba(99,102,241,.2);color:#c7d2fe}.neo .bub small{color:#a5b4fc}
+.neo .s0{background:rgba(248,113,113,.18);color:#fca5a5}.neo .s1{background:rgba(96,165,250,.18);color:#93c5fd}.neo .s2{background:rgba(251,191,36,.18);color:#fcd34d}.neo .s3{background:rgba(52,211,153,.18);color:#6ee7b7}
+.neo .glass{background:rgba(12,20,45,.8);border:1px solid rgba(245,197,66,.22);box-shadow:none;color:#e5ecff}
+.neo .sk{background:linear-gradient(100deg,#0e1838 30%,#17234d 50%,#0e1838 70%) 0 0/200% 100%}
+.neo .text-slate-400{color:#8b97b8!important}.neo .text-slate-500,.neo .text-slate-700{color:#b6c1dc!important}
+.neo .hub .bg-white{background:#0b1430!important;color:#e5ecff}.neo .hub .bg-slate-100{background:rgba(255,255,255,.08)!important;color:#b6c1dc}
+.neo .hub .border-slate-200{border-color:rgba(245,197,66,.25)!important}
+.neo .text-emerald-600{color:#34d399!important}.neo .text-amber-600{color:#fbbf24!important}
+.neo [data-sub].text-white{background:linear-gradient(135deg,#ffd75e,#d98f10)!important;color:#2a1a00!important}
+.neo .stp .n u{background:#1e2a55}.neo .stp .l{background:#1e2a55}
+.neo .conn{background:#0b1430;border-color:rgba(52,211,153,.4);color:#6ee7b7}.neo .conn.bad{border-color:rgba(239,68,68,.5);color:#fca5a5}
+.neo .ft{color:#6f7aa0}
+</style>
+<style id="paycss">
+/* ===== 付款回報流程 ===== */
+.stbox{margin-top:.5rem;display:flex;flex-direction:column;gap:.5rem}
+.actb{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;padding:.85rem 1rem;border-radius:1rem;font-weight:900;color:#fff;letter-spacing:.04em;transition:transform .2s,box-shadow .2s;position:relative;overflow:hidden}
+.actb:hover{transform:translateY(-2px)}.actb:active{transform:scale(.96)}
+.actb.pay{background:linear-gradient(135deg,#10b981,#047857);box-shadow:0 12px 22px -10px rgba(4,120,87,.8)}
+.actb.nx{background:linear-gradient(135deg,#3b82f6,#1d4ed8);box-shadow:0 12px 22px -10px rgba(29,78,216,.8)}
+.actb.fin{background:linear-gradient(135deg,#ff8a3d,#e8392b);box-shadow:0 12px 22px -10px rgba(232,57,43,.8)}
+.payw{padding:.7rem .9rem;border-radius:1rem;background:#fef3c7;color:#92400e;border-left:4px solid #f59e0b;font-weight:800;font-size:.85rem}
+.payw small{display:block;margin-top:.25rem;font-weight:600;color:#b45309}
+.payr{padding:.6rem .9rem;border-radius:1rem;background:#fee2e2;color:#b91c1c;border-left:4px solid #e8392b;font-weight:800;font-size:.8rem}
+.neo .payw{background:rgba(245,158,11,.14);color:#fcd34d}.neo .payw small{color:#fbbf24}
+.neo .payr{background:rgba(248,113,113,.15);color:#fca5a5}
+</style>
 </head>
-<body>
+<body class="neo">
 <!-- 登入 -->
 <div id="gate" class="fixed inset-0 z-50 hero flex items-center justify-center p-4">
   <div class="bg-white/95 rounded-3xl p-8 w-full max-w-sm shadow-2xl card">
@@ -193,32 +406,122 @@ select,input{font-family:inherit}
 <div id="app" class="hidden">
   <header class="hero text-white px-5 py-3.5 flex items-center justify-between sticky top-0 z-40 shadow-xl">
     <div class="flex items-center gap-3"><img class="lgm" data-icon alt="展商城"><div><div class="font-black text-xl leading-none">展商城</div><div class="text-[10px] tracking-[.3em] text-teal-300 font-bold mt-1"><span class="slab">ZAH-SHOP</span> · 員工接單站</div></div></div>
-    <div class="flex items-center gap-3 text-sm"><span id="clk" class="hidden sm:block text-xs font-bold text-white/60"></span><span id="who" class="chip-u"></span><button id="snd" class="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-xs font-bold transition">🔔 提示音開</button><button id="out" class="px-3 py-1.5 rounded-full bg-white/15 hover:bg-rose-500/80 text-xs font-bold transition">登出</button></div>
+    <div class="live hidden md:flex"><i></i>LIVE <span>即時訂單池</span><b id="s-live">0</b></div>
+    <div class="flex items-center gap-3 text-sm"><span id="clk" class="hidden sm:block text-xs font-bold text-white/60"></span><span id="who" class="chip-u"></span><button id="thm" class="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-xs font-bold transition">🌙 暗色</button><button id="snd" class="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-xs font-bold transition">🔔 提示音開</button><button id="out" class="px-3 py-1.5 rounded-full bg-white/15 hover:bg-rose-500/80 text-xs font-bold transition">登出</button></div>
   </header>
-  <main class="max-w-6xl mx-auto p-5">
-    <div class="banner mb-7 flex flex-wrap items-center justify-between gap-5"><img class="bw" data-icon alt="">
-      <div class="relative z-10"><div id="hello" class="text-2xl sm:text-3xl font-black"></div><div id="hello2" class="text-sm text-white/70 mt-1.5 font-medium"></div></div>
-      <div class="flex gap-3 flex-wrap">
-        <div class="bst"><span class="text-xs font-bold text-white/70">📥 待接訂單</span><b id="s-pool" class="text-orange-300">0</b></div>
-        <div class="bst"><span class="text-xs font-bold text-white/70">⚙️ 我處理中</span><b id="s-mine" class="text-sky-300">0</b></div>
-        <div class="bst"><span class="text-xs font-bold text-white/70">🏆 我已完成</span><b id="s-done" class="text-emerald-300">0</b></div>
-        <div class="bst"><span class="text-xs font-bold text-white/70">💰 賺到的薪水 NT$</span><b id="s-earn" class="text-yellow-300">0</b></div>
+  <div class="hub">
+  <aside class="side">
+    <div class="pf"><span class="pfa" id="pfa"></span><div class="min-w-0"><div id="pfn" class="font-black truncate"></div><small>員工 · ZAH-SHOP</small></div><div class="pfs"><div><small>今日接單</small><b id="pf-c">0</b></div><div><small>今日完成</small><b id="pf-d">0</b></div></div></div>
+    <div class="sidet">NEXUS ORDER HUB</div><nav class="nav">
+    <button class="tab on" id="t-pool">📥 接單大廳 <span id="n-pool" class="nbd">0</span></button>
+    <button class="tab" id="t-mine">⚙️ 處理中 <span id="n-mine" class="nbd b">0</span></button>
+    <button class="tab" id="t-hist">🗂️ 完成訂單 <span id="n-hist" class="nbd g">0</span></button>
+    <button class="tab" id="t-rep">💵 薪水報表</button></nav>
+    <div class="promo"><img data-logo alt=""><div class="pt">ZAH-SHOP<br>WELCOME</div><div class="ps">接單讓你更強大</div><div class="pi">Together We Grow</div></div>
+    <div class="ann"><div class="annh">📣 系統公告</div><div class="annr">✓ 接單系統運作正常</div><div class="annr">🔔 新單進來會有提示音與通知</div><div class="annr">💵 訂單完成後由老闆發放薪水</div></div>
+  </aside>
+  <main class="mainc">
+    <div class="h3w"><div class="h3"><div class="h3i" id="hero">
+      <div class="nb nb1"></div><div class="nb nb2"></div><div class="flr"></div>
+      <canvas id="sky"></canvas>
+      <svg class="gl" viewBox="0 0 520 300" preserveAspectRatio="xMaxYMid meet" aria-hidden="true">
+        <defs>
+          <radialGradient id="gA"><stop offset="0" stop-color="#5ec8ff" stop-opacity=".55"/><stop offset=".55" stop-color="#2f6bff" stop-opacity=".22"/><stop offset="1" stop-color="#2f6bff" stop-opacity="0"/></radialGradient>
+          <radialGradient id="gS" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#8fe0ff"/><stop offset=".35" stop-color="#2a6df0"/><stop offset=".75" stop-color="#0b1f6b"/><stop offset="1" stop-color="#050b2a"/></radialGradient>
+          <linearGradient id="gR"><stop offset="0" stop-color="#ffd75e" stop-opacity="0"/><stop offset=".5" stop-color="#ffd75e"/><stop offset="1" stop-color="#ffd75e" stop-opacity="0"/></linearGradient>
+          <filter id="bl" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5"/></filter>
+          <linearGradient id="gT" x1="1" x2="0"><stop offset="0" stop-color="#8fe8ff" stop-opacity=".95"/><stop offset="1" stop-color="#8fe8ff" stop-opacity="0"/></linearGradient>
+          <clipPath id="gC"><circle cx="330" cy="150" r="92"/></clipPath>
+        </defs>
+        <circle cx="330" cy="150" r="150" fill="url(#gA)"/>
+        <circle cx="330" cy="150" r="97" fill="none" stroke="#6fd4ff" stroke-width="7" stroke-opacity=".45" filter="url(#bl)"/>
+        <circle cx="330" cy="150" r="92" fill="url(#gS)"/>
+        <g clip-path="url(#gC)" fill="none" stroke="#9be7ff" stroke-opacity=".42" stroke-width=".8">
+          <ellipse cx="330" cy="150" rx="92" ry="92"><animate attributeName="rx" values="92;0;92" dur="14s" repeatCount="indefinite"/></ellipse>
+          <ellipse cx="330" cy="150" rx="92" ry="92"><animate attributeName="rx" values="92;0;92" dur="14s" begin="-3.5s" repeatCount="indefinite"/></ellipse>
+          <ellipse cx="330" cy="150" rx="92" ry="92"><animate attributeName="rx" values="92;0;92" dur="14s" begin="-7s" repeatCount="indefinite"/></ellipse>
+          <ellipse cx="330" cy="150" rx="92" ry="92"><animate attributeName="rx" values="92;0;92" dur="14s" begin="-10.5s" repeatCount="indefinite"/></ellipse>
+          <ellipse cx="330" cy="90" rx="70" ry="8"/><ellipse cx="330" cy="120" rx="87" ry="9"/><ellipse cx="330" cy="150" rx="92" ry="9"/><ellipse cx="330" cy="180" rx="87" ry="9"/><ellipse cx="330" cy="210" rx="70" ry="8"/>
+          <g fill="#7fe3ff" fill-opacity=".2" stroke="none">
+            <ellipse rx="26" ry="13" cy="128"><animate attributeName="cx" values="220;440" dur="18s" repeatCount="indefinite"/></ellipse>
+            <ellipse rx="18" ry="22" cy="176"><animate attributeName="cx" values="300;520;220;300" dur="24s" repeatCount="indefinite"/></ellipse>
+            <ellipse rx="14" ry="8" cy="100"><animate attributeName="cx" values="400;220;400" dur="20s" repeatCount="indefinite"/></ellipse>
+          </g>
+        </g>
+        <circle cx="330" cy="150" r="92" fill="none" stroke="#bfefff" stroke-opacity=".6"/>
+        <ellipse cx="300" cy="112" rx="34" ry="16" fill="#fff" fill-opacity=".14" transform="rotate(-25 300 112)"/>
+        <g clip-path="url(#gC)" fill="#ffe9a0">
+          <circle cx="292" cy="132" r="1.8"><animate attributeName="opacity" values="1;.2;1" dur="2.2s" repeatCount="indefinite"/></circle>
+          <circle cx="372" cy="168" r="1.8"><animate attributeName="opacity" values=".2;1;.2" dur="2.6s" repeatCount="indefinite"/></circle>
+          <circle cx="318" cy="196" r="1.8"><animate attributeName="opacity" values="1;.3;1" dur="1.9s" repeatCount="indefinite"/></circle>
+          <circle cx="350" cy="108" r="1.8"><animate attributeName="opacity" values=".3;1;.3" dur="2.4s" repeatCount="indefinite"/></circle>
+          <circle cx="268" cy="168" r="1.8"><animate attributeName="opacity" values="1;.2;1" dur="3s" repeatCount="indefinite"/></circle>
+          <circle cx="398" cy="140" r="1.8"><animate attributeName="opacity" values=".2;1;.2" dur="2s" repeatCount="indefinite"/></circle>
+        </g>
+        <g fill="none" stroke-linecap="round">
+          <path id="a1" d="M292,132 Q322,52 372,168" stroke="#ffd75e" stroke-width="1.5" stroke-dasharray="4 8"><animate attributeName="stroke-dashoffset" from="0" to="-48" dur="2.2s" repeatCount="indefinite"/></path>
+          <path id="a2" d="M318,196 Q410,150 350,108" stroke="#7fe3ff" stroke-width="1.5" stroke-dasharray="4 8"><animate attributeName="stroke-dashoffset" from="0" to="-48" dur="2.8s" repeatCount="indefinite"/></path>
+          <path id="a3" d="M268,168 Q300,66 398,140" stroke="#ffd75e" stroke-width="1.3" stroke-dasharray="3 9"><animate attributeName="stroke-dashoffset" from="0" to="-48" dur="3.4s" repeatCount="indefinite"/></path>
+        </g>
+        <circle r="2.8" fill="#fff"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#a1"/></animateMotion></circle>
+        <circle r="2.8" fill="#bff3ff"><animateMotion dur="3.1s" repeatCount="indefinite"><mpath href="#a2"/></animateMotion></circle>
+        <circle r="2.6" fill="#fff"><animateMotion dur="3.6s" repeatCount="indefinite"><mpath href="#a3"/></animateMotion></circle>
+        <circle cx="330" cy="150" r="124" fill="none" stroke="#7fd0ff" stroke-opacity=".35" stroke-dasharray="2 9"><animateTransform attributeName="transform" type="rotate" from="0 330 150" to="360 330 150" dur="46s" repeatCount="indefinite"/></circle>
+        <g transform="rotate(-16 330 150)">
+          <ellipse cx="330" cy="150" rx="185" ry="40" fill="none" stroke="url(#gR)" stroke-width="2.4"/>
+          <circle r="4.5" fill="#ffd75e"><animateMotion dur="10s" repeatCount="indefinite" path="M145,150 a185,40 0 1,0 370,0 a185,40 0 1,0 -370,0"/></circle>
+        </g>
+        <g transform="rotate(12 330 150)">
+          <ellipse cx="330" cy="150" rx="150" ry="34" fill="none" stroke="#59d3ff" stroke-opacity=".75" stroke-dasharray="3 7"/>
+          <circle r="3.5" fill="#8fe8ff"><animateMotion dur="7s" repeatCount="indefinite" path="M480,150 a150,34 0 1,1 -300,0 a150,34 0 1,1 300,0"/></circle>
+        </g>
+      <g>
+          <g><animateTransform attributeName="transform" type="translate" values="-60,52;580,30" dur="15s" repeatCount="indefinite"/><rect x="-38" y="-1.2" width="38" height="2.4" fill="url(#gT)"/><path d="M0,0 L-4,-4 L24,0 L-4,4 Z" fill="#dbe9ff"/></g>
+          <g><animateTransform attributeName="transform" type="translate" values="580,246;-60,270" dur="21s" begin="-8s" repeatCount="indefinite"/><g transform="scale(-.8 .8)"><rect x="-38" y="-1.2" width="38" height="2.4" fill="url(#gT)"/><path d="M0,0 L-4,-4 L24,0 L-4,4 Z" fill="#ffe9b0"/></g></g>
+        </g>
+      </svg>
+      <i class="cn c1"></i><i class="cn c2"></i><i class="cn c3"></i><i class="cn c4"></i><span class="hudt"><u></u>SCANNING · ONLINE</span>
+      <span class="tg t1">🎮 遊戲點數</span><span class="tg t2">📱 APP代儲</span><span class="tg t3">🛒 電商代購</span><span class="tg t4">✨ 其他任務</span>
+      <div class="hp">
+        <div id="hello" class="font-black"></div><div id="hello2"></div>
+        <div class="hpn"><div><small>⚡ 目前待接訂單</small><b id="hb-pool">0</b></div><div><small>💰 待接總金額</small><b>NT$<span id="hb-sum">0</span></b></div></div>
       </div>
+      <button id="radar" class="rd" type="button"><i></i><b>任務雷達</b><small>探索更多訂單</small><u>GO ›</u></button>
+    </div></div></div>
+    <div class="stats">
+      <div class="bst c1"><span class="text-xs font-bold text-slate-500">📥 待接訂單</span><b id="s-pool" class="text-orange-500">0</b></div>
+      <div class="bst c2"><span class="text-xs font-bold text-slate-500">⚙️ 我處理中</span><b id="s-mine" class="text-sky-600">0</b></div>
+      <div class="bst c3"><span class="text-xs font-bold text-slate-500">🏆 我已完成</span><b id="s-done" class="text-emerald-600">0</b></div>
+      <div class="bst c4"><span class="text-xs font-bold text-slate-500">💰 賺到的薪水 NT$</span><b id="s-earn" class="text-amber-600">0</b></div>
     </div>
-    <div class="glass rounded-2xl p-2 inline-flex max-w-full overflow-x-auto gap-2 mb-6">
-      <button class="tab on" id="t-pool">📥 接單大廳 <span id="n-pool" class="ml-1 px-2 rounded-full bg-orange-500 text-white text-xs">0</span></button>
-      <button class="tab" id="t-mine">⚙️ 處理中 <span id="n-mine" class="ml-1 px-2 rounded-full bg-indigo-500 text-white text-xs">0</span></button>
-      <button class="tab" id="t-hist">🗂️ 完成訂單 <span id="n-hist" class="ml-1 px-2 rounded-full bg-emerald-500 text-white text-xs">0</span></button>
-      <button class="tab" id="t-rep">💵 薪水報表</button>
+    <div id="fbar" class="fbar">
+      <button class="chip on" data-f="all">全部 <em id="c-all">0</em></button><button class="chip" data-f="big">💎 大單 <em id="c-big">0</em></button><button class="chip" data-f="new">🆕 30分內 <em id="c-new">0</em></button><button class="chip" data-f="memo">📌 有備註 <em id="c-memo">0</em></button>
+      <select id="srt"><option value="def">預設排序</option><option value="hi">金額高→低</option><option value="old">最舊先</option></select>
+      <input id="q" placeholder="🔍 搜尋訂單編號 / 商品 / 顧客…" autocomplete="off">
     </div>
     <section id="pool"></section>
     <section id="mine" class="hidden"></section>
     <section id="hist" class="hidden"></section>
     <section id="rep" class="hidden"></section>
   </main>
-  <footer class="ft"><img data-logo alt="展商城 ZAH-SHOP"><p>謝謝光臨 !!! · © 2026 展商城 ZAH-SHOP</p></footer>
+  <aside class="rail">
+    <div class="pn"><div class="pnh"><b>🏆 接單排行榜</b><span><button class="seg on" data-lbp="w">本週</button><button class="seg" data-lbp="m">本月</button></span></div><div id="lb"></div></div>
+    <div class="pn"><div class="pnh"><b>🔔 最新動態</b></div><div id="nt"></div></div>
+    <div class="bn" id="bn">
+      <div class="sl on"><b>⚡ 今日接單任務</b><span>目前有 <u id="bn1">0</u> 張待接 · 接單賺獎金</span></div>
+      <div class="sl"><b>💎 大單加成</b><span>單筆 NT$2,000 以上優先搶</span></div>
+      <div class="sl"><b>🏆 本週接單王</b><span id="bn3">虛位以待</span></div>
+      <div class="sl"><b>🎉 展商城 ZAH-SHOP</b><span>歡迎光臨 · 客服隨時為你服務</span></div>
+      <div class="bnd"><i class="on"></i><i></i><i></i><i></i></div>
+    </div>
+  </aside>
+</div>
+  <div class="tkr"><div class="mv">📢 最新消息：目前接單系統運作正常，歡迎大家踴躍接單！　✦　新單進來會有提示音與通知　✦　目前待接 <b class="tkn">0</b> 張　✦　成為接單王，獲得更多獎金與榮譽！　✦　ZAH-SHOP 與你一起成長</div></div>
+<footer class="ft"><img data-logo alt="展商城 ZAH-SHOP"><p class="dow">DREAM ✕ ORDER ✕ WIN</p><p>謝謝光臨 !!! · © 2026 展商城 ZAH-SHOP</p></footer>
 </div>
 <div id="splash"><div class="box"><div class="ring"></div><div class="ring"></div><div class="ring"></div><div class="card2"><img data-logo alt=""></div><div class="bar"><i></i></div><div id="spt" class="text-white/80 text-sm font-bold mt-3 tracking-widest"></div></div></div>
+<div id="conn" class="conn ok"><i></i><span id="connt">系統連線正常</span><small id="connv"></small></div>
+<div id="lg" class="lg"><div class="row"><span id="lgt"></span><button id="lgr" title="從今天起重新計算有效期">續期</button></div><div class="trk"><div id="lgb" class="bar"></div></div></div>
 <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900/90 text-white px-5 py-3 rounded-2xl text-sm font-bold opacity-0 pointer-events-none transition z-[60]"></div>
 
 <script>
@@ -253,6 +556,94 @@ const sfx=n=>{if(sound&&SFX[n])SFX[n]()};
 const beep=()=>sfx('ding');
 function splash(name){$('spt').textContent='歡迎回來，'+name;const e=$('splash');e.classList.remove('on');void e.offsetWidth;e.classList.add('on');sfx('whoosh');setTimeout(()=>sfx('success'),900)}
 
+// ---- 登入有效期進度條（左下角）----
+const LOGIN_MS=100*24*60*60*1000;let lgWarned=false;
+function loginBar(){
+  let s=null;try{s=JSON.parse(localStorage.getItem('zahStaff')||'null')}catch(e){}
+  const box=$('lg');if(!s||!s.exp){box.style.display='none';return}
+  box.style.display='';
+  const left=s.exp-Date.now(),days=Math.max(0,Math.ceil(left/86400000)),pct=Math.max(0,Math.min(100,left/LOGIN_MS*100));
+  box.className='lg '+(days<=7?'bad':days<=20?'warn':'ok');
+  $('lgb').style.width=pct+'%';
+  $('lgt').textContent=days<=7?'⚠️ '+days+' 天後需重新登入':'🔐 登入剩 '+days+' 天';
+  if(days<=7&&!lgWarned){lgWarned=true;toast('⏰ 登入即將到期（剩 '+days+' 天），可按左下角「續期」')}
+}
+$('lgr').onclick=()=>{try{const s=JSON.parse(localStorage.getItem('zahStaff')||'null');if(s){s.exp=Date.now()+LOGIN_MS;localStorage.setItem('zahStaff',JSON.stringify(s));lgWarned=false;loginBar();toast('✅ 已續期 100 天')}}catch(e){}};
+setInterval(loginBar,60*60*1000);
+// ---- 主題切換（暗色霓虹 / 亮色）----
+const applyTheme=d=>{document.body.classList.toggle('neo',d);$('thm').textContent=d?'🌙 暗色':'☀️ 亮色'};
+try{applyTheme(localStorage.getItem('zahTheme')!=='light')}catch(e){applyTheme(true)}
+$('thm').onclick=()=>{const d=!document.body.classList.contains('neo');applyTheme(d);try{localStorage.setItem('zahTheme',d?'dark':'light')}catch(e){}};
+// ---- 橫幅：視差 / 新單脈衝 ----
+const hero=$('hero');
+hero.addEventListener('mousemove',e=>{const r=hero.getBoundingClientRect();hero.style.setProperty('--mx',((e.clientX-r.left)/r.width-.5)*2);hero.style.setProperty('--my',((e.clientY-r.top)/r.height-.5)*2)});
+hero.addEventListener('mouseleave',()=>{hero.style.setProperty('--mx',0);hero.style.setProperty('--my',0)});
+function ping(){for(let i=0;i<2;i++){const e=document.createElement('i');e.className='pg';e.style.animationDelay=i*.35+'s';hero.appendChild(e);setTimeout(()=>e.remove(),2200)}}
+// ---- 橫幅：星空 / 雷達 ----
+let skyOn=false;
+function initSky(){
+  if(skyOn)return;skyOn=true;
+  const c=$('sky'),x=c.getContext('2d');let W=0,H=0,S=[],sh=null;
+  const fit=()=>{W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;S=Array.from({length:Math.round(W*H/2400)},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.2,a:Math.random()*6.28,v:Math.random()*.03+.006,d:Math.random()*.18+.03}))};
+  fit();addEventListener('resize',fit);
+  const still=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const draw=()=>{
+    x.clearRect(0,0,W,H);
+    for(const s of S){if(!still){s.a+=s.v;s.x-=s.d;if(s.x<0)s.x=W}x.globalAlpha=.3+.7*Math.abs(Math.sin(s.a));x.fillStyle=s.r>1.1?'#ffe3a0':'#cfe3ff';x.beginPath();x.arc(s.x,s.y,s.r,0,6.283);x.fill()}
+    x.globalAlpha=1;
+    if(!still){
+      if(!sh&&Math.random()<.006)sh={x:Math.random()*W*.9+W*.1,y:Math.random()*H*.35,l:0};
+      if(sh){const g=x.createLinearGradient(sh.x,sh.y,sh.x-90,sh.y+45);g.addColorStop(0,'rgba(255,240,190,.95)');g.addColorStop(1,'rgba(255,240,190,0)');x.strokeStyle=g;x.lineWidth=1.6;x.beginPath();x.moveTo(sh.x,sh.y);x.lineTo(sh.x-90,sh.y+45);x.stroke();sh.x-=9;sh.y+=4.5;sh.l++;if(sh.l>40)sh=null}
+      requestAnimationFrame(draw)}
+  };
+  draw();
+}
+$('radar').onclick=()=>{tab('pool');fil='all';document.querySelectorAll('#fbar .chip').forEach(x=>x.classList.toggle('on',x.dataset.f==='all'));$('q').value='';render();$('fbar').scrollIntoView({behavior:'smooth',block:'start'});sfx('whoosh')};
+// ---- 連線狀態（右下角）/ 輪播橫幅 ----
+let lastSync='';
+function conn(){const on=navigator.onLine,e=$('conn');e.className='conn '+(on?'ok':'bad');$('connt').textContent=on?'系統連線正常':'連線中斷，請檢查網路';$('connv').textContent=on&&lastSync?'同步 '+lastSync:''}
+function synced(){const d=new Date(),p=n=>String(n).padStart(2,'0');lastSync=`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;conn()}
+addEventListener('online',conn);addEventListener('offline',conn);
+let bi=0;const bnGo=n=>{const sl=[...document.querySelectorAll('#bn .sl')],ds=[...document.querySelectorAll('#bn .bnd i')];bi=(n+sl.length)%sl.length;sl.forEach((x,i)=>x.classList.toggle('on',i===bi));ds.forEach((x,i)=>x.classList.toggle('on',i===bi))};
+let bt=setInterval(()=>bnGo(bi+1),4500);
+document.querySelectorAll('#bn .bnd i').forEach((d,i)=>d.onclick=()=>{bnGo(i);clearInterval(bt);bt=setInterval(()=>bnGo(bi+1),4500)});
+// ---- 接單大廳：篩選 / 排行榜 / 動態 ----
+let fil='all',lbp='w';
+function poolFilter(a){
+  const q=($('q').value||'').trim().toLowerCase();
+  let r=a.filter(o=>{const p=Number(o.price||0),m=(Date.now()-new Date(String(o.date).replace(' ','T')))/60000;
+    if(fil==='big'&&p<2000)return false;if(fil==='new'&&!(m<30))return false;if(fil==='memo'&&!o.memo)return false;
+    return !q||[o.id,o.product,o.customer].some(x=>String(x||'').toLowerCase().includes(q))});
+  const v=$('srt').value;if(v==='hi')r=[...r].sort((a,b)=>Number(b.price||0)-Number(a.price||0));if(v==='old')r=[...r].reverse();
+  return r}
+function hubExtras(pa){
+  const td=new Date().toDateString(),mine=orders.filter(o=>o.assignee===me.id);
+  $('pfa').textContent=[...me.name][0]||'?';$('pfa').style.background=hue(me.name);$('pfn').textContent=me.name;
+  $('pf-c').textContent=mine.filter(o=>o.claimedAt&&new Date(o.claimedAt).toDateString()===td).length;
+  $('pf-d').textContent=mine.filter(o=>o.status==='已完成發貨'&&o.completedAt&&new Date(o.completedAt).toDateString()===td).length;
+  $('s-live').textContent=pa.length;countTo('hb-pool',pa.length);$('hb-sum').textContent=pa.reduce((t,o)=>t+Number(o.price||0),0).toLocaleString();$('bn1').textContent=pa.length;document.querySelectorAll('.tkn').forEach(x=>x.textContent=pa.length);
+  const mn=o=>(Date.now()-new Date(String(o.date).replace(' ','T')))/60000;
+  $('c-all').textContent=pa.length;$('c-big').textContent=pa.filter(o=>Number(o.price||0)>=2000).length;
+  $('c-new').textContent=pa.filter(o=>mn(o)<30).length;$('c-memo').textContent=pa.filter(o=>o.memo).length;
+  // 排行榜：依「已完成發貨」張數
+  const d=new Date(),from=lbp==='w'?new Date(d.getFullYear(),d.getMonth(),d.getDate()-((d.getDay()+6)%7)):new Date(d.getFullYear(),d.getMonth(),1),cnt={};
+  orders.forEach(o=>{if(o.status==='已完成發貨'&&o.assignee&&new Date(o.completedAt||o.date)>=from){const k=o.assigneeName||o.assignee;cnt[k]=(cnt[k]||0)+1}});
+  const top=Object.entries(cnt).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  $('bn3').textContent=top.length?`${top[0][0]} · ${top[0][1]} 張`:'虛位以待';
+  $('lb').innerHTML=top.length?top.map(([n,c],i)=>`<div class="lbr${n===me.name?' me':''}"><span class="rk">${i+1}</span><span class="av" style="background:${hue(n)}">${E([...n][0]||'?')}</span><span class="flex-1 truncate font-bold">${E(n)}</span><b>${c}</b></div>`).join(''):'<div class="text-xs text-slate-400 py-3 text-center">還沒有完成紀錄，快來搶第一！</div>';
+  // 最新動態
+  const ev=[];
+  orders.forEach(o=>{
+    if(!o.assignee&&o.status!=='已完成發貨'&&o.quoteState!=='pending')ev.push({t:o.date,k:'新單',x:`#${o.id} 進入接單池`});
+    if(o.claimedAt)ev.push({t:o.claimedAt,k:'接單',x:`#${o.id} 由 ${o.assigneeName||'員工'} 接單`});
+    if(o.status==='已完成發貨'&&o.completedAt)ev.push({t:o.completedAt,k:'完成',x:`#${o.id} 已完成發貨`});
+  });
+  ev.sort((a,b)=>new Date(String(b.t).replace(' ','T'))-new Date(String(a.t).replace(' ','T')));
+  $('nt').innerHTML=ev.slice(0,5).map(e=>`<div class="nrow"><span class="nk k-${e.k}">${e.k}</span><span class="flex-1">${E(e.x)}</span><small>${ago(e.t)}</small></div>`).join('')||'<div class="text-xs text-slate-400 py-3 text-center">暫無動態</div>';
+}
+$('fbar').addEventListener('click',e=>{const b=e.target.closest('[data-f]');if(!b)return;fil=b.dataset.f;document.querySelectorAll('#fbar .chip').forEach(x=>x.classList.toggle('on',x===b));render()});
+$('q').addEventListener('input',()=>render());$('srt').addEventListener('change',()=>render());
+document.querySelector('.rail').addEventListener('click',e=>{const b=e.target.closest('[data-lbp]');if(!b)return;lbp=b.dataset.lbp;document.querySelectorAll('.seg').forEach(x=>x.classList.toggle('on',x===b));hubExtras(orders.filter(o=>!o.assignee&&o.status!=='已完成發貨'&&o.quoteState!=='pending'))});
 // ---- 登入 ----
 let busy=false;
 async function login(){
@@ -271,18 +662,18 @@ async function login(){
       }
     }
     if(!ok){$('err').textContent='帳號或密碼錯誤，或帳號已停用';sfx('error');return}
-    me={id:s.id,name:a.displayName||name};sessionStorage.setItem('zahStaff',JSON.stringify(me));enter();
+    me={id:s.id,name:a.displayName||name};localStorage.setItem('zahStaff',JSON.stringify({...me,exp:Date.now()+LOGIN_MS}));enter();
   }catch(e){$('err').textContent='登入失敗：'+e.message}
   finally{busy=false;$('go').disabled=false}
 }
 async function enter(){
-  splash(me.name);
+  splash(me.name);loginBar();initSky();
   $('gate').classList.add('hidden');$('app').classList.remove('hidden');$('who').textContent='👤 '+me.name;
   unsub&&unsub();ready=false;$('pool').innerHTML=`<div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">${'<div class="sk"></div>'.repeat(3)}</div>`;onSnapshot(doc(db,'staff',me.id),x=>{me.rate=Number(x.data()?.payRate||0);render()});
   unsub=onSnapshot(collection(db,'orders'),snap=>{
-    orders=snap.docs.map(d=>({docId:d.id,...d.data()})).sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
-    if(ready)snap.docChanges().forEach(c=>{if(c.type==='added'){beep();toast('🔔 新訂單 '+(c.doc.data().id||''))}});
-    ready=true;render();
+    const prevPay=new Map(orders.map(o=>[o.docId,!!o.payRequest]));orders=snap.docs.map(d=>({docId:d.id,...d.data()})).sort((a,b)=>new Date(b.date||0)-new Date(a.date||0));
+    if(ready)snap.docChanges().forEach(c=>{if(c.type==='added'){beep();ping();toast('🔔 新訂單 '+(c.doc.data().id||''))}else if(c.type==='modified'){const n=c.doc.data();if(prevPay.get(c.doc.id)&&!n.payRequest&&n.assignee===me.id){if(n.payRejectNote){sfx('error');toast('❌ #'+n.id+' 老闆退回：'+n.payRejectNote)}else{sfx('success');toast('✅ #'+n.id+' 老闆已確認收款，可以繼續處理')}}}});
+    ready=true;synced();render();
   });
 }
 // 用 CSS 遮蔽（type=text）才能用注音/中文輸入法；瀏覽器不支援時（如 Firefox）退回 type=password
@@ -304,9 +695,9 @@ $('u').addEventListener('compositionend',fixU);
 $('go').onclick=login;
 // 輸入法選字按 Enter 時（isComposing / keyCode 229）不能當成送出
 $('p').onkeydown=e=>{if(e.key==='Enter'&&!e.isComposing&&e.keyCode!==229)login()};
-$('out').onclick=()=>{sessionStorage.removeItem('zahStaff');location.reload()};
+$('out').onclick=()=>{localStorage.removeItem('zahStaff');sessionStorage.removeItem('zahStaff');location.reload()};
 $('snd').onclick=()=>{sound=!sound;$('snd').textContent=sound?'🔔 提示音開':'🔕 提示音關'};
-const tab=t=>{sfx('tab');['pool','mine','hist','rep'].forEach(n=>{$(n).classList.toggle('hidden',n!==t);$('t-'+n).classList.toggle('on',n===t)});const e=$(t);e.classList.remove('swap');void e.offsetWidth;e.classList.add('swap')};
+const tab=t=>{sfx('tab');$('fbar').style.display=t==='pool'?'':'none';['pool','mine','hist','rep'].forEach(n=>{$(n).classList.toggle('hidden',n!==t);$('t-'+n).classList.toggle('on',n===t)});const e=$(t);e.classList.remove('swap');void e.offsetWidth;e.classList.add('swap')};
 $('t-pool').onclick=()=>tab('pool');$('t-mine').onclick=()=>tab('mine');$('t-hist').onclick=()=>tab('hist');$('t-rep').onclick=()=>tab('rep');
 
 // ---- 畫面 ----
@@ -316,35 +707,44 @@ const hue=t=>{let h=0;for(const c of String(t||''))h=(h*31+c.charCodeAt(0))%360;
 const ago=d=>{const m=Math.max(0,Math.round((Date.now()-new Date(String(d).replace(' ','T')))/60000));return isNaN(m)?'':m<1?'剛剛':m<60?m+' 分鐘前':m<1440?Math.floor(m/60)+' 小時前':Math.floor(m/1440)+' 天前'};
 document.addEventListener('mousemove',e=>{const t=e.target.closest&&e.target.closest('.tk');document.querySelectorAll('.tk').forEach(x=>{if(x!==t){x.style.setProperty('--rx','0deg');x.style.setProperty('--ry','0deg')}});if(!t)return;const r=t.getBoundingClientRect(),px=(e.clientX-r.left)/r.width-.5,py=(e.clientY-r.top)/r.height-.5;t.style.setProperty('--ry',(px*7)+'deg');t.style.setProperty('--rx',(-py*7)+'deg')});
 const tick=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');const c=$('clk');if(c)c.textContent=`${d.getMonth()+1}/${d.getDate()} ${p(d.getHours())}:${p(d.getMinutes())}`};tick();setInterval(tick,20000);
+const statusActions=o=>{
+  const k=Math.max(0,STATUS.indexOf(o.status));
+  if(o.payRequest){const r=o.payRequest;return `<div class="stbox"><div class="payw">⏳ 已回報「已付款」，等老闆確認收款<small>${E(r.byName||'')} · ${fmt(r.at)}${r.note?' · 備註：'+E(r.note):''}　（老闆確認後才能繼續下一步）</small></div></div>`}
+  let h='';
+  if(o.payRejectNote)h+=`<div class="payr">❌ 老闆退回：${E(o.payRejectNote)}</div>`;
+  if(k===0)h+=`<button data-payreq="${o.docId}" class="actb pay">💰 回報已付款（送老闆確認）</button>`;
+  else if(k===1)h+=`<button data-adv="${o.docId}" data-to="待發貨" class="actb nx">📦 開始備貨 → 待發貨</button>`;
+  else if(k===2)h+=`<button data-adv="${o.docId}" data-to="已完成發貨" class="actb fin">🚚 已完成發貨</button>`;
+  return `<div class="stbox">${h}</div>`};
 function render(){
-  const pool=orders.filter(o=>!o.assignee&&o.status!=='已完成發貨'&&o.quoteState!=='pending');
+  const poolAll=orders.filter(o=>!o.assignee&&o.status!=='已完成發貨'&&o.quoteState!=='pending'),pool=poolFilter(poolAll);
   const DONE='已完成發貨';
   const mine=orders.filter(o=>o.assignee===me.id&&o.status!==DONE);
   const hist=orders.filter(o=>o.assignee===me.id&&o.status===DONE).sort((a,b)=>new Date(b.completedAt||b.date||0)-new Date(a.completedAt||a.date||0));
-  $('n-pool').textContent=pool.length;countTo('s-pool',pool.length);countTo('s-mine',mine.length);countTo('s-done',hist.length);$('n-mine').textContent=mine.length;$('n-hist').textContent=hist.length;
+  $('n-pool').textContent=poolAll.length;countTo('s-pool',poolAll.length);countTo('s-mine',mine.length);countTo('s-done',hist.length);$('n-mine').textContent=mine.length;$('n-hist').textContent=hist.length;
   const h=new Date().getHours();
   $('hello').textContent=(h<6?'夜深了':h<12?'早安':h<18?'午安':'晚安')+'，'+me.name+' 👋';
-  $('hello2').textContent=pool.length?`大廳有 ${pool.length} 張訂單等你接，手腳快的先搶先贏！`:'目前沒有待接訂單，喝口水休息一下吧 ☕';
+  $('hello2').textContent=poolAll.length?`大廳有 ${poolAll.length} 張訂單等你接，手腳快的先搶先贏！`:'目前沒有待接訂單，喝口水休息一下吧 ☕';
   $('who').innerHTML=`<span class="av" style="background:${hue(me.name)}">${E([...me.name][0]||'?')}</span>${E(me.name)}`;
-  $('pool').innerHTML=pool.length?`<div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">${pool.map((o,i)=>{const pr=Number(o.price||0),mins=(Date.now()-new Date(String(o.date).replace(' ','T')))/60000;return`
-   <div class="tk" style="animation-delay:${Math.min(i,8)*70}ms"><div class="ticket">
+  $('pool').innerHTML=pool.length?`<div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5">${pool.map((o,i)=>{const pr=Number(o.price||0),mins=(Date.now()-new Date(String(o.date).replace(' ','T')))/60000;return`
+   <div class="tk ${pr>=2000?'hot':mins<30?'fresh':o.memo?'memo':''}" style="animation-delay:${Math.min(i,8)*70}ms"><div class="ticket">
     <div class="tb">
      <div class="flex items-center justify-between gap-2"><span class="idc">#${E(o.id)}</span><div class="flex items-center gap-1.5">${mins<30?'<span class="nb" style="background:linear-gradient(135deg,#ff8a3d,#e8392b)">NEW</span>':''}${pr>=2000?'<span class="nb" style="background:linear-gradient(135deg,#f59e0b,#b45309)">💎 大單</span>':''}<span class="pill s${STATUS.indexOf(o.status)}">${E(o.status)}</span></div></div>
      <div class="flex items-center gap-3.5 mt-4"><div class="pav" style="background:${hue(o.product)}">${E([...String(o.product||'?')][0])}</div><div class="min-w-0"><div class="ptitle break-words">${E(o.product)}</div><div class="flex items-center gap-1.5 mt-1.5 text-xs font-bold text-slate-500"><span class="av !w-5 !h-5 !text-[10px]" style="background:${hue(o.customer)}">${E([...String(o.customer||'?')][0])}</span>${E(o.customer)}</div></div></div>
      ${o.memo?`<div class="note"><span>📌</span><span>${E(o.memo)}</span></div>`:''}
      <div class="mt-3 text-[11px] font-bold text-slate-400">🕒 ${ago(o.date)} · ${E(o.date)}</div>
     </div>
-    <div class="bt"><div><div class="text-[10px] font-black tracking-widest text-slate-400">訂單金額</div><div class="price mt-1">NT$${pr.toLocaleString()}</div></div><button data-claim="${o.docId}" class="go">接單 <span>→</span></button></div>
+    <div class="bt"><div><div class="text-[10px] font-black tracking-widest text-slate-400">訂單金額</div><div class="price mt-1">NT$${pr.toLocaleString()}</div>${me.rate?`<div class="text-[11px] font-bold text-amber-500 mt-1">預估薪水 NT$${Math.round(pr*me.rate/100).toLocaleString()}</div>`:''}</div><button data-claim="${o.docId}" class="go">接單 <span>→</span></button></div>
    </div></div>`}).join('')}</div>`:`<div class="text-center py-24"><div class="text-7xl mb-4 float">☕</div><div class="font-black text-xl text-slate-700">目前沒有待接訂單</div><div class="text-sm text-slate-400 mt-1">新訂單進來會有提示音與通知</div></div>`;
   const SN=['未付款','已付款','待發貨','已出貨'];
   $('mine').innerHTML=mine.length?`<div class="grid lg:grid-cols-2 gap-6">${mine.map((o,i)=>{const k=Math.max(0,STATUS.indexOf(o.status));return`
    <div class="tk" style="animation-delay:${Math.min(i,8)*70}ms"><div class="ticket"><div class="tb">
     <div class="flex items-start justify-between gap-3"><div class="flex items-center gap-3 min-w-0"><div class="pav" style="background:${hue(o.product)}">${E([...String(o.product||'?')][0])}</div><div class="min-w-0"><div class="flex items-center gap-2 flex-wrap"><span class="idc">#${E(o.id)}</span><span class="pill s${k}">${E(o.status)}</span></div><div class="ptitle mt-1 break-words">${E(o.product)}</div><div class="text-xs font-bold text-slate-500 mt-1">👤 ${E(o.customer)} · ${E(o.date)}</div></div></div><div class="price shrink-0">NT$${Number(o.price||0).toLocaleString()}</div></div>
     <div class="stp">${SN.map((n,j)=>`${j?`<div class="l ${j<=k?'d':''}"></div>`:''}<div class="n ${j<k?'d':j===k?'c':''}"><u>${j<k?'✓':j+1}</u>${n}</div>`).join('')}</div>
-    <div class="flex items-center gap-2 mt-2"><span class="text-xs font-black text-slate-500">更新狀態</span><select data-st="${o.docId}" class="flex-1 px-3 py-2.5 rounded-xl border border-slate-200 bg-white font-bold text-sm outline-none focus:ring-2 focus:ring-indigo-400">${STATUS.map(s=>`<option ${s===o.status?'selected':''}>${s}</option>`).join('')}</select></div>
+    ${statusActions(o)}
     ${o.memo?`<div class="note"><span>📌</span><span>管理員備註：${E(o.memo)}</span></div>`:''}
     <div class="mt-3 space-y-1.5">${(o.staffNotes||[]).map(n=>`<div><span class="bub"><b>${E(n.by)}</b>：${E(n.text)}<small>${E(n.at)}</small></span></div>`).join('')}</div>
-    <div class="flex gap-2 mt-3"><input id="nt-${o.docId}" placeholder="寫下處理備註…" class="flex-1 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:ring-2 focus:ring-indigo-400"><button data-note="${o.docId}" class="px-4 rounded-xl hero text-white text-sm font-bold hover:brightness-125 active:scale-95 transition">送出</button>${o.status!=='已完成發貨'?`<button data-rel="${o.docId}" class="px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 text-xs font-bold transition">放回</button>`:''}</div>
+    <div class="flex gap-2 mt-3"><input id="nt-${o.docId}" placeholder="寫下處理備註…" class="flex-1 px-4 py-2.5 rounded-xl bg-white border border-slate-200 text-sm outline-none focus:ring-2 focus:ring-indigo-400"><button data-note="${o.docId}" class="px-4 rounded-xl hero text-white text-sm font-bold hover:brightness-125 active:scale-95 transition">送出</button>${o.status!=='已完成發貨'&&!o.payRequest?`<button data-rel="${o.docId}" class="px-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 text-xs font-bold transition">放回</button>`:''}</div>
    </div></div></div>`}).join('')}</div>`:`<div class="text-center py-24"><div class="text-7xl mb-4 float">📦</div><div class="font-black text-xl text-slate-700">目前沒有處理中的訂單</div><div class="text-sm text-slate-400 mt-1">到接單大廳挑一張吧，完成的訂單會自動收進「歷史訂單」</div></div>`;
   const paid=hist.filter(o=>o.salaryPaid),unpaid=hist.filter(o=>!o.salaryPaid),list=histSub==='paid'?paid:unpaid,rate=me.rate||0,M=n=>'NT$'+Number(n||0).toLocaleString();
   const sb=(k,t,n)=>`<button data-sub="${k}" class="px-4 py-2 rounded-xl text-sm font-black transition ${histSub===k?'bg-[#1a1a5e] text-white shadow':'bg-white text-slate-500 hover:text-[#1a1a5e]'}">${t} <span class="opacity-70">${n}</span></button>`;
@@ -358,7 +758,7 @@ function render(){
     ${o.salaryPaid?'':`<div class="flex justify-end mt-3"><button data-reopen="${o.docId}" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-500 text-xs font-bold transition">↩ 退回處理中</button></div>`}
    </div></div></div>`).join('')}</div>`:`<div class="text-center py-24"><div class="text-7xl mb-4 float">🗂️</div><div class="font-black text-xl text-slate-700">${histSub==='paid'?'還沒有已付薪水的訂單':'沒有等待發薪的訂單'}</div><div class="text-sm text-slate-400 mt-1">訂單狀態改成「已完成發貨」後會自動出現在這裡</div></div>`);
   const sum=a=>a.reduce((t,o)=>t+Number(o.salary||0),0),est=rate?unpaid.reduce((t,o)=>t+Math.round(Number(o.price||0)*rate/100),0):null,mo={};
-  countTo('s-earn',sum(paid));
+  countTo('s-earn',sum(paid));hubExtras(poolAll);
   paid.forEach(o=>{const k=(o.paidAt||'').slice(0,7)||'—';(mo[k]=mo[k]||{n:0,s:0}).n++;mo[k].s+=Number(o.salary||0)});
   const ks=Object.keys(mo).sort().reverse(),mx=Math.max(1,...ks.map(k=>mo[k].s)),c=(l,v,h)=>`<div class="glass rounded-2xl p-5${h?' hi':''}"><div class="text-xs font-bold text-slate-500">${l}</div><div class="price mt-2">${v}</div></div>`;
   $('rep').innerHTML=`<div class="grid sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">${c('💰 你累計賺到（已領薪水）',M(sum(paid)),1)}${c('⏳ 待發薪水（'+unpaid.length+' 張）',est!==null?'約 '+M(est):'等老闆發放')}${c('🏆 完成訂單',hist.length+' 張')}${c('📦 經手訂單總額',M(hist.reduce((t,o)=>t+Number(o.price||0),0)))}</div>
@@ -379,19 +779,31 @@ document.addEventListener('click',async e=>{
         tx.update(r,{assignee:me.id,assigneeName:me.name,claimedAt:new Date().toISOString()})});
       toast('✅ 接單成功！到「我的訂單」處理');party();sfx('fanfare');
     }
+    if(d.payreq){ // 回報已付款：只送給老闆，不會直接改狀態
+      const note=prompt('匯款後五碼 / 備註（可空白）','');if(note===null)return;
+      await runTransaction(db,async tx=>{const r=doc(db,'orders',d.payreq),s=await tx.get(r),o=s.data();
+        if(!s.exists()||o.assignee!==me.id)throw new Error('這張單已不在你的處理中');
+        if(o.payRequest)throw new Error('已經回報過了，請等老闆確認');
+        if(o.status!=='未付款')throw new Error('這張單不是「未付款」狀態');
+        tx.update(r,{payRequest:{to:'已付款(未出貨)',by:me.id,byName:me.name,at:new Date().toISOString(),note:(note||'').trim()},payRejectNote:null,lastStaff:me.name})});
+      sfx('pop');toast('📨 已送給老闆，等他確認收款後會放回你的處理中');
+    }
+    if(d.adv){ // 已確認付款後才能往下走
+      const to=d.to,fin=to==='已完成發貨';
+      await runTransaction(db,async tx=>{const r=doc(db,'orders',d.adv),s=await tx.get(r),o=s.data();
+        if(!s.exists()||o.assignee!==me.id)throw new Error('這張單已不在你的處理中');
+        if(o.payRequest||STATUS.indexOf(o.status)<1)throw new Error('老闆還沒確認收款');
+        tx.update(r,{status:to,lastStaff:me.name,completedAt:fin?new Date().toISOString():null})});
+      sfx(fin?'fanfare':'pop');toast(fin?'🎉 訂單完成！已自動移到「完成訂單」':'狀態已更新：'+to);if(fin)party();
+    }
     if(d.sub){histSub=d.sub;render()}
     if(d.rel&&confirm('確定放回接單大廳？')){await updateDoc(doc(db,'orders',d.rel),{assignee:null,assigneeName:null,claimedAt:null});sfx('whoosh');toast('已放回大廳')}
     if(d.reopen&&confirm('要把這張訂單退回「處理中」嗎？')){await updateDoc(doc(db,'orders',d.reopen),{status:'待發貨',completedAt:null,lastStaff:me.name});sfx('whoosh');toast('已退回處理中')}
     if(d.note){const i=$('nt-'+d.note),t=i.value.trim();if(!t)return;await updateDoc(doc(db,'orders',d.note),{staffNotes:arrayUnion({by:me.name,text:t,at:now()})});sfx('pop');toast('備註已加入')}
   }catch(err){document.querySelectorAll('.tk.fly').forEach(x=>x.classList.remove('fly'));sfx('error');toast('⚠️ '+err.message)}
 });
-document.addEventListener('change',async e=>{
-  const s=e.target.dataset.st;if(!s)return;
-  try{const v=e.target.value,fin=v==='已完成發貨';await updateDoc(doc(db,'orders',s),{status:v,lastStaff:me.name,completedAt:fin?new Date().toISOString():null});sfx(fin?'fanfare':'pop');toast(fin?'🎉 訂單完成！已自動移到「歷史訂單」':'狀態已更新：'+v);if(fin)party()}catch(err){toast('⚠️ '+err.message)}
-});
-
 // 自動恢復登入（仍驗證帳號是否存在且未停用）
-try{const s=JSON.parse(sessionStorage.getItem('zahStaff')||'null');if(s){getDoc(doc(db,'staff',s.id)).then(x=>{if(x.exists()&&x.data().active!==false){me=s;enter()}})}}catch(e){}
+try{const s=JSON.parse(localStorage.getItem('zahStaff')||'null');if(s&&s.exp>Date.now()){getDoc(doc(db,'staff',s.id)).then(x=>{if(x.exists()&&x.data().active!==false){me={id:s.id,name:s.name};enter()}else localStorage.removeItem('zahStaff')})}else if(s)localStorage.removeItem('zahStaff')}catch(e){}
 </script>
 </body>
 </html>

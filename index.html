@@ -599,6 +599,15 @@
                 <div id="quotePanelList" class="divide-y divide-violet-100"></div>
             </div>
 
+            <!-- 💰 待確認收款：員工回報「已付款」→ 老闆確認有收到錢，才會放回給員工 -->
+            <div id="payPanel" class="hidden mb-6 rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-white shadow-sm overflow-hidden">
+                <div class="px-5 py-4 border-b border-emerald-100">
+                    <h3 class="font-bold text-emerald-900 flex items-center gap-2">💰 待確認收款 <span id="payPanelCount" class="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[11px] font-bold">0</span></h3>
+                    <p class="text-xs text-emerald-600 mt-1">員工回報訂單已付款。請先確認帳戶真的有收到錢，再按「確認收款」；確認後訂單才會回到員工手上繼續處理。沒收到就按「退回」。</p>
+                </div>
+                <div id="payPanelList" class="divide-y divide-emerald-100"></div>
+            </div>
+
             <!-- 訂單表格區 -->
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="p-4 border-b border-slate-200 flex flex-wrap gap-3 justify-between items-center">
@@ -608,6 +617,9 @@
                         <button onclick="setFilter('all')" id="filter-all" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white transition shadow-sm">全部訂單</button>
                         <button onclick="setFilter('待報價')" id="filter-待報價" class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-white transition flex items-center gap-1.5">
                             待報價 <span id="quote-filter-count" class="hidden px-1.5 py-0.5 rounded-full bg-violet-600 text-white text-[10px] font-bold">0</span>
+                        </button>
+                        <button onclick="setFilter('待確認收款')" id="filter-待確認收款" class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-white transition flex items-center gap-1.5">
+                            待確認收款 <span id="pay-filter-count" class="hidden px-1.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold">0</span>
                         </button>
                         <button onclick="setFilter('未付款')" id="filter-未付款" class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-white transition">未付款</button>
                         <button onclick="setFilter('已付款(未出貨)')" id="filter-已付款(未出貨)" class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-white transition">已付款(未出貨)</button>
@@ -1257,6 +1269,7 @@
                 });
                 incomingOrders.sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
 
+                const prevPay = new Map(orders.map(o => [o.docId, !!o.payRequest]));
                 orders = incomingOrders;
 
                 const validDocIds = new Set(orders.map(o => o.docId));
@@ -1268,6 +1281,14 @@
 
                 if (ordersRealtimeReady) {
                     querySnapshot.docChanges().forEach((change) => {
+                        if (change.type === 'modified') {
+                            const d = change.doc.data();
+                            if (d.payRequest && !prevPay.get(change.doc.id)) {
+                                playSound('alarm');
+                                showLiveTicker(`💰 ${d.assigneeName || '員工'} 回報 ${d.id || ''}（${d.customer || ''}）已付款，請確認有收到錢！`, 'info');
+                            }
+                            return;
+                        }
                         if (change.type !== 'added') return;
                         if (locallyCreatedOrderIds.has(change.doc.id)) {
                             locallyCreatedOrderIds.delete(change.doc.id);
@@ -1566,6 +1587,7 @@
 
             renderChart();
             renderQuotePanel();
+            renderPayPanel();
             renderTable();
             updateBatchBar();
             lucide.createIcons();
@@ -1574,7 +1596,7 @@
         window.setFilter = function(status) {
             playSound('action');
             currentFilter = status;
-            ['all', '待報價', '未付款', '已付款(未出貨)', '待發貨', '已完成發貨'].forEach(s => {
+            ['all', '待報價', '待確認收款', '未付款', '已付款(未出貨)', '待發貨', '已完成發貨'].forEach(s => {
                 const btn = document.getElementById(`filter-${s}`);
                 if (btn) btn.className = (s === status) ? "px-3 py-1.5 rounded-lg bg-slate-900 text-white transition shadow-sm" : "px-3 py-1.5 rounded-lg text-slate-600 hover:bg-white transition";
             });
@@ -1587,7 +1609,7 @@
                 const matchSearch = (o.customer && o.customer.toLowerCase().includes(search)) || 
                                     (o.product && o.product.toLowerCase().includes(search)) || 
                                     (o.id && o.id.toLowerCase().includes(search));
-                const matchStatus = currentFilter === 'all' || (currentFilter === '待報價' ? o.quoteState === 'pending' : o.status === currentFilter);
+                const matchStatus = currentFilter === 'all' || (currentFilter === '待報價' ? o.quoteState === 'pending' : (currentFilter === '待確認收款' ? !!o.payRequest : o.status === currentFilter));
                 return matchSearch && matchStatus;
             });
         };
@@ -1782,7 +1804,7 @@
                             <div class="text-[10px] text-slate-400">實收 − 成本</div>
                         </td>
                         <td class="py-3.5 px-6">${(o.rating && o.rating > 0) ? `<span class="text-amber-400 text-xs">${'★'.repeat(o.rating)}</span>` : `<span class="text-xs text-slate-400">未評分</span>`}</td>
-                        <td class="py-3.5 px-6"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeClass}">${o.status}</span>${o.quoteState === 'pending' ? '<div class="mt-1 text-[10px] font-bold text-violet-600">💬 等待老闆報價</div>' : ''}</td>
+                        <td class="py-3.5 px-6"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeClass}">${o.status}</span>${o.quoteState === 'pending' ? '<div class="mt-1 text-[10px] font-bold text-violet-600">💬 等待老闆報價</div>' : ''}${o.payRequest ? '<div class="mt-1 text-[10px] font-bold text-emerald-600">💰 員工回報已付款・待確認</div>' : ''}</td>
                         <td class="py-3.5 px-6">${memoBtnHtml}</td>
                         <td class="py-3.5 px-6 text-right space-x-1">
                             ${o.quoteState === 'pending' ? '' : `<button onclick="openEditAmountModal('${o.docId}')" class="text-xs bg-slate-100 text-slate-700 hover:bg-slate-200 px-2.5 py-1 rounded-lg transition font-medium">編輯金額</button>`}
@@ -1854,6 +1876,62 @@
         };
 
         window.zahQEsc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+        // 💰 待確認收款面板（員工回報已付款 → 老闆確認收到錢）
+        const zahPEsc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        window.renderPayPanel = function() {
+            const pend = orders.filter(o => o.payRequest);
+            const badge = document.getElementById('pay-filter-count');
+            if (badge) { badge.textContent = pend.length; badge.classList.toggle('hidden', !pend.length); }
+            const panel = document.getElementById('payPanel');
+            if (!panel) return;
+            panel.classList.toggle('hidden', !pend.length);
+            if (!pend.length) return;
+            document.getElementById('payPanelCount').textContent = pend.length;
+            document.getElementById('payPanelList').innerHTML = pend.map(o => {
+                const r = o.payRequest || {};
+                const at = r.at ? new Date(r.at).toLocaleString('zh-TW', { hour12: false, month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '';
+                return `<div class="px-5 py-3.5 flex flex-wrap items-center gap-3 justify-between">
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center gap-2 flex-wrap"><span class="font-mono text-xs font-bold text-emerald-600">${zahPEsc(o.id)}</span><span class="font-bold text-slate-900 text-sm">${zahPEsc(o.customer)}</span><span class="text-sm font-black text-emerald-700">NT$${(Number(o.price) || 0).toLocaleString()}</span></div>
+                        <div class="text-sm text-slate-700 mt-0.5 truncate">🛒 ${zahPEsc(o.product)}</div>
+                        <div class="text-[11px] text-slate-500 mt-0.5">👷 ${zahPEsc(r.byName || o.assigneeName || '員工')} 回報已付款 · ${zahPEsc(at)}${r.note ? ' · 備註：' + zahPEsc(r.note) : ''}</div>
+                    </div>
+                    <div class="shrink-0 flex gap-2">
+                        <button onclick="rejectPay('${o.docId}')" class="px-3 py-2 rounded-xl bg-slate-100 hover:bg-rose-50 hover:text-rose-600 text-slate-500 text-xs font-bold transition active:scale-95">❌ 退回</button>
+                        <button onclick="confirmPay('${o.docId}')" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-sm transition active:scale-95">✅ 確認收款</button>
+                    </div>
+                </div>`;
+            }).join('');
+        };
+        window.confirmPay = async function(docId) {
+            const o = orders.find(x => x.docId === docId);
+            if (!o || !o.payRequest) return;
+            if (!confirm(`確認「${o.customer}」的款項 NT$${(Number(o.price) || 0).toLocaleString()} 已經入帳了嗎？\n確認後訂單會回到員工手上繼續處理。`)) return;
+            try {
+                await updateDoc(doc(db, 'orders', docId), {
+                    status: o.payRequest.to || '已付款(未出貨)',
+                    payRequest: null, payRejectNote: null,
+                    payConfirmedAt: new Date().toISOString(), payConfirmedBy: '老闆',
+                    lastStaff: '老闆'
+                });
+                playSound('action');
+                showLiveTicker(`✅ 已確認 ${o.id}（${o.customer}）收款，訂單已放回給 ${o.payRequest.byName || '員工'}`, 'success');
+                fetchOrdersFromFirebase();
+            } catch (err) { alert('確認收款失敗：' + err.message); }
+        };
+        window.rejectPay = async function(docId) {
+            const o = orders.find(x => x.docId === docId);
+            if (!o || !o.payRequest) return;
+            const why = prompt('退回原因（員工會看到）：', '尚未收到款項');
+            if (why === null) return;
+            try {
+                await updateDoc(doc(db, 'orders', docId), { payRequest: null, payRejectNote: (why || '').trim() || '尚未收到款項', lastStaff: '老闆' });
+                playSound('action');
+                showLiveTicker(`↩ 已退回 ${o.id} 的付款回報`, 'info');
+                fetchOrdersFromFirebase();
+            } catch (err) { alert('退回失敗：' + err.message); }
+        };
 
         // 💬 待報價訂單面板（有資料才顯示）
         window.renderQuotePanel = function() {
@@ -2046,7 +2124,7 @@
                 const targetOrder = orders.find(o => o.docId === docId);
                 if (targetOrder && targetOrder.quoteState === 'pending') { alert('這張訂單還沒報價，請先填好金額，再選擇自己接單或發放到員工網站。'); openQuoteModal(docId); return; }
                 const orderRef = doc(db, "orders", docId);
-                await updateDoc(orderRef, { status: newStatus, ...bossTag(docId, true), lastStaff: '老闆' });
+                await updateDoc(orderRef, { status: newStatus, payRequest: null, ...bossTag(docId, true), lastStaff: '老闆' });
                 
                 const price = targetOrder ? Number(targetOrder.price) : 0;
                 if (newStatus === '已完成發貨' && price >= 2000) {
