@@ -328,20 +328,23 @@
 
     <script type="module">
     import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getAuth, setPersistence, browserLocalPersistence, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     const app = getApps().length ? getApp() : initializeApp({ apiKey: "AIzaSyBjpZ8i-lsWHjrn9wHAOqTFlxKKUWkdZyQ", authDomain: "project-1584313366507677848.firebaseapp.com", projectId: "project-1584313366507677848", storageBucket: "project-1584313366507677848.firebasestorage.app", messagingSenderId: "486873849194", appId: "1:486873849194:web:3eb6181053f070bda05913", measurementId: "G-NYQQKNLE50" });
     const auth = getAuth(app), db = getFirestore(app);
     const gate = document.getElementById('login-gate'), em = document.getElementById('gate-email'),
           pw = document.getElementById('gate-password'), err = document.getElementById('gate-error'), btn = document.getElementById('gate-submit');
     let entered = false;
+    const card = gate.firstElementChild; card.style.opacity = '0'; card.style.transition = 'opacity .25s';
+    const showForm = () => { card.style.opacity = '1'; em.focus(); };
+    setPersistence(auth, browserLocalPersistence).catch(() => {});
     async function enter(user) {
         try { if (!(await getDoc(doc(db, 'admins', user.uid))).exists()) throw new Error('no'); }
         catch (e) { await signOut(auth); err.textContent = '這個帳號不是管理員'; return; }
         if (entered) return; entered = true;
         document.body.classList.add('app-ready'); gate.classList.add('gate-leaving'); setTimeout(() => gate.remove(), 650);
     }
-    onAuthStateChanged(auth, u => { if (u) enter(u); });
+    onAuthStateChanged(auth, async u => { if (u) { await enter(u); if (!entered) showForm(); } else showForm(); });
     async function tryLogin() {
         err.textContent = ''; btn.disabled = true;
         try { await signInWithEmailAndPassword(auth, em.value.trim(), pw.value); }
