@@ -314,10 +314,10 @@
             <div class="bg-indigo-600 text-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto shadow-md shadow-indigo-200 text-2xl">🔐</div>
             <div>
                 <h2 class="text-lg font-bold text-slate-900">展商城 ZAH-SHOP 後台</h2>
-                <p class="text-xs text-slate-400 mt-1">請輸入管理密碼</p>
+                <p class="text-xs text-slate-400 mt-1">請使用管理員帳號登入</p>
             </div>
-            <input id="gate-password" type="password" inputmode="numeric" autocomplete="off" placeholder="密碼"
-                   class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-center text-lg tracking-widest focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <input id="gate-email" type="email" autocomplete="username" placeholder="管理員帳號（Email）" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-center text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <input id="gate-password" type="password" autocomplete="current-password" placeholder="密碼" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-center text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
             <p id="gate-error" class="text-xs text-rose-500 font-semibold h-4"></p>
             <button id="gate-submit" type="button"
                     class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-sm font-bold shadow-md shadow-indigo-200 transition active:scale-95">
@@ -326,36 +326,31 @@
         </div>
     </div>
 
-    <script>
-    (function () {
-        // 密碼的 SHA-256 雜湊
-        const PASS_HASH = '60d2bacd27a01d3bb16542eb13523be368a7ada3617fca027fc865cfcd2c973f';
-        const gate = document.getElementById('login-gate');
-        const input = document.getElementById('gate-password');
-        const err = document.getElementById('gate-error');
-
-        async function sha256(text) {
-            const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text));
-            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        async function tryLogin() {
-            const hash = await sha256(input.value.trim());
-            if (hash === PASS_HASH) {
-                document.body.classList.add('app-ready');
-                gate.classList.add('gate-leaving');
-                setTimeout(() => gate.remove(), 650);
-            } else {
-                err.textContent = '密碼錯誤,請再試一次';
-                input.value = '';
-                input.focus();
-            }
-        }
-
-        document.getElementById('gate-submit').addEventListener('click', tryLogin);
-        input.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
-        input.focus();
-    })();
+    <script type="module">
+    import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    const app = getApps().length ? getApp() : initializeApp({ apiKey: "AIzaSyBjpZ8i-lsWHjrn9wHAOqTFlxKKUWkdZyQ", authDomain: "project-1584313366507677848.firebaseapp.com", projectId: "project-1584313366507677848", storageBucket: "project-1584313366507677848.firebasestorage.app", messagingSenderId: "486873849194", appId: "1:486873849194:web:3eb6181053f070bda05913", measurementId: "G-NYQQKNLE50" });
+    const auth = getAuth(app), db = getFirestore(app);
+    const gate = document.getElementById('login-gate'), em = document.getElementById('gate-email'),
+          pw = document.getElementById('gate-password'), err = document.getElementById('gate-error'), btn = document.getElementById('gate-submit');
+    let entered = false;
+    async function enter(user) {
+        try { if (!(await getDoc(doc(db, 'admins', user.uid))).exists()) throw new Error('no'); }
+        catch (e) { await signOut(auth); err.textContent = '這個帳號不是管理員'; return; }
+        if (entered) return; entered = true;
+        document.body.classList.add('app-ready'); gate.classList.add('gate-leaving'); setTimeout(() => gate.remove(), 650);
+    }
+    onAuthStateChanged(auth, u => { if (u) enter(u); });
+    async function tryLogin() {
+        err.textContent = ''; btn.disabled = true;
+        try { await signInWithEmailAndPassword(auth, em.value.trim(), pw.value); }
+        catch (e) { err.textContent = '帳號或密碼錯誤，請再試一次'; pw.value = ''; pw.focus(); }
+        btn.disabled = false;
+    }
+    btn.addEventListener('click', tryLogin);
+    [em, pw].forEach(x => x.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); }));
+    em.focus();
     </script>
 
 
